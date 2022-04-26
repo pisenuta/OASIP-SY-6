@@ -7,7 +7,7 @@ import { ref } from 'vue'
     <nav class="navbar navbar-light">
         <div class="container-fluid">
             <a class="navbar-brand ms-3">
-                <img src="/images/logo.png" alt="" width="75" height="75">
+                <router-link to="/"><img src="/images/logo.png" alt="" width="75" height="75"></router-link>
             </a>  
             <a class="nav-link" aria-current="page" href="#">Show All Event</a>
         </div>

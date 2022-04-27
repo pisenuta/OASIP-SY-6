@@ -9,7 +9,7 @@ import { ref } from 'vue'
             <a class="navbar-brand ms-3">
                 <router-link to="/"><img src="/images/logo.png" alt="" width="75" height="75"></router-link>
             </a>  
-            <a class="nav-link" aria-current="page" href="#">Show All Event</a>
+            <router-link to="/ShowAllEvent" class="nav-link">Show All Event</router-link>
         </div>
     </nav>
 </template>

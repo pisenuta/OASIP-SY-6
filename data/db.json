@@ -1,5 +1,22 @@
 {
     "event":[
-       
+        {
+            "bookingId":1,
+            "bookingName": "Somchai Jaidee (OR-7)",
+            "bookingEmail": "somchai.jai@mail.kmutt.ac.th",
+            "eventCategory": "DevOps/Infra Clinic",
+            "eventNotes": null,
+            "eventStartTime": "23 May 2022 13.30",
+            "eventDuration": 30
+        },
+        {
+            "bookingId":2,
+            "bookingName": "Somsri Rakdee (SJ-3)",
+            "bookingEmail": "somsri.rak@mail.kmutt.ac.th",
+            "eventCategory": "Project Management Clinic",
+            "eventNotes": "ขอปรึกษาเพื่อนไม่ช่วยงาน",
+            "eventStartTime": "27 April 2022 09.30",
+            "eventDuration": 30
+        }
     ]
 }

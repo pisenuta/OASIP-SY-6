@@ -9,24 +9,23 @@
     const res = await fetch('http://localhost:5000/event') //ปกติไม่นิยมวางลิ้งค์
     if(res.status === 200){
       events.value = await res.json() //json() เป็น promise, get data and เปลี่ยนเป็น js object
-      console.log(events.value)
-    } else {
-      console.log("error, can not get events")
     }
-    
   }
   onBeforeMount(async () =>{
     await getEvents()
   })
+  const schedule = () =>{
+    if(events.value.length == 0){
+      return "ไม่มีนัดหมายในขณะนี้"
+    }
+  }
 </script>
  
 <template>
     <div class="body">
         <h3 class="mx-auto mt-5" style="width: 200px">นัดหมายทั้งหมด</h3>
-        <p v-if="events.values.length === 0">ไม่มีนัดหมายในขณะนี้</p>
-        <div v-else>
-            <EventList :eventList="events"/>
-        </div>
+        <h5 class="mt-5">{{schedule()}}</h5>
+        <EventList :eventList="events"/>
     </div>
 </template>
  
@@ -35,5 +34,10 @@
 .body{
     font-family: 'Noto Sans Thai', sans-serif;
 }
-
+h5,h3{
+    text-align: center;
+}
+h5{
+    color: #646464;
+}
 </style>

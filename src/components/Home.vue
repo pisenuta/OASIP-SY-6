@@ -8,7 +8,7 @@
       <img src="../assets/mainHome.png" />
     <div class="caption">
       <h2>
-        เว็บไซต์สำหรับ Booking Appointment ใช้งานได้อย่างงายดาย เพียงคลิก
+        เว็บไซต์สำหรับ Booking Appointment ใช้งานได้อย่างง่ายดาย เพียงคลิก
         <a> สร้างการนัดหมาย </a>
       </h2>
     </div>

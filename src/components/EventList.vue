@@ -8,13 +8,12 @@ import { ref } from 'vue';
     })
     let DetailBtn = ref(false)
     const openDetail = () => {
-        
         DetailBtn.value = true
     }
     const close = () =>{
         DetailBtn.value = false
     }
-
+    const showIndex = null
 </script>
 
 <template>
@@ -29,12 +28,15 @@ import { ref } from 'vue';
                         <b>ระยะเวลา :</b> {{event.eventDuration}} นาที <br>
                         <b>คลีนิก :</b> {{event.eventCategory.eventCategoryName}}<br>
                         <b>ชื่อผู้นัดหมาย :</b> {{event.bookingName}}<br>
+
                         <div class="card-detail" v-if="DetailBtn == true" >
-                            <b>Email :</b> {{event.bookingEmail}}<br>
-                            <b>Note : </b>{{event.eventNotes}}<br>
+                            <div v-if="showIndex === index"> 
+                                <b>Email :</b> {{event.bookingEmail}}<br>
+                                <b>Note : </b>{{event.eventNotes}}<br>
+                                <button type="button" class="btn btn-danger" @click="close" v-on:click="showIndex = null"> ซ่อน </button>
+                            </div>      
                         </div> 
-                        <button id="open" type="button" class="btn btn-primary" @click="openDetail" v-if="DetailBtn == false">รายละเอียด</button>   
-                        <button id="close" type="button" class="btn btn-danger" @click="close" v-if="DetailBtn == true">ซ่อน</button>
+                        <button type="button" class="btn btn-primary" v-on:click="showIndex = index" @click="openDetail" v-if="showIndex !== index"> รายละเอียด </button>       
                     </div>
                 </div>    
             </div>         

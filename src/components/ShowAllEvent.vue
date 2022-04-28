@@ -3,22 +3,22 @@
     import EventList from './EventList.vue'
     const events = ref([])
 
-  // GET
-  const getEvents= async () =>{ 
-    //await คือ รอบรรทัดนั้นทำให้เสร็จก่อนแล้วจะทำบรรทัดต่อไป 
-    const res = await fetch('http://localhost:5000/event') //ปกติไม่นิยมวางลิ้งค์
+    const getEvents= async () =>{ 
+    const res = await fetch('http://localhost:5000/event') 
     if(res.status === 200){
-      events.value = await res.json() //json() เป็น promise, get data and เปลี่ยนเป็น js object
+      events.value = await res.json()
     }
   }
   onBeforeMount(async () =>{
     await getEvents()
   })
+
   const schedule = () =>{
     if(events.value.length == 0){
       return "ไม่มีนัดหมายในขณะนี้"
     }
   }
+
 </script>
  
 <template>

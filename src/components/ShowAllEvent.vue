@@ -1,16 +1,24 @@
 <script setup>
-    import {ref, onBeforeMount} from 'vue'
-    import EventList from './EventList.vue'
-    const events = ref([])
+  import {ref, onBeforeMount} from 'vue'
+  import EventList from './EventList.vue'
+  const events = ref([])
+  const evevtCategory = ref([])
 
-    const getEvents= async () =>{ 
+  const getEvents= async () =>{ 
     const res = await fetch('http://localhost:5000/event') 
-    if(res.status === 200){
-      events.value = await res.json()
-    }
+      if(res.status === 200){
+        events.value = await res.json()
+      }
   }
+  // const getEventCategory= async () =>{ 
+  //   const res = await fetch('http://localhost:5000/eventCategory') 
+  //     if(res.status === 200){
+  //       evevtCategory.value = await res.json()
+  //     }
+  // }
   onBeforeMount(async () =>{
     await getEvents()
+    // await getEventCategory()
   })
 
   const schedule = () =>{

@@ -5,7 +5,9 @@
   const evevtCategory = ref([])
 
   const getEvents= async () =>{ 
-    const res = await fetch('http://localhost:5000/event') 
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
+    method: "GET",
+  });
       if(res.status === 200){
         events.value = await res.json()
       }

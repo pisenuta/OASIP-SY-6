@@ -24,7 +24,7 @@ import { ref } from 'vue';
             <div class="card-body-main">
                 <div class="card" style="width: 45rem;">
                     <div class="card-body">
-                        <b>วันที่ - เวลานัดหมาย :</b> {{event.eventStartTime}}<br>
+                        <b>วันที่ - เวลานัดหมาย :</b> {{event.eventStartTime.slice(0,10)}} {{event.eventStartTime.slice(11,19)}}<br>
                         <b>ระยะเวลา :</b> {{event.eventCategory.eventDuration}} นาที <br>
                         <b>คลีนิก :</b> {{event.eventCategory.eventCategoryName}}<br>
                         <b>ชื่อผู้นัดหมาย :</b> {{event.bookingName}}<br>

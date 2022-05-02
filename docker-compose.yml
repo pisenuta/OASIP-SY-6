@@ -1,0 +1,33 @@
+version: '3.3'
+services:
+  dbevents: 
+    container_name: dbevents
+    image: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./Database/events.sql:/docker-entrypoint-initdb.d/events.sql
+      - ./Database/mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=1414
+    restart: always
+  
+  backend:
+    build: ./BackEnd
+    image: backendimg
+    container_name: backend
+    ports:
+      - 8080:8080
+    links: 
+      - dbevents
+    rstart: always
+     
+  oasip:
+    build: ./FrontEnd
+    image: oasip
+    container_name: oasip
+    ports:
+      - 80:80
+    links: 
+      - backend
+    restart: always

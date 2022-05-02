@@ -8,6 +8,7 @@ public class SimpleEventDTO {
     private String bookingName;
     private String bookingEmail;
     private Instant eventStartTime;
+    private Integer eventDuration;
     private String eventNotes;
 
     public Integer getId() {
@@ -28,6 +29,10 @@ public class SimpleEventDTO {
 
     public Instant getEventStartTime() {
         return this.eventStartTime;
+    }
+
+    public Integer getEventDuration(){
+        return this.eventDuration;
     }
 
     public String getEventNotes() {
@@ -54,6 +59,10 @@ public class SimpleEventDTO {
         this.eventStartTime = eventStartTime;
     }
 
+    public void setEventDuration(final Integer eventDuration){
+        this.eventDuration = eventDuration;
+    }
+
     public void setEventNotes(final String eventNotes) {
         this.eventNotes = eventNotes;
     }
@@ -67,6 +76,7 @@ public class SimpleEventDTO {
         this.bookingName = bookingName;
         this.bookingEmail = bookingEmail;
         this.eventStartTime = eventStartTime;
+        this.eventDuration = eventDuration;
         this.eventNotes = eventNotes;
     }
 }

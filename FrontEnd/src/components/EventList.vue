@@ -13,7 +13,7 @@ import { ref } from 'vue';
     const close = () =>{
         DetailBtn.value = false
     }
-    const showIndex = null
+    const showIndex = ref(null)
 </script>
 
 <template>

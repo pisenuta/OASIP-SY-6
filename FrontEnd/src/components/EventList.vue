@@ -78,7 +78,7 @@ const showIndex = ref(null);
                                                 event.eventNotes
                                         }}
                                     </p>
-                                    <button class="btn btn-danger" @click="$emit('deleteEvent',event.bookingId)" style="margin-top: 17px;">Cancel Schedule</button>
+                                    <button class="btn btn-danger" @click="$emit('deleteEvent',event.id)" style="margin-top: 17px;">Cancel Schedule</button>
                                 </div>
                                 
                             </div>
@@ -116,6 +116,7 @@ const showIndex = ref(null);
     border-radius: 10px;
     text-align: center;
     font-size: 18px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .card-title {

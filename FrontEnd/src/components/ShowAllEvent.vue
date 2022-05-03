@@ -19,14 +19,17 @@
   }
 
   const removeEvent = async (removeEventId) =>{
-    const res = await fetch(`http://localhost:5000/event/${removeEventId}`,{
-      method: 'DELETE'
-    }) //ชื่อ resource data set และ /id
-    if(res.status === 200) {
-      events.value = events.value.filter((event) => event.bookingId !== removeEventId)
-      console.log('deleted successfullly')
+    if (confirm(`Do you want to cancel event #${removeEventId}`) == false){
+
+    } else {
+      const res = await fetch(`http://localhost:5000/event/${removeEventId}`,{method: 'DELETE'})
+      if(res.status === 200) {
+        events.value = events.value.filter((event) => event.id !== removeEventId)
+        console.log('deleted successfullly')
+        location.reload();
+      }
+      else console.log('error, can not delete')
     }
-    else console.log('error, can not delete')
   }
 
   onBeforeMount(async () =>{

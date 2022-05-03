@@ -36,15 +36,15 @@
     font-family: 'Noto Sans Thai', sans-serif;
 }
 .caption a {
- color: #C95C5C;
+ color: #e74694;
  padding: 5px;
 }
 
 .caption a:hover {
-    background-color: aliceblue;
+    background-color: #fae4ef;
     border-radius: 10px;
     padding: 5px;
-    color: #C95C5C;
+    color: #e74694;
     cursor: pointer;
 }
 </style>

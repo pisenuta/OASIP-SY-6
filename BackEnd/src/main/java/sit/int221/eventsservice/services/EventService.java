@@ -37,6 +37,7 @@ public class EventService {
         SimpleEventDTO.setBookingName(event.getBookingName());
         SimpleEventDTO.setBookingEmail(event.getBookingEmail());
         SimpleEventDTO.setEventStartTime(event.getEventStartTime());
+        SimpleEventDTO.setEventDuration(event.getEventDuration());
         SimpleEventDTO.setEventNotes(event.getEventNotes());
         return SimpleEventDTO;
     }

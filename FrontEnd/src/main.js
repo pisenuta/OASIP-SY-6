@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import moment from 'moment'
 
 // createApp(App).mount('#app')
 import router from './router'

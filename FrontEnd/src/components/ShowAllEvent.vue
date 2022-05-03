@@ -2,12 +2,12 @@
   import {ref, onBeforeMount} from 'vue'
   import EventList from './EventList.vue'
   const events = ref([])
-  const evevtCategory = ref([])
 
   const getEvents= async () =>{ 
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
+    /*const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
     method: "GET",
-  });
+  });*/
+    const res = await fetch(`http://10.4.56.123:8080/api/events/`)
       if(res.status === 200){
         events.value = await res.json()
       }
@@ -40,9 +40,9 @@
 </template>
  
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans+Thai&display=swap');
 .body{
-    font-family: 'Noto Sans Thai', sans-serif;
+    font-family: 'Noto Sans Thai', 'Inter';
 }
 h5,h3{
     text-align: center;

@@ -13,7 +13,7 @@ import { ref } from 'vue';
     const close = () =>{
         DetailBtn.value = false
     }
-    const showIndex = null
+    const showIndex = ref(null)
 </script>
 
 <template>
@@ -25,7 +25,7 @@ import { ref } from 'vue';
                 <div class="card" style="width: 45rem;">
                     <div class="card-body">
                         <b>วันที่ - เวลานัดหมาย :</b> {{event.eventStartTime.slice(0,10)}} {{event.eventStartTime.slice(11,19)}}<br>
-                        <b>ระยะเวลา :</b> {{event.eventCategory.eventDuration}} นาที <br>
+                        <b>ระยะเวลา :</b> {{event.eventDuration}} นาที <br>
                         <b>คลีนิก :</b> {{event.eventCategory.eventCategoryName}}<br>
                         <b>ชื่อผู้นัดหมาย :</b> {{event.bookingName}}<br>
 
@@ -61,5 +61,4 @@ p{
 button{
     margin-top: 1%;
 }
-
 </style>

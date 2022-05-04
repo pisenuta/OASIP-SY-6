@@ -8,7 +8,7 @@
     method: "GET",
   });*/
     // const res = await fetch(`http://10.4.56.123:8080/api/events/`)
-    const res = await fetch(`http://localhost:5000/event`, {
+    const res = await fetch(`http://localhost:8080/api/events`, {
     method: "GET",
   });
       if(res.status === 200){
@@ -19,12 +19,12 @@
   }
 
   const removeEvent = async (removeEventId) =>{
-    if (confirm(`Do you want to cancel event #${removeEventId}`) == false){
+    if (confirm(`Do you want to cancel this event ?`) == false){
 
     } else {
-      const res = await fetch(`http://localhost:5000/event/${removeEventId}`,{method: 'DELETE'})
+      const res = await fetch(`http://localhost:8080/api/events/${removeEventId}`,{method: 'DELETE'})
       if(res.status === 200) {
-        events.value = events.value.filter((event) => event.id !== removeEventId)
+        events.value = events.value.filter((event) => event.bookingId !== removeEventId)
         console.log('deleted successfullly')
         location.reload();
       }
@@ -34,7 +34,6 @@
 
   onBeforeMount(async () =>{
     await getEvents();
-    await getEventId();
   })
 
   const schedule = () =>{

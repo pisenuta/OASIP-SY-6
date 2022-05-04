@@ -54,7 +54,7 @@ const showIndex = ref(null);
                 <ul>
                     <li v-for="(event, index) in eventList" :key="index">
                         <div class="card-body-main" v-if="DetailBtn == true">
-                            <div class="card" style="width: 38rem; height: 25rem;" v-if="showIndex === index">
+                            <div class="card" style="width: 38rem; height: 27rem;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index + 1 }}</div>
                                     <button class="close-detail" @click="closeDetail" v-on:click="showIndex = null">

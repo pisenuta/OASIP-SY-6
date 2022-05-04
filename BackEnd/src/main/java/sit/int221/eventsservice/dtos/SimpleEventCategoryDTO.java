@@ -1,30 +1,18 @@
 package sit.int221.eventsservice.dtos;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SimpleEventCategoryDTO {
+    private Integer id;
     private String eventCategoryName;
-    private int eventDuration;
+    private String eventCategoryDescription;
+    private Integer eventDuration;
 
-    public String getEventCategoryName() {
-        return this.eventCategoryName;
-    }
-
-    public int getEventDuration() {
-        return this.eventDuration;
-    }
-
-    public void setEventCategoryName(final String eventCategoryName) {
-        this.eventCategoryName = eventCategoryName;
-    }
-
-    public void setEventDuration(final int eventDuration) {
-        this.eventDuration = eventDuration;
-    }
-
-    public SimpleEventCategoryDTO() {
-    }
-
-    public SimpleEventCategoryDTO(final String eventCategoryName, final int eventDuration) {
-        this.eventCategoryName = eventCategoryName;
-        this.eventDuration = eventDuration;
-    }
 }

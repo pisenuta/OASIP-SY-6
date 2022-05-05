@@ -1,6 +1,6 @@
 version: '3.3'
 services:
-dbevents: 
+  dbevents: 
     container_name: dbevents
     image: mysql
     ports:
@@ -13,7 +13,7 @@ dbevents:
     environment:
       - MYSQL_ROOT_PASSWORD=1414
     restart: always
-    
+
 networks:
   oasip-networks:
     external:

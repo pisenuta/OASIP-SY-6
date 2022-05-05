@@ -22,7 +22,8 @@
     if (confirm(`Do you want to cancel this event ?`) == false){
 
     } else {
-      const res = await fetch(`http://localhost:8080/api/events/${removeEventId}`,{method: 'DELETE'})
+      // const res = await fetch(`http://localhost:8080/api/events/${removeEventId}`,{method: 'DELETE'})
+      const res = await fetch(`http://10.4.56.123:8080/api/events/${removeEventId}`,{method: 'DELETE'})
       if(res.status === 200) {
         events.value = events.value.filter((event) => event.bookingId !== removeEventId)
         console.log('deleted successfullly')

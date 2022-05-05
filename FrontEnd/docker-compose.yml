@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  oasip:
+    build: ./
+    image: oasip
+    container_name: oasip
+    ports:
+      - 80:80
+    networks: 
+      - oasip-network
+    restart: always
+    
+networks:
+  oasip-networks:
+    external:
+     name: oasip-network

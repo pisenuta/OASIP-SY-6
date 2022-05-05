@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  backend:
+    build: ./
+    image: backendimg
+    container_name: backend
+    ports:
+      - 8080:8080
+    networks: 
+      - oasip-network
+    restart: always
+
+networks:
+  oasip-networks:
+    external:
+     name: oasip-network

@@ -26,7 +26,6 @@ nav{
 }
 .nav-link{
     color:#e74694;
-
     font-size: 18px;
     border-radius: 10px;
 }
@@ -59,6 +58,11 @@ nav{
     text-align: center;
     color: white;
     text-shadow: 0 0 15px #e74694;
+    transition: all .2s ease-in-out;
+}
+
+.logo:hover {
+    transform: scale(1.1);
 }
 
 p {

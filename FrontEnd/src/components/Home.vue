@@ -9,7 +9,7 @@
     <div class="caption">
       <h2>
         The website for Booking Appointment is easy to use. Just clicks 
-        <a> Add Event</a>.
+        <a>Add Event</a>.
       </h2>
     </div>
   </div>
@@ -36,16 +36,16 @@
     font-family: 'Noto Sans Thai', sans-serif;
 }
 .caption a {
- color: #e74694;
- padding: 5px;
+  color: #e74694;
+  padding: 5px;
 }
 
 .caption a:hover {
-    background-color: #fae4ef;
-    border-radius: 10px;
-    padding: 5px;
-    color: #e74694;
-    cursor: pointer;
+  background-color: #fae4ef;
+  border-radius: 10px;
+  padding: 5px;
+  color: #e74694;
+  cursor: pointer;
 }
 
 .main {
@@ -55,4 +55,5 @@
 p {
   color: #e74694;
 }
+
 </style>

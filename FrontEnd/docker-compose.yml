@@ -11,6 +11,6 @@ services:
     restart: always
     
 networks:
-  oasip-networks:
+  oasip-network:
     external:
      name: oasip-network

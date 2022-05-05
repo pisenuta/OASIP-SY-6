@@ -6,7 +6,7 @@
     <nav class="navbar navbar-light">
         <div class="container-fluid">
             <a class="navbar-brand ms-3">
-                <router-link to="/"><img src="/images/logo.png" alt="" width="75" height="75"></router-link>
+                <router-link to="/"><div class="logo"><h1>&lt;PP/&gt;</h1><p>TEAM</p></div></router-link>
             </a>  
             <div class="d-flex">
                 <router-link to="/add-event" class="nav-link" style="margin-right: 7px;"><span class="hover-underline-animation">Add Event</span></router-link>
@@ -26,7 +26,7 @@ nav{
 }
 .nav-link{
     color:#e74694;
-    font-weight: bold;
+
     font-size: 18px;
     border-radius: 10px;
 }
@@ -52,5 +52,22 @@ nav{
 .hover-underline-animation:hover:after {
   transform: scaleX(1);
   transform-origin: bottom left;
+}
+
+.logo {
+    margin-top: 5%;
+    text-align: center;
+    color: white;
+    text-shadow: 0 0 15px #e74694;
+}
+
+p {
+    margin-top: -15%;
+    font-size: small;
+    letter-spacing: 8px
+}
+
+a {
+    text-decoration: none;
 }
 </style>

@@ -3,7 +3,9 @@ package sit.int221.eventsservice.controllers;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.dtos.SimpleEventDTO;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.services.EventService;
@@ -15,6 +17,7 @@ public class EventController {
     private EventService eventService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
     private EventRepository repository;
 
     public EventController() {
@@ -28,5 +31,13 @@ public class EventController {
     @GetMapping({""})
     public List<SimpleEventDTO> getEvents() {
         return this.eventService.getAllSimpleEvent();
+    }
+
+    @DeleteMapping({"/{Id}"})
+    public void delete(@PathVariable Integer Id) {
+        repository.findById(Id).orElseThrow(()->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        Id + " does not exist !!!"));
+        repository.deleteById(Id);
     }
 }

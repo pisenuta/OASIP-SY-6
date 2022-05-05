@@ -3,13 +3,13 @@
 <template>
   <div class="homepage">
     <div class="title">
-      <h1>Online Appointment Scheduling</h1>
+      <h1><p>OASIP-SY-6</p> Online Appointment Scheduling</h1>
     </div>
-      <img src="../assets/mainHome.png" />
+      <img src="../assets/mainHome.jpeg" class="main">
     <div class="caption">
       <h2>
-        เว็บไซต์สำหรับ Booking Appointment ใช้งานได้อย่างง่ายดาย เพียงคลิก
-        <a> สร้างการนัดหมาย </a>
+        The website for Booking Appointment is easy to use. Just clicks 
+        <a> Add Event</a>.
       </h2>
     </div>
   </div>
@@ -27,12 +27,12 @@
 
 .title {
     font-family: 'Radio Canada', sans-serif;
-    margin-top: 10em;
+    margin-top: 4em;
     margin-bottom: 3em;
 }
 
 .caption{
-    margin-top: 3em;
+    margin-top: 2em;
     font-family: 'Noto Sans Thai', sans-serif;
 }
 .caption a {
@@ -46,5 +46,13 @@
     padding: 5px;
     color: #e74694;
     cursor: pointer;
+}
+
+.main {
+  width: 50%;
+}
+
+p {
+  color: #e74694;
 }
 </style>

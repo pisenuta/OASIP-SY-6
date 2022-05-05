@@ -9,7 +9,7 @@
     <div class="caption">
       <h2>
         The website for Booking Appointment is easy to use. Just clicks 
-        <a>Add Event</a>.
+        <router-link to="/add-event"><a>Add Event.</a></router-link>
       </h2>
     </div>
   </div>
@@ -54,6 +54,10 @@
 
 p {
   color: #e74694;
+}
+
+a{
+  text-decoration: none;
 }
 
 </style>

@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 services:
   dbevents: 
     container_name: dbevents
@@ -8,8 +8,8 @@ services:
     networks: 
       - oasip-network
     volumes:
-      - ./Database/events.sql:/docker-entrypoint-initdb.d/events.sql
-      - ./Database/mysql-data:/var/lib/mysql
+      - ./events.sql:/docker-entrypoint-initdb.d/events.sql
+      - ./mysql-data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=1414
     restart: always

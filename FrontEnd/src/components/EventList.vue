@@ -96,8 +96,9 @@ const showIndex = ref(null);
     font-family: 'Inter','Noto Sans Thai';
 }
 .container {
-    position: absolute;
+    position: fixed;
     min-width: 100%;
+    max-height: 100%;
     overflow-x: hidden;
     width: 100%;
     height: 100%;
@@ -106,6 +107,8 @@ const showIndex = ref(null);
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
+    background-repeat: repeat-x;
+    
 }
 
 .card-body-main {

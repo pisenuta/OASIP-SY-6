@@ -15,11 +15,6 @@ onBeforeMount(async () => {
     await getEventCategory()
 })
 
-const selectedCategory = ref('')
-// const duration = ref()
-// if(selectedCategory !== null){
-//     duration.value = categories.value.filter(x => x.eventCategoryName === selectedCategory)
-// }
 const createEvent = async (story) => {
     if ((story.title == null || story.story == null) || (story.title == '' || story.story == '')) {
         error.value = true
@@ -48,7 +43,7 @@ const createEvent = async (story) => {
 <template>
     <div class="body">
         <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Add Event</h3>    
-        <ManageAdd :categoryList="categories"/>  
+        <ManageAdd :categoryList="categories" />  
     </div>
 </template>
  

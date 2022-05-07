@@ -4,7 +4,8 @@ import ManageAdd from './ManageAdd.vue'
 
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch('http://localhost:8080/api/eventcategory')
+    const res = await fetch('http://10.4.56.123:8080/api/eventcategory')
+    // const res = await fetch('http://localhost:8080/api/eventcategory')
     // const res = await fetch('http://localhost:5000/eventCategory')
     if (res.status === 200) {
         categories.value = await res.json()

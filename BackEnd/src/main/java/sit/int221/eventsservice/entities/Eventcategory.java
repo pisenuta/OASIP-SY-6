@@ -1,11 +1,16 @@
 package sit.int221.eventsservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
 @Entity
 @Table(
         name = "eventcategory"
@@ -40,45 +45,5 @@ public class Eventcategory {
     private Set<Event> events = new LinkedHashSet();
 
     public Eventcategory() {
-    }
-
-    public Set<Event> getEvents() {
-        return this.events;
-    }
-
-    public void setEvents(Set<Event> events) {
-        this.events = events;
-    }
-
-    public Integer getEventDuration() {
-        return this.eventDuration;
-    }
-
-    public void setEventDuration(Integer eventDuration) {
-        this.eventDuration = eventDuration;
-    }
-
-    public String getEventCategoryDescription() {
-        return this.eventCategoryDescription;
-    }
-
-    public void setEventCategoryDescription(String eventCategoryDescription) {
-        this.eventCategoryDescription = eventCategoryDescription;
-    }
-
-    public String getEventCategoryName() {
-        return this.eventCategoryName;
-    }
-
-    public void setEventCategoryName(String eventCategoryName) {
-        this.eventCategoryName = eventCategoryName;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }

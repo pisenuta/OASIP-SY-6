@@ -45,4 +45,13 @@ public class EventService {
     public List<SimpleEventDTO> getAllSimpleEvent() {
         return this.listMapper.mapList(this.repository.findAll(Sort.by("eventStartTime").descending()), SimpleEventDTO.class, this.modelMapper);
     }
+
+    public Event save(SimpleEventDTO newEvent) {
+        Event e = modelMapper.map(newEvent, Event.class);
+        return repository.saveAndFlush(e);
+    }
+
+//    public Event save(Event newEvent) {
+//        return repository.saveAndFlush(newEvent);
+//    }
 }

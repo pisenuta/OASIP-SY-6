@@ -7,8 +7,8 @@
     /*const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
     method: "GET",
   });*/
-    // const res = await fetch(`http://10.4.56.123:8080/api/events/` ,{
-    const res = await fetch(`http://localhost:8080/api/events`, {
+    const res = await fetch(`http://10.4.56.123:8080/api/events/` ,{
+    // const res = await fetch(`http://localhost:8080/api/events`, {
     method: "GET",
   });
   //     const res = await fetch(`http://localhost:5000/event`, {

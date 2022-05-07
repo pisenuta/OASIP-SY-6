@@ -7,8 +7,8 @@
     /*const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
     method: "GET",
   });*/
-    // const res = await fetch(`http://10.4.56.123:8080/api/events/` ,{
-    const res = await fetch(`http://localhost:8080/api/events`, {
+    const res = await fetch(`http://10.4.56.123:8080/api/events/` ,{
+    // const res = await fetch(`http://localhost:8080/api/events`, {
     method: "GET",
   });
   //     const res = await fetch(`http://localhost:5000/event`, {
@@ -25,9 +25,9 @@
     if (confirm(`Do you want to cancel this event ?`) == false){
 
     } else {
-      const res = await fetch(`http://localhost:8080/api/events/${removeEventId}`,{method: 'DELETE'})
+      // const res = await fetch(`http://localhost:8080/api/events/${removeEventId}`,{method: 'DELETE'})
       // const res = await fetch(`http://localhost:5000/event/${removeEventId}`,{method: 'DELETE'})
-      // const res = await fetch(`http://10.4.56.123:8080/api/events/${removeEventId}`,{method: 'DELETE'})
+      const res = await fetch(`http://10.4.56.123:8080/api/events/${removeEventId}`,{method: 'DELETE'})
       if(res.status === 200) {
         events.value = events.value.filter((event) => /*event.bookingId*/ event.Id !== removeEventId)
         console.log('deleted successfullly')

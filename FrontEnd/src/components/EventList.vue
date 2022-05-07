@@ -70,7 +70,7 @@ const showIndex = ref(null);
                                     {{ event.eventStartTime.slice(11, 16) }}<br />
                                     {{ event.eventDuration }} minutes<br/><br/>
 
-                                    <p v-if="event.eventNotes == null" style="color: #a2a5aa">
+                                    <p v-if="event.eventNotes == null || event.eventNotes == [] " style="color: #a2a5aa">
                                         No Message
                                     </p>
                                     <p v-else>

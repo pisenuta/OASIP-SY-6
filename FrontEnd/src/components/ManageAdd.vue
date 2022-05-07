@@ -1,72 +1,58 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 defineEmits(['create'])
-const props = defineProps({
-  currEvent: {
-    type: Object,
-    default: {}
-  },
+defineProps({
   categoryList:{
       type: Array,
       require: true
   }
 })
 
-const event = ref({
+const newEvent = ref({
     bookingName: "",
     bookingEmail: "",
     eventCategory: {},
     eventNotes: "",
-    eventDuration: "",
-    eventStartTime:""
+    eventStartTime:"",
+    eventDuration:""
 })
 
-// const event = computed(() => {
-//   return { 
-//       bookingName: props.currEvent.bookingName, 
-//       bookingEmail: props.currEvent.bookingEmail, 
-//       eventCategory:props.currEvent.eventCategory,
-//       eventNotes: props.currEvent.eventNotes, 
-//       eventStartTime: props.currEvent.eventStartTime,
-//       eventDuration:props.currEvent.eventCategory.eventDuration
-//     }
-// })
 </script>
 <template>
 <div class="body">
         <div class="form mx-5 mb-5 mt-5">
             <div class="mb-3">
                 <label for="clinic" class="form-label">Clinic :</label>
-                <select class="form-select style-form" style="width: 50%;" v-model="event.eventCategory">
+                <select class="form-select style-form" style="width: 50%;" v-model="newEvent.eventCategory">
                     <option selected>Select Clinic</option>
                     <option v-for="(category, index) in categoryList" :key="index" :value="category">{{ category.eventCategoryName }}</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name :</label>
-                <input class="form-control style-form" id="name" v-model="event.bookingName">
+                <input class="form-control style-form" id="name" v-model="newEvent.bookingName">
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email :</label>
-                <input class="form-control style-form" id="email" v-model="event.bookingEmail">
+                <input class="form-control style-form" id="email" v-model="newEvent.bookingEmail">
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Date - Time :</label><br>
-                <input type="datetime-local" id="meeting-time" name="meeting-time" class="date-form" v-model="event.eventStartTime">
+                <input type="datetime-local" id="meeting-time" name="meeting-time" class="date-form" v-model="newEvent.eventStartTime">
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Durations :</label><br>
-                <input class="form-control style-form" type="text" disabled readonly :value="event.eventCategory.eventDuration">
+                <input class="form-control style-form" type="text" disabled readonly :value="newEvent.eventCategory.eventDuration">
             </div>
             <div class="mb-3">
                 <label for="note" class="form-label">Note :</label>
-                <textarea class="form-control style-form" rows="3" v-model="event.eventNotes"></textarea>
+                <textarea class="form-control style-form" rows="3" v-model="newEvent.eventNotes"></textarea>
             </div>
         </div>
         <div style="text-align: center;">
             <button type="button" class="btn btn-dark mx-auto" 
-                @click="$emit('create')">
+                @click="$emit('create',newEvent)">
                 Add Event
             </button>
         </div>

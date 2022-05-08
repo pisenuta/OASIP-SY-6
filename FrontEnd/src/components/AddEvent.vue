@@ -4,7 +4,7 @@ import ManageAdd from './ManageAdd.vue'
 
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch('http://10.4.56.123:8080/api/eventcategory')
+    const res = await fetch('http://10.4.56.123:8080/sy6/api/eventcategory')
     // const res = await fetch('http://localhost:8080/api/eventcategory')
     // const res = await fetch('http://localhost:5000/eventCategory')
     if (res.status === 200) {
@@ -21,7 +21,7 @@ const getEvents= async () =>{
     /*const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
     method: "GET",
   });*/
-    const res = await fetch(`http://10.4.56.123:8080/api/events/` ,{
+    const res = await fetch(`http://10.4.56.123:8080/sy6/api/events/` ,{
     // const res = await fetch(`http://localhost:8080/api/events`, {
     method: "GET",
   });
@@ -37,7 +37,7 @@ const getEvents= async () =>{
 
 const createEvent = async (event) => {
     // const res = await fetch(`http://localhost:8080/api/events`, {
-    const res = await fetch(`http://10.4.56.123:8080/api/events`, {
+    const res = await fetch(`http://10.4.56.123:8080/sy6/api/events`, {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
         body: JSON.stringify({

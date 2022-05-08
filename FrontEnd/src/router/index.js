@@ -9,8 +9,9 @@ const routes = [
     { path: '/add-event', component: AddEvent }
 ]
 
+const history = createWebHashHistory('/sy6/');
 const router = createRouter({
-    history: createWebHashHistory('/sy6'),
-    routes, // short for `routes: routes`
+    // history: createWebHashHistory('/sy6/'),
+    history, routes // short for `routes: routes`
 })
 export default router;

@@ -108,7 +108,6 @@ const showIndex = ref(null);
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     background-repeat: repeat-x;
-    
 }
 
 .card-body-main {
@@ -135,8 +134,9 @@ const showIndex = ref(null);
     border: none;
     outline: none;
     background: none;
-    font-size: 35px;
+    font-size: 45px;
     font-weight: bold;
+    margin-top: -2%;
 }
 
 .close-detail:hover {

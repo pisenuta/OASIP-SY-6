@@ -30,7 +30,7 @@
       const res = await fetch(`http://10.4.56.123:8080/api/events/${removeEventId}`,{method: 'DELETE'})
       if(res.status === 200) {
         events.value = events.value.filter((event) => /*event.bookingId*/ event.Id !== removeEventId)
-        console.log('deleted successfullly')
+        console.log('deleted successfully')
         location.reload();
       }
       else console.log('error, can not delete')
@@ -52,6 +52,7 @@
 <template>
     <div class="body">
         <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Schedule</h3>
+        <div v-if="events.length>8" class="scroll-down"></div>
         <h5 class="mt-5">{{schedule()}}</h5>
         <div v-if="events.length !== 0">
           <EventList :eventList="events" @deleteEvent="removeEvent" />
@@ -66,10 +67,60 @@
 .body{
     font-family: 'Radio Canada','Noto Sans Thai';
 }
+
 h5,h3{
     text-align: center;
 }
 h5{
     color: #646464;
+}
+
+.scroll-down {
+  height: 50px;
+  width: 30px;
+  border: 2px solid black;
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  transform: translate(2500%, 0);
+
+}
+.scroll-down::before,
+.scroll-down::after {
+  content: "";
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  height: 10px;
+  width: 10px;
+  transform: translate(-50%, -100%) rotate(45deg);
+  border: 2px solid black;
+  border-top: transparent;
+  border-left: transparent;
+  animation: scroll-down 1s ease-in-out infinite;
+}
+.scroll-down::before {
+  top: 30%;
+  animation-delay: 0.3s;
+  /* animation: scroll-down 1s ease-in-out infinite; */
+}
+
+@keyframes scroll-down {
+  0% {
+    /* top:20%; */
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    top: 90%;
+    opacity: 0;
+  }
 }
 </style>

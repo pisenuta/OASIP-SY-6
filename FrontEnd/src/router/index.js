@@ -10,7 +10,7 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHashHistory('/sy6/'),
     routes, // short for `routes: routes`
 })
 export default router;

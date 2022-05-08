@@ -14,8 +14,8 @@ const newEvent = ref({
     bookingEmail: "",
     eventCategory: {},
     eventNotes: "",
-    eventStartTime:"",
-    eventDuration:""
+    eventDuration: "",
+    eventStartTime:""
 })
 
 </script>
@@ -25,7 +25,7 @@ const newEvent = ref({
             <div class="mb-3">
                 <label for="clinic" class="form-label">Clinic :</label>
                 <select class="form-select style-form" style="width: 50%;" v-model="newEvent.eventCategory">
-                    <option selected>Select Clinic</option>
+                    <option disabled selected>Select Clinic Below</option>
                     <option v-for="(category, index) in categoryList" :key="index" :value="category">{{ category.eventCategoryName }}</option>
                 </select>
             </div>

@@ -1,9 +1,10 @@
 <script setup>
 
+
 </script>
 
 <template>
-    <nav class="navbar navbar-light">
+    <nav class="navbar sticky-top navbar-light">
         <div class="container-fluid">
             <a class="navbar-brand ms-3">
                 <router-link to="/"><div class="logo"><h1>&lt;PP/&gt;</h1><p>TEAM</p></div></router-link>
@@ -23,7 +24,9 @@ nav{
     height: 95px;
     font-family: 'Radio Canada';
     color:#e74694;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
+
 .nav-link{
     color:#e74694;
     font-size: 18px;
@@ -74,4 +77,5 @@ p {
 a {
     text-decoration: none;
 }
+
 </style>

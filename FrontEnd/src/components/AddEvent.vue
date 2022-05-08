@@ -56,7 +56,8 @@ const createEvent = async (event) => {
         const addedEvent = await res.json()
         events.value.push(addedEvent)
         console.log('added successfully');
-        location.reload();
+        alert("Added Successfully")
+        location.reload()
 
     } else {
         console.log('error, can not add');

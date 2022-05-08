@@ -1,12 +1,12 @@
 <script setup>
-import { ref, onBeforeMount, computed } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import ManageAdd from './ManageAdd.vue'
 
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcategory`)
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcategory`)
     // const res = await fetch('http://localhost:8080/api/eventcategory')
-    // const res = await fetch('http://localhost:5000/eventCategory')
+    const res = await fetch('http://10.4.56.123:8080/api/eventcategory')
     if (res.status === 200) {
         categories.value = await res.json()
     }
@@ -17,65 +17,97 @@ onBeforeMount(async () => {
 })
 const events = ref([])
 
-const getEvents= async () =>{ 
-    /*const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
-    method: "GET",
-  });*/
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events` ,{
-    // const res = await fetch(`http://localhost:8080/api/events`, {
-    method: "GET",
-  });
-  //     const res = await fetch(`http://localhost:5000/event`, {
-  //   method: "GET",
-  // });
-      if(res.status === 200){
+const getEvents = async () => {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events` ,{
+    const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
+        method: "GET",
+    });
+    if (res.status === 200) {
         events.value = await res.json()
-      } else{
+    } else {
         console.log('can not');
-      }
-  }
+    }
+}
 
 const createEvent = async (event) => {
-    // const res = await fetch(`http://localhost:8080/api/events`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
+    const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
+        // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
         body: JSON.stringify({
-            id: events.value.length+1, 
-            eventCategory:{
+            id: events.value.length + 1,
+            eventCategory: {
                 id: event.eventCategory.id
             },
-            bookingName:event.bookingName,
+            bookingName: event.bookingName,
             bookingEmail: event.bookingEmail,
             eventStartTime: `${event.eventStartTime}:00Z`,
-            eventDuration:event.eventCategory.eventDuration,
-            eventNotes: event.eventNotes 
+            eventDuration: event.eventCategory.eventDuration,
+            eventNotes: event.eventNotes
         })
     })
     if (res.status == 201 || res.status == 200) {
         const addedEvent = await res.json()
         events.value.push(addedEvent)
         console.log('added successfully');
-        alert("Added Successfully")
-        location.reload()
-
+        addAlert.value = true
     } else {
         console.log('error, can not add');
     }
+}
+const addAlert = ref(false)
+const added = () => {
+    addAlert.value = false
+    location.reload()
 }
 
 </script>
  
 <template>
     <div class="body">
-        <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Add Event</h3>    
-        <ManageAdd :categoryList="categories" @create="createEvent"/>  
+        <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Add Event</h3>
+        <ManageAdd :categoryList="categories" @create="createEvent" />
+        <div class="container" v-if="addAlert === true">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=75&height=75">
+                    <p class="card-text">Added Event Successfully</p>
+                    <button type="button" class="btn btn-success" @click="added">OK</button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
  
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans+Thai&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Radio+Canada:wght@600&display=swap');
+
+.container {
+    position: fixed;
+    min-width: 100%;
+    max-height: 100%;
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    background-repeat: repeat-x;
+}
+
+.card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
 
 .body {
     font-family: 'Inter';
@@ -86,20 +118,21 @@ h3 {
     font-family: 'Radio Canada';
 }
 
-.date-form{
-    height: 38px; 
-    width: 50%; 
+.date-form {
+    height: 38px;
+    width: 50%;
     margin-top: 10px;
     margin-left: 25%;
     border-radius: 5px;
     border-color: #ced4da;
 }
 
-.style-form{
-    width: 50%; 
+.style-form {
+    width: 50%;
     margin: auto;
 }
-label{
+
+label {
     margin-left: 23%;
     font-weight: bold;
 }

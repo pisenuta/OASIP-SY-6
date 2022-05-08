@@ -32,7 +32,7 @@
 }
 
 .caption{
-    margin-top: 2em;
+    margin-top: 1em;
     font-family: 'Noto Sans Thai', sans-serif;
 }
 .caption a {

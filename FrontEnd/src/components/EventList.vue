@@ -19,6 +19,15 @@ const showIndex = ref(null);
 const deleteAlert = ref(false)
 const showAlert = () => {deleteAlert.value = true}
 const hideAlert = () => {deleteAlert.value = false}
+const deleted = ref(false)
+const showDeleted = () =>{
+    deleteAlert.value = false
+    deleted.value = true
+}
+const closeDeleted = () =>{
+    deleted.value = false
+    location.reload()
+}
 </script>
 
 <template>
@@ -47,7 +56,7 @@ const hideAlert = () => {deleteAlert.value = false}
                     <td>{{ event.eventDuration }}</td>
                     <td style="width: 45%;">{{ event.bookingName }}</td>
                     <td>
-                        <span class="detail-Btn" v-on:click="showIndex = index , deleteAlert = false" @click="openDetail"
+                        <span class="detail-Btn" v-on:click="showIndex = index" @click="openDetail"
                             style="padding-right: 15px; font-weight: bold;">More</span>
                     </td>
                 </tr>
@@ -85,17 +94,28 @@ const hideAlert = () => {deleteAlert.value = false}
                                         }}
                                     </p>
                                     <button class="btn btn-danger" style="margin-top: 17px;" @click="showAlert">Cancel Schedule</button>
-                                    <div class="card alert" v-if="deleteAlert === true">
+                                    <div class="containerV2" v-if="deleteAlert === true || deleted === true">
+                                        <div class="card alert" v-if="deleteAlert === true">
                                         <div class="card-body">
                                             <img
                                                 src="https://api.iconify.design/akar-icons/circle-alert.svg?color=white&width=75&height=75">
                                             <p class="card-text" style="margin-top: 20px;"><b>Are you sure you want to cancel event #{{ index + 1}} ?</b></p>
-                                            <button type="button" class="btn btn-warning" style="padding: 5px 20px 5px 20px;" @click="$emit('deleteEvent', event.id)">OK</button>
+                                            <button type="button" class="btn btn-warning" style="padding: 5px 20px 5px 20px;" @click="$emit('deleteEvent', event.id)" v-on:click="showDeleted">OK</button>
                                             <button type="button" class="btn btn-secondary" style="margin-left: 30px;" @click="hideAlert">Cancel</button>
                                         </div>
                                     </div>
-                                </div>
+                                    
+                                    <div class="card deleted" v-if="deleted === true">
+                                        <div class="card-body" style="margin-top: 10px;">
+                                            <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=white&width=90&height=90">
+                                            <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> Event Successfully</p>
+                                            <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;" @click="closeDeleted">OK</button>
+                                        </div>
+                                    </div>
 
+                                    </div>
+                                    
+                                </div>
                             </div>
                         </div>
                     </li>
@@ -115,6 +135,26 @@ const hideAlert = () => {deleteAlert.value = false}
     background-color: #bb2d3b;
     width: 28rem;
     color: white;
+}
+.card .deleted{
+    width: 28rem;
+    height: 15.5rem;
+    background-color: #198754;
+    color: white;
+}
+.containerV2{
+    position: fixed;
+    min-width: 100%;
+    max-height: 100%;
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0);
+    background-repeat: repeat-x;
 }
 .container {
     position: fixed;

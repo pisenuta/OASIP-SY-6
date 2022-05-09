@@ -23,7 +23,6 @@
       if(res.status === 200) {
         events.value = events.value.filter((event) => event.bookingId !== removeEventId)
         console.log('deleted successfully')
-        location.reload();
       }
       else console.log('error, can not delete')
 

@@ -90,4 +90,7 @@ label{
     margin-left: 23%;
     font-weight: bold;
 }
+input,textarea{
+    font-family: 'Inter','Noto Sans Thai';
+}
 </style>

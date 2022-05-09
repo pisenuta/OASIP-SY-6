@@ -24,7 +24,7 @@ const showIndex = ref(null);
             <thead class="table-dark align-middle">
                 <tr>
                     <th scope="col" class="mx-auto" style="padding-left: 25px;">#</th>
-                    <th scope="col" style="letter-spacing: 3px">DATE</th>
+                    <th scope="col" style="letter-spacing: 3px;">DATE</th>
                     <th scope="col" style="letter-spacing: 3px">TIME</th>
                     <th scope="col" style="letter-spacing: 3px">CLINIC</th>
                     <th scope="col" style="letter-spacing: 3px">
@@ -42,7 +42,7 @@ const showIndex = ref(null);
                     <td>{{ event.eventStartTime.slice(11, 16) }}</td>
                     <td>{{ event.eventCategory.eventCategoryName }}</td>
                     <td>{{ event.eventDuration }}</td>
-                    <td>{{ event.bookingName }}</td>
+                    <td style="width: 45%;">{{ event.bookingName }}</td>
                     <td>
                         <span class="detail-Btn" v-on:click="showIndex = index" @click="openDetail" style="padding-right: 15px; font-weight: bold;">More</span>
                     </td>
@@ -54,7 +54,7 @@ const showIndex = ref(null);
                 <ul>
                     <li v-for="(event, index) in eventList" :key="index">
                         <div class="card-body-main" v-if="DetailBtn == true">
-                            <div class="card" style="width: 38rem; height: 27rem;" v-if="showIndex === index">
+                            <div class="card" style="width: 38rem; " v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index + 1 }}</div>
                                     <button class="close-detail" @click="closeDetail" v-on:click="showIndex = null">

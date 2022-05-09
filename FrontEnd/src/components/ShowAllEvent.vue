@@ -18,9 +18,6 @@
   }
 
   const removeEvent = async (removeEventId) =>{
-    if (confirm(`Do you want to cancel this event ?`) == false){
-
-    } else {
       // const res = await fetch(`http://10.4.56.123:8080/api/events/${removeEventId}`,{method: 'DELETE'})
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${removeEventId}`,{method: 'DELETE'})
       if(res.status === 200) {
@@ -29,7 +26,7 @@
         location.reload();
       }
       else console.log('error, can not delete')
-    }
+
   }
 
   onBeforeMount(async () =>{

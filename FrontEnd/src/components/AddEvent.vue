@@ -68,11 +68,11 @@ const added = () => {
         <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Add Event</h3>
         <ManageAdd :categoryList="categories" @create="createEvent" />
         <div class="container" v-if="addAlert === true">
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=75&height=75">
-                    <p class="card-text">Added Event Successfully</p>
-                    <button type="button" class="btn btn-success" @click="added">OK</button>
+            <div class="card" style="width: 23rem; height: 15rem;">
+                <div class="card-body" style="margin-top: 10px;">
+                    <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+                    <p class="card-text" style="margin-top: 10px;">Added Event Successfully</p>
+                    <button type="button" class="btn btn-success" @click="added" style="width: 100px; margin-top: 5px;">OK</button>
                 </div>
             </div>
         </div>

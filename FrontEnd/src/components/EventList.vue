@@ -16,6 +16,9 @@ const closeDetail = () => {
 };
 
 const showIndex = ref(null);
+const deleteAlert = ref(false)
+const showAlert = () => {deleteAlert.value = true}
+const hideAlert = () => {deleteAlert.value = false}
 </script>
 
 <template>
@@ -44,7 +47,8 @@ const showIndex = ref(null);
                     <td>{{ event.eventDuration }}</td>
                     <td style="width: 45%;">{{ event.bookingName }}</td>
                     <td>
-                        <span class="detail-Btn" v-on:click="showIndex = index" @click="openDetail" style="padding-right: 15px; font-weight: bold;">More</span>
+                        <span class="detail-Btn" v-on:click="showIndex = index , deleteAlert = false" @click="openDetail"
+                            style="padding-right: 15px; font-weight: bold;">More</span>
                     </td>
                 </tr>
             </tbody>
@@ -56,7 +60,8 @@ const showIndex = ref(null);
                         <div class="card-body-main" v-if="DetailBtn == true">
                             <div class="card" style="width: 38rem; " v-if="showIndex === index">
                                 <div class="card-title">
-                                    <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index + 1 }}</div>
+                                    <div class="card-header"
+                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index + 1}}</div>
                                     <button class="close-detail" @click="closeDetail" v-on:click="showIndex = null">
                                         &times;
                                     </button>
@@ -68,9 +73,10 @@ const showIndex = ref(null);
                                     {{ event.eventCategory.eventCategoryName }}<br />
                                     {{ event.eventStartTime.slice(0, 10) }} at
                                     {{ event.eventStartTime.slice(11, 16) }}<br />
-                                    {{ event.eventDuration }} minutes<br/><br/>
+                                    {{ event.eventDuration }} minutes<br /><br />
 
-                                    <p v-if="event.eventNotes == null || event.eventNotes == [] " style="color: #a2a5aa">
+                                    <p v-if="event.eventNotes == null || event.eventNotes == []"
+                                        style="color: #a2a5aa">
                                         No Message
                                     </p>
                                     <p v-else>
@@ -78,9 +84,18 @@ const showIndex = ref(null);
                                                 event.eventNotes
                                         }}
                                     </p>
-                                    <button class="btn btn-danger" @click="$emit('deleteEvent',event.id)" style="margin-top: 17px;">Cancel Schedule</button>
+                                    <button class="btn btn-danger" style="margin-top: 17px;" @click="showAlert">Cancel Schedule</button>
+                                    <div class="card alert" v-if="deleteAlert === true">
+                                        <div class="card-body">
+                                            <img
+                                                src="https://api.iconify.design/akar-icons/circle-alert.svg?color=white&width=75&height=75">
+                                            <p class="card-text" style="margin-top: 20px;"><b>Are you sure you want to cancel event #{{ index + 1}} ?</b></p>
+                                            <button type="button" class="btn btn-warning" style="padding: 5px 20px 5px 20px;" @click="$emit('deleteEvent', event.id)">OK</button>
+                                            <button type="button" class="btn btn-secondary" style="margin-left: 30px;" @click="hideAlert">Cancel</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </li>
@@ -92,8 +107,14 @@ const showIndex = ref(null);
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans+Thai&display=swap');
-.body{
-    font-family: 'Inter','Noto Sans Thai';
+
+.body {
+    font-family: 'Inter', 'Noto Sans Thai';
+}
+.card .alert{
+    background-color: #bb2d3b;
+    width: 28rem;
+    color: white;
 }
 .container {
     position: fixed;
@@ -117,7 +138,7 @@ const showIndex = ref(null);
     transform: translate(-50%, -50%);
     border-radius: 10px;
     text-align: center;
-    font-size: 18px; 
+    font-size: 18px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 

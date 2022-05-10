@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import useVuelidate from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 
 defineEmits(['create'])
 defineProps({
@@ -18,10 +20,11 @@ const newEvent = ref({
     eventStartTime:""
 })
 
+
 </script>
 <template>
 <div class="body">
-        <div class="form mx-5 mb-5 mt-5">
+        <div class="form mx-5 mb-5 mt-5 needs-validation">
             <div class="mb-3">
                 <label for="clinic" class="form-label">Clinic :</label>
                 <select class="form-select style-form" style="width: 50%;" v-model="newEvent.eventCategory">
@@ -43,7 +46,7 @@ const newEvent = ref({
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Durations :</label><br>
-                <input class="form-control style-form" type="text" disabled readonly :value="newEvent.eventCategory.eventDuration">
+                <input class="form-control style-form" style="margin-top: 10px;" type="text" disabled readonly :value="newEvent.eventCategory.eventDuration">
             </div>
             <div class="mb-3">
                 <label for="note" class="form-label">Note :</label>
@@ -51,7 +54,7 @@ const newEvent = ref({
             </div>
         </div>
         <div style="text-align: center;">
-            <button type="button" class="btn btn-dark mx-auto" 
+            <button type="reset" class="btn btn-dark mx-auto" 
                 @click="$emit('create',newEvent)">
                 Add Event
             </button>

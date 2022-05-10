@@ -4,9 +4,8 @@ import ManageAdd from './ManageAdd.vue'
 
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcategory`)
-    // const res = await fetch('http://localhost:8080/api/eventcategory')
-    // const res = await fetch('http://10.4.56.123:8080/api/eventcategory')
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcategory`)
+    const res = await fetch('http://10.4.56.123:8080/api/eventcategory')
     if (res.status === 200) {
         categories.value = await res.json()
     }
@@ -18,8 +17,8 @@ onBeforeMount(async () => {
 const events = ref([])
 
 const getEvents = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events` ,{
-    // const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events` ,{
+    const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
         method: "GET",
     });
     if (res.status === 200) {
@@ -30,8 +29,8 @@ const getEvents = async () => {
 }
 
 const createEvent = async (event) => {
-    // const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
-        const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
+    const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
+        // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
         body: JSON.stringify({
@@ -58,7 +57,7 @@ const createEvent = async (event) => {
 const addAlert = ref(false)
 const added = () => {
     addAlert.value = false
-    location.reload()
+    // location.reload()
 }
 
 </script>

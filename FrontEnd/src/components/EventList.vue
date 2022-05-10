@@ -7,7 +7,7 @@ defineProps({
         require: true,
     },
 });
-let DetailBtn = ref(false);
+const DetailBtn = ref(false);
 const openDetail = () => {
     DetailBtn.value = true;
 };
@@ -17,16 +17,16 @@ const closeDetail = () => {
 
 const showIndex = ref(null);
 const deleteAlert = ref(false)
-const showAlert = () => {deleteAlert.value = true}
-const hideAlert = () => {deleteAlert.value = false}
+const showAlert = () => { deleteAlert.value = true }
+const hideAlert = () => { deleteAlert.value = false }
 const deleted = ref(false)
-const showDeleted = () =>{
+const showDeleted = () => {
     deleteAlert.value = false
     deleted.value = true
+    DetailBtn.value = false
 }
-const closeDeleted = () =>{
+const closeDeleted = () => {
     deleted.value = false
-    location.reload()
 }
 </script>
 
@@ -70,7 +70,9 @@ const closeDeleted = () =>{
                             <div class="card" style="width: 38rem; " v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header"
-                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index + 1}}</div>
+                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index
+                                                + 1
+                                        }}</div>
                                     <button class="close-detail" @click="closeDetail" v-on:click="showIndex = null">
                                         &times;
                                     </button>
@@ -84,8 +86,7 @@ const closeDeleted = () =>{
                                     {{ event.eventStartTime.slice(11, 16) }}<br />
                                     {{ event.eventDuration }} minutes<br /><br />
 
-                                    <p v-if="event.eventNotes == null || event.eventNotes == []"
-                                        style="color: #a2a5aa">
+                                    <p v-if="event.eventNotes == null || event.eventNotes == []" style="color: #a2a5aa">
                                         No Message
                                     </p>
                                     <p v-else>
@@ -93,33 +94,39 @@ const closeDeleted = () =>{
                                                 event.eventNotes
                                         }}
                                     </p>
-                                    <button class="btn btn-danger" style="margin-top: 17px;" @click="showAlert">Cancel Schedule</button>
+                                    <button class="btn btn-danger" style="margin-top: 17px;" @click="showAlert">Cancel Appointment</button>
                                     <div class="containerV2" v-if="deleteAlert === true || deleted === true">
                                         <div class="card alert" v-if="deleteAlert === true">
-                                        <div class="card-body">
-                                            <img
-                                                src="https://api.iconify.design/akar-icons/circle-alert.svg?color=white&width=75&height=75">
-                                            <p class="card-text" style="margin-top: 20px;"><b>Are you sure you want to cancel event #{{ index + 1}} ?</b></p>
-                                            <button type="button" class="btn btn-warning" style="padding: 5px 20px 5px 20px;" @click="$emit('deleteEvent', event.id)" v-on:click="showDeleted">OK</button>
-                                            <button type="button" class="btn btn-secondary" style="margin-left: 30px;" @click="hideAlert">Cancel</button>
+                                            <div class="card-body">
+                                                <img
+                                                    src="https://api.iconify.design/akar-icons/circle-alert.svg?color=white&width=75&height=75">
+                                                <p class="card-text" style="margin-top: 20px;"><b>Are you sure you want
+                                                        to cancel event #{{ index + 1 }} ?</b></p>
+                                                <button type="button" class="btn btn-warning"
+                                                    style="padding: 5px 20px 5px 20px;"
+                                                    @click="$emit('deleteEvent', event.id)"
+                                                    v-on:click="showDeleted">OK</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    style="margin-left: 30px;" @click="hideAlert">Cancel</button>
+                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="card deleted" v-if="deleted === true">
-                                        <div class="card-body" style="margin-top: 10px;">
-                                            <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=white&width=90&height=90">
-                                            <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> Event Successfully</p>
-                                            <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;" @click="closeDeleted">OK</button>
-                                        </div>
-                                    </div>
-
-                                    </div>
-                                    
                                 </div>
                             </div>
                         </div>
                     </li>
                 </ul>
+            </div>
+            <div class="containerV2" v-if="deleted === true">
+                <div class="card deleted" id="deleted">
+                    <div class="card-body" style="margin-top: 10px;">
+                        <img
+                            src="https://api.iconify.design/healthicons/yes-outline.svg?color=white&width=90&height=90">
+                        <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> Event Successfully</p>
+                        <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
+                            @click="closeDeleted">OK</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -131,18 +138,21 @@ const closeDeleted = () =>{
 .body {
     font-family: 'Inter', 'Noto Sans Thai';
 }
-.card .alert{
+
+.card .alert {
     background-color: #bb2d3b;
     width: 28rem;
     color: white;
 }
-.card .deleted{
+
+.deleted {
     width: 28rem;
     height: 15.5rem;
     background-color: #198754;
     color: white;
 }
-.containerV2{
+
+.containerV2 {
     position: fixed;
     min-width: 100%;
     max-height: 100%;
@@ -156,6 +166,7 @@ const closeDeleted = () =>{
     background-color: rgba(0, 0, 0, 0);
     background-repeat: repeat-x;
 }
+
 .container {
     position: fixed;
     min-width: 100%;

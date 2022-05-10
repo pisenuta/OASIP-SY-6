@@ -28,9 +28,11 @@ const getEvents = async () => {
     }
 }
 
+const error = ref(false)
+
 const createEvent = async (event) => {
     const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
-        // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
         body: JSON.stringify({
@@ -65,7 +67,7 @@ const added = () => {
 <template>
     <div class="body">
         <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Add Event</h3>
-        <ManageAdd :categoryList="categories" @create="createEvent" />
+        <ManageAdd :categoryList="categories" :error="error.value" @create="createEvent" />
         <div class="container" v-if="addAlert === true">
             <div class="card" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">

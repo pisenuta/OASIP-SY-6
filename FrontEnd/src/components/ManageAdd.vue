@@ -1,7 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import useVuelidate from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
 
 defineEmits(['create'])
 defineProps({
@@ -19,12 +17,15 @@ const newEvent = ref({
     eventDuration: "",
     eventStartTime:""
 })
-
-
+const check = () => {
+    if(newEvent.bookingName == '' || newEvent.bookingName == null){
+        alert('kuay')
+    }
+}
 </script>
 <template>
 <div class="body">
-        <div class="form mx-5 mb-5 mt-5 needs-validation">
+        <div class="form mx-5 mb-5 mt-5">
             <div class="mb-3">
                 <label for="clinic" class="form-label">Clinic :</label>
                 <select class="form-select style-form" style="width: 50%;" v-model="newEvent.eventCategory">
@@ -42,7 +43,7 @@ const newEvent = ref({
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Date - Time :</label><br>
-                <input type="datetime-local" id="meeting-time" name="meeting-time" class="date-form" v-model="newEvent.eventStartTime">
+                <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + `T00:00`" id="meeting-time" name="meeting-time" class="date-form" v-model="newEvent.eventStartTime">
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Durations :</label><br>
@@ -54,8 +55,8 @@ const newEvent = ref({
             </div>
         </div>
         <div style="text-align: center;">
-            <button type="reset" class="btn btn-dark mx-auto" 
-                @click="$emit('create',newEvent)">
+            <button type="button" class="btn btn-dark mx-auto" 
+                @click="$emit('create',newEvent)" v-on:click="check()">
                 Add Event
             </button>
         </div>

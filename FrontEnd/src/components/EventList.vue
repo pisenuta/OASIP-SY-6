@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import moment from 'moment';
 defineEmits(['deleteEvent'])
 defineProps({
     eventList: {
@@ -50,11 +51,11 @@ const closeDeleted = () => {
             <tbody>
                 <tr v-for="(event, index) in eventList" :key="index">
                     <td scope="row" style="padding-left: 25px;"><b>{{ index + 1 }}</b></td>
-                    <td>{{ event.eventStartTime.slice(0, 10) }}</td>
+                    <td>{{moment(event.eventStartTime).format('ddd, D MMM YYYY')}} </td>
                     <td>{{ event.eventStartTime.slice(11, 16) }}</td>
                     <td>{{ event.eventCategory.eventCategoryName }}</td>
                     <td>{{ event.eventDuration }}</td>
-                    <td style="width: 45%;">{{ event.bookingName }}</td>
+                    <td style="width: 40%;">{{ event.bookingName }}</td>
                     <td>
                         <span class="detail-Btn" v-on:click="showIndex = index" @click="openDetail"
                             style="padding-right: 15px; font-weight: bold;">More</span>
@@ -82,7 +83,7 @@ const closeDeleted = () => {
                                     {{ event.bookingEmail }}<br /><br />
                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                    {{ event.eventStartTime.slice(0, 10) }} at
+                                    {{moment(event.eventStartTime).format('ddd, D MMM YYYY')}} at
                                     {{ event.eventStartTime.slice(11, 16) }}<br />
                                     {{ event.eventDuration }} minutes<br /><br />
 

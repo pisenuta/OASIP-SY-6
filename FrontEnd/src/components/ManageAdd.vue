@@ -22,6 +22,10 @@ defineProps({
   errorTime:{
     type: Boolean,
     default:false
+  },
+  errorNameL:{
+    type: Boolean,
+    default:false
   }
 })
 
@@ -48,12 +52,12 @@ const newEvent = ref({
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name :</label>
-                <input class="form-control style-form" id="name" v-model="newEvent.bookingName" :class="{'border border-danger' : errorName}">
+                <input class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName" :class="{'border border-danger' : errorName}">
                 <div v-if="errorName" class="error"> Please enter name.</div>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email :</label>
-                <input class="form-control style-form" id="email" v-model="newEvent.bookingEmail" :class="{'border border-danger' : errorEmail}">
+                <input class="form-control style-form" id="email" maxlength="45" v-model="newEvent.bookingEmail" :class="{'border border-danger' : errorEmail}">
                 <div v-if="errorEmail" class="error">Please enter Email.</div>
             </div>
             <div class="mb-3">
@@ -67,7 +71,7 @@ const newEvent = ref({
             </div>
             <div class="mb-3">
                 <label for="note" class="form-label">Note :</label>
-                <textarea class="form-control style-form" rows="3" v-model="newEvent.eventNotes"></textarea>
+                <textarea class="form-control style-form" rows="3" maxlength="500" v-model="newEvent.eventNotes"></textarea>
             </div>
         </div>
         <div style="text-align: center;">

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import moment from 'moment';
-defineEmits(['deleteEvent'])
+defineEmits(['delete','edit'])
 defineProps({
     eventList: {
         type: Array,
@@ -95,7 +95,7 @@ const closeDeleted = () => {
                                                 event.eventNotes
                                         }}
                                     </p>
-                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;">Edit Appointment</button>
+                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;" @click="$emit('edit', event)">Edit Appointment</button>
                                     <button class="btn btn-danger detail-btn-each" @click="showAlert">Cancel Appointment</button>
                                     <div class="containerV2" v-if="deleteAlert === true || deleted === true">
                                         <div class="card alert" v-if="deleteAlert === true">
@@ -106,7 +106,7 @@ const closeDeleted = () => {
                                                         to cancel event #{{ index + 1 }} ?</b></p>
                                                 <button type="button" class="btn btn-warning"
                                                     style="padding: 5px 20px 5px 20px;"
-                                                    @click="$emit('deleteEvent', event.id)"
+                                                    @click="$emit('delete', event.id)"
                                                     v-on:click="showDeleted">OK</button>
                                                 <button type="button" class="btn btn-secondary"
                                                     style="margin-left: 30px;" @click="hideAlert">Cancel</button>

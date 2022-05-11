@@ -1,10 +1,11 @@
 <script setup>
+import { registerRuntimeHelpers } from '@vue/compiler-core';
 import { ref, onBeforeMount } from 'vue'
 import ManageAdd from './ManageAdd.vue'
 
 const categories = ref([])
 const getEventCategory = async () => {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcategory`)
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
     const res = await fetch('http://10.4.56.123:8080/api/eventcategory')
     if (res.status === 200) {
         categories.value = await res.json()
@@ -17,7 +18,7 @@ onBeforeMount(async () => {
 const events = ref([])
 
 const getEvents = async () => {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events` ,{
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events` ,{
     const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
         method: "GET",
     });
@@ -32,22 +33,41 @@ const errorName = ref(false)
 const errorClinic = ref(false)
 const errorEmail = ref(false)
 const errorTime = ref(false)
+const errorNameL = ref(false)
 
 const createEvent = async (event) => {
-    if(event.bookingName === null || event.bookingName == ''){
+    if(event.bookingName == null || event.bookingName == ''){
         errorName.value = true
-    } else {errorName.value = false }
+    } else {
+        errorName.value = false
+    }
+
+    if(event.bookingEmail == null || event.bookingEmail == ''){
+        errorEmail.value = true
+    } else {
+        errorEmail.value = false
+    }
+
     if(Object.keys(event.eventCategory).length === 0){
         errorClinic.value = true
-    } else {errorClinic.value = false }
-    if(event.bookingEmail === null || event.bookingEmail == ''){
-        errorEmail.value = true
-    } else {errorEmail.value = false }
+    } else {
+        errorClinic.value = false
+    }
+
     if(event.eventStartTime === null || event.eventStartTime == ''){
         errorTime.value = true
-    } else {errorTime.value = false }
+    } else {
+        errorTime.value = false
+    }
+    if(event.bookingName.length > 100){
+        errorNameL.value = true
+    }
+    if(errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true){
+        return
+    }
+ 
         const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
         body: JSON.stringify({
@@ -67,15 +87,12 @@ const createEvent = async (event) => {
         events.value.push(addedEvent)
         console.log('added successfully');
         addAlert.value = true
-        errorName.value = false
-        errorClinic.value = false
-        errorEmail.value = false
-        errorTime.value = false
     } else {
         console.log('error, can not add');
     }
-    }
-
+    
+       
+}
 const addAlert = ref(false)
 const added = () => {
     addAlert.value = false

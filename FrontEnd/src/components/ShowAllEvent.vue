@@ -5,8 +5,7 @@
 
   const getEvents= async () =>{ 
     const res = await fetch(`http://10.4.56.123:8080/api/events/` ,{
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/` ,{
-    // const res = await fetch(`http://localhost:8080/api/events`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/` ,{
     method: "GET",
   });
 
@@ -19,7 +18,7 @@
 
   const removeEvent = async (removeEventId) =>{
       const res = await fetch(`http://10.4.56.123:8080/api/events/${removeEventId}`,{method: 'DELETE'})
-      // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${removeEventId}`,{method: 'DELETE'})
+      // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${removeEventId}`,{method: 'DELETE'})
       if(res.status === 200) {
         events.value = events.value.filter((event) => event.id !== removeEventId)
         console.log('deleted successfully')
@@ -46,7 +45,7 @@
         <div v-if="events.length>8" class="scroll-down"></div>
         <h5 class="mt-5">{{schedule()}}</h5>
         <div v-if="events.length !== 0">
-          <EventList :eventList="events" @deleteEvent="removeEvent" />
+          <EventList :eventList="events" @delete="removeEvent" />
         </div>
         
     </div>

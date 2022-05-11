@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.eventsservice.dtos.SimpleEventCategoryDTO;
 import sit.int221.eventsservice.dtos.SimpleEventDTO;
+import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Eventcategory;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.repositories.EventcategoryRepository;
 import sit.int221.eventsservice.services.EventCategoryService;
+import sit.int221.eventsservice.services.EventService;
+
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -22,6 +25,9 @@ public class EventCategoryController {
     private ModelMapper modelMapper;
     private EventcategoryRepository repository;
 
+    @Autowired
+    private EventService eventService;
+
     public EventCategoryController() {
     }
 
@@ -34,4 +40,10 @@ public class EventCategoryController {
     public List<SimpleEventCategoryDTO> getEventcategory() {
         return this.eventCategoryService.getAllSimpleEventCategory();
     }
+
+    @PostMapping({""})
+    public Event create(@RequestBody SimpleEventDTO newEvent) {
+        return eventService.save(newEvent);
+    }
+
 }

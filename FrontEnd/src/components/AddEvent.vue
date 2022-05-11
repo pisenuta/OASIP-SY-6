@@ -36,16 +36,16 @@ const errorTime = ref(false)
 const createEvent = async (event) => {
     if(event.bookingName === null || event.bookingName == ''){
         errorName.value = true
-    }
+    } else {errorName.value = false }
     if(Object.keys(event.eventCategory).length === 0){
         errorClinic.value = true
-    }
+    } else {errorClinic.value = false }
     if(event.bookingEmail === null || event.bookingEmail == ''){
         errorEmail.value = true
-    }
+    } else {errorEmail.value = false }
     if(event.eventStartTime === null || event.eventStartTime == ''){
         errorTime.value = true
-    } else {
+    } else {errorTime.value = false }
         const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
     // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
         method: 'POST',
@@ -67,12 +67,15 @@ const createEvent = async (event) => {
         events.value.push(addedEvent)
         console.log('added successfully');
         addAlert.value = true
+        errorName.value = false
+        errorClinic.value = false
+        errorEmail.value = false
+        errorTime.value = false
     } else {
         console.log('error, can not add');
     }
     }
-    
-}
+
 const addAlert = ref(false)
 const added = () => {
     addAlert.value = false

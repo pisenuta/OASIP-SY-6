@@ -28,10 +28,25 @@ const getEvents = async () => {
     }
 }
 
-const error = ref(false)
+const errorName = ref(false)
+const errorClinic = ref(false)
+const errorEmail = ref(false)
+const errorTime = ref(false)
 
 const createEvent = async (event) => {
-    const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
+    if(event.bookingName === null || event.bookingName == ''){
+        errorName.value = true
+    }
+    if(Object.keys(event.eventCategory).length === 0){
+        errorClinic.value = true
+    }
+    if(event.bookingEmail === null || event.bookingEmail == ''){
+        errorEmail.value = true
+    }
+    if(event.eventStartTime === null || event.eventStartTime == ''){
+        errorTime.value = true
+    } else {
+        const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
     // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
@@ -55,19 +70,28 @@ const createEvent = async (event) => {
     } else {
         console.log('error, can not add');
     }
+    }
+    
 }
 const addAlert = ref(false)
 const added = () => {
     addAlert.value = false
-    // location.reload()
+    location.reload()
 }
 
 </script>
  
 <template>
     <div class="body">
-        <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Add Event</h3>
-        <ManageAdd :categoryList="categories" :error="error.value" @create="createEvent" />
+        <h3 class="mx-auto mt-4" style="font-size: 40px;font-weight: bolder;">Add Event</h3>
+        <ManageAdd 
+        :categoryList="categories" 
+        :errorName="errorName" 
+        :errorClinic="errorClinic"
+        :errorEmail="errorEmail"
+        :errorTime="errorTime"
+        @create="createEvent" 
+        />
         <div class="container" v-if="addAlert === true">
             <div class="card" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">

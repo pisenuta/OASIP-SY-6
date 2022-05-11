@@ -6,6 +6,22 @@ defineProps({
   categoryList:{
       type: Array,
       require: true
+  },
+  errorName:{
+    type: Boolean,
+    default:false
+  },
+  errorClinic:{
+    type: Boolean,
+    default:false
+  },
+  errorEmail:{
+    type: Boolean,
+    default:false
+  },
+  errorTime:{
+    type: Boolean,
+    default:false
   }
 })
 
@@ -17,33 +33,33 @@ const newEvent = ref({
     eventDuration: "",
     eventStartTime:""
 })
-const check = () => {
-    if(newEvent.bookingName == '' || newEvent.bookingName == null){
-        alert('kuay')
-    }
-}
+
 </script>
 <template>
 <div class="body">
-        <div class="form mx-5 mb-5 mt-5">
+        <div class="form mx-5 mb-5 mt-4">
             <div class="mb-3">
                 <label for="clinic" class="form-label">Clinic :</label>
-                <select class="form-select style-form" style="width: 50%;" v-model="newEvent.eventCategory">
+                <select class="form-select style-form" style="width: 50%;" :class="{'border border-danger' : errorClinic}" v-model="newEvent.eventCategory">
                     <option disabled selected>Select Clinic Below</option>
                     <option v-for="(category, index) in categoryList" :key="index" :value="category">{{ category.eventCategoryName }}</option>
                 </select>
+                <div v-if="errorClinic" class="error">Please select a clinic.</div>
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name :</label>
-                <input class="form-control style-form" id="name" v-model="newEvent.bookingName">
+                <input class="form-control style-form" id="name" v-model="newEvent.bookingName" :class="{'border border-danger' : errorName}">
+                <div v-if="errorName" class="error"> Please enter name.</div>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email :</label>
-                <input class="form-control style-form" id="email" v-model="newEvent.bookingEmail">
+                <input class="form-control style-form" id="email" v-model="newEvent.bookingEmail" :class="{'border border-danger' : errorEmail}">
+                <div v-if="errorEmail" class="error">Please enter Email.</div>
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Date - Time :</label><br>
-                <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + `T00:00`" id="meeting-time" name="meeting-time" class="date-form" v-model="newEvent.eventStartTime">
+                <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + `T00:00`" id="meeting-time" name="meeting-time" class="date-form" v-model="newEvent.eventStartTime" :class="{'border border-danger' : errorTime}">
+                <div v-if="errorTime" class="error">Please choose start time.</div>
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Durations :</label><br>
@@ -56,7 +72,7 @@ const check = () => {
         </div>
         <div style="text-align: center;">
             <button type="button" class="btn btn-dark mx-auto" 
-                @click="$emit('create',newEvent)" v-on:click="check()">
+                @click="$emit('create',newEvent)">
                 Add Event
             </button>
         </div>
@@ -68,6 +84,11 @@ const check = () => {
 @import url('https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans+Thai&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Radio+Canada:wght@600&display=swap');
 
+.error{
+    color: red;
+    font-size: 14px;
+    margin-left: 25%;
+}
 .body {
     font-family: 'Inter';
     font-size: 17px;

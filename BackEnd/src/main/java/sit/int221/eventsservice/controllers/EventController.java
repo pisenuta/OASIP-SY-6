@@ -46,23 +46,8 @@ public class EventController {
     public Event create(@RequestBody SimpleEventDTO newEvent) {
         return eventService.save(newEvent);
     }
-//    @PostMapping({""})
-//    public Event create(@RequestBody Event newEvent) {
-//        return eventService.save(newEvent);
-//    }
 
-    private Event mapEvent(Event existingEvent, Event updateEvent) {
-        existingEvent.setId(updateEvent.getId());
-        existingEvent.setEventCategory(updateEvent.getEventCategory());
-        existingEvent.setBookingName(updateEvent.getBookingName());
-        existingEvent.setBookingEmail(updateEvent.getBookingEmail());
-        existingEvent.setEventStartTime(updateEvent.getEventStartTime());
-        existingEvent.setEventDuration(updateEvent.getEventDuration());
-        existingEvent.setEventNotes(updateEvent.getEventNotes());
-        return existingEvent;
-    }
-
-    @PutMapping("/{Id}")
+    @PutMapping({"/{Id}"})
     public Event update(@RequestBody Event updateEvent, @PathVariable Integer Id) {
         Event event = repository.findById(Id).map(e->mapEvent(e, updateEvent))
                 .orElseGet(()->
@@ -72,4 +57,22 @@ public class EventController {
                 });
         return repository.saveAndFlush(event);
     }
+
+    private Event mapEvent(Event existingEvent, Event updateEvent) {
+        existingEvent.setId(updateEvent.getId());
+        existingEvent.setBookingName(updateEvent.getBookingName());
+        existingEvent.setBookingEmail(updateEvent.getBookingEmail());
+        existingEvent.setEventStartTime(updateEvent.getEventStartTime());
+        existingEvent.setEventDuration(updateEvent.getEventDuration());
+        existingEvent.setEventNotes(updateEvent.getEventNotes());
+        return existingEvent;
+    }
+
+//    @PutMapping({"/{Id}"})
+//    public SimpleEventDTO updateEvent(@PathVariable Integer Id, @RequestBody SimpleEventDTO updateEvent){
+//        eventService.updateEvent(Id,updateEvent);
+//        return updateEvent;
+//    }
+
+
 }

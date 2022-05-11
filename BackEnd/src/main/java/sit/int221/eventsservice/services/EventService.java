@@ -31,17 +31,6 @@ public class EventService {
         return (SimpleEventDTO)this.modelMapper.map(event, SimpleEventDTO.class);
     }
 
-    private SimpleEventDTO convertEntityToDto(Event event) {
-        SimpleEventDTO SimpleEventDTO = new SimpleEventDTO();
-        SimpleEventDTO.setId(event.getId());
-        SimpleEventDTO.setBookingName(event.getBookingName());
-        SimpleEventDTO.setBookingEmail(event.getBookingEmail());
-        SimpleEventDTO.setEventStartTime(event.getEventStartTime());
-        SimpleEventDTO.setEventDuration(event.getEventDuration());
-        SimpleEventDTO.setEventNotes(event.getEventNotes());
-        return SimpleEventDTO;
-    }
-
     public List<SimpleEventDTO> getAllSimpleEvent() {
         return this.listMapper.mapList(this.repository.findAll(Sort.by("eventStartTime").descending()), SimpleEventDTO.class, this.modelMapper);
     }
@@ -51,7 +40,17 @@ public class EventService {
         return repository.saveAndFlush(e);
     }
 
-//    public Event save(Event newEvent) {
-//        return repository.saveAndFlush(newEvent);
+
+//    public Event updateEvent(Integer Id, SimpleEventDTO updateEvent) {
+//        Event event = repository.findById(Id).map(e->mapEvent(modelMapper.map(e, SimpleEventDTO.class),updateEvent)).orElseGet(()->{
+//            updateEvent.setId(Id);
+//            return modelMapper.map(updateEvent, Event.class);
+//        });
+//        return repository.saveAndFlush(event);
+//    }
+//
+//    public Event mapEvent(SimpleEventDTO event1, SimpleEventDTO event2){
+//        event1=event2;
+//        return modelMapper.map(event1, Event.class);
 //    }
 }

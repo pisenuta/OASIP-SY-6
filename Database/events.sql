@@ -26,7 +26,7 @@ CREATE TABLE `event` (
   `bookingEmail` varchar(45) NOT NULL,
   `eventStartTime` datetime NOT NULL,
   `eventDuration` int NOT NULL,
-  `eventNotes` text,
+  `eventNotes` text(500),
   PRIMARY KEY (`bookingId`),
   KEY `fk_Event_EventCategory_idx` (`eventCategoryId`),
   CONSTRAINT `fk_Event_EventCategory` FOREIGN KEY (`eventCategoryId`) REFERENCES `eventcategory` (`eventCategoryId`)
@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `eventcategory`;
 CREATE TABLE `eventcategory` (
   `eventCategoryId` int NOT NULL,
   `eventCategoryName` varchar(100) NOT NULL,
-  `eventCategoryDescription` text,
+  `eventCategoryDescription` text(500),
   `eventDuration` int NOT NULL,
   PRIMARY KEY (`eventCategoryId`),
   UNIQUE KEY `eventCategoryName_UNIQUE` (`eventCategoryName`),

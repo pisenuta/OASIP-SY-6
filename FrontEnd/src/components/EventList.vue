@@ -95,7 +95,8 @@ const closeDeleted = () => {
                                                 event.eventNotes
                                         }}
                                     </p>
-                                    <button class="btn btn-danger" style="margin-top: 17px;" @click="showAlert">Cancel Appointment</button>
+                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;">Edit Appointment</button>
+                                    <button class="btn btn-danger detail-btn-each" @click="showAlert">Cancel Appointment</button>
                                     <div class="containerV2" v-if="deleteAlert === true || deleted === true">
                                         <div class="card alert" v-if="deleteAlert === true">
                                             <div class="card-body">
@@ -214,6 +215,11 @@ const closeDeleted = () => {
 
 .close-detail:hover {
     color: #e74694;
+}
+
+.detail-btn-each{
+    margin-top: 17px;
+    margin-bottom: 10px;
 }
 
 .detail-Btn {

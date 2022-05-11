@@ -76,14 +76,13 @@ const createEvent = async (event) => {
 const addAlert = ref(false)
 const added = () => {
     addAlert.value = false
-    location.reload()
 }
 
 </script>
  
 <template>
     <div class="body">
-        <h3 class="mx-auto mt-4" style="font-size: 40px;font-weight: bolder;">Add Event</h3>
+        <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Add Event</h3>
         <ManageAdd 
         :categoryList="categories" 
         :errorName="errorName" 
@@ -97,7 +96,7 @@ const added = () => {
                 <div class="card-body" style="margin-top: 10px;">
                     <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                     <p class="card-text" style="margin-top: 10px;">Added Event Successfully</p>
-                    <button type="button" class="btn btn-success" @click="added" style="width: 100px; margin-top: 5px;">OK</button>
+                    <router-link to="/show-all-events"><button type="button" class="btn btn-success" @click="added" style="width: 100px; margin-top: 5px;">OK</button></router-link>
                 </div>
             </div>
         </div>

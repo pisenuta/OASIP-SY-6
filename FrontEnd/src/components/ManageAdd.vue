@@ -26,6 +26,10 @@ defineProps({
   errorNameL:{
     type: Boolean,
     default:false
+  },
+  mailVali:{
+    type: Boolean,
+    default:false
   }
 })
 
@@ -59,6 +63,7 @@ const newEvent = ref({
                 <label for="email" class="form-label">Email :</label>
                 <input class="form-control style-form" id="email" maxlength="45" v-model="newEvent.bookingEmail" :class="{'border border-danger' : errorEmail}">
                 <div v-if="errorEmail" class="error">Please enter Email.</div>
+                <div v-if="!mailVali && !errorEmail" class="error">validate your mail</div>
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Date - Time :</label><br>

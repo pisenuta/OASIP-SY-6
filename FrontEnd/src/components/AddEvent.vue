@@ -33,7 +33,7 @@ const errorName = ref(false)
 const errorClinic = ref(false)
 const errorEmail = ref(false)
 const errorTime = ref(false)
-const errorNameL = ref(false)
+const mailVali = ref(true)
 
 const createEvent = async (event) => {
     if(event.bookingName == null || event.bookingName == ''){
@@ -59,10 +59,16 @@ const createEvent = async (event) => {
     } else {
         errorTime.value = false
     }
-    if(event.bookingName.length > 100){
-        errorNameL.value = true
+    
+    var emailValidate = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    if(event.bookingEmail.match(emailValidate)){
+        mailVali.value = true
+    } else {
+        mailVali.value = false
+        console.log('not validate');
     }
-    if(errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true){
+    if(errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false){
         return
     }
  
@@ -109,6 +115,7 @@ const added = () => {
         :errorClinic="errorClinic"
         :errorEmail="errorEmail"
         :errorTime="errorTime"
+        :mailVali="mailVali"
         @create="createEvent" 
         />
         <div class="container" v-if="addAlert === true">

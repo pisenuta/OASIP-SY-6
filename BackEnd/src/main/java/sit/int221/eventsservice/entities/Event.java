@@ -1,9 +1,17 @@
 package sit.int221.eventsservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.Instant;
+
+@Getter
+@Setter
+@AllArgsConstructor
 
 @Entity
 @Table(
@@ -55,61 +63,5 @@ public class Event {
     private String eventNotes;
 
     public Event() {
-    }
-
-    public String getEventNotes() {
-        return this.eventNotes;
-    }
-
-    public void setEventNotes(String eventNotes) {
-        this.eventNotes = eventNotes;
-    }
-
-    public Integer getEventDuration() {
-        return this.eventDuration;
-    }
-
-    public void setEventDuration(Integer eventDuration) {
-        this.eventDuration = eventDuration;
-    }
-
-    public Instant getEventStartTime() {
-        return this.eventStartTime;
-    }
-
-    public void setEventStartTime(Instant eventStartTime) {
-        this.eventStartTime = eventStartTime;
-    }
-
-    public String getBookingEmail() {
-        return this.bookingEmail;
-    }
-
-    public void setBookingEmail(String bookingEmail) {
-        this.bookingEmail = bookingEmail;
-    }
-
-    public String getBookingName() {
-        return this.bookingName;
-    }
-
-    public void setBookingName(String bookingName) {
-        this.bookingName = bookingName;
-    }
-
-    public Eventcategory getEventCategory() {
-        return this.eventCategory;
-    }
-
-    public void setEventCategory(Eventcategory eventCategory) {
-        this.eventCategory = eventCategory;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }

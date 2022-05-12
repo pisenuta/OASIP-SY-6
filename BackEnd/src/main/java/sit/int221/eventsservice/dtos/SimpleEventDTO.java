@@ -23,6 +23,7 @@ public class SimpleEventDTO {
     @Size(min = 1, max = 45)
     private String bookingEmail;
     @NotNull(message = "EventStartTime shouldn't be null.")
+    @FutureOrPresent(message = "StartTime mustn't be past.")
     private Instant eventStartTime;
     @NotNull(message = "Duration shouldn't be null.")
     private Integer eventDuration;

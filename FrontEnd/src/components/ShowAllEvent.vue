@@ -26,6 +26,30 @@
       else console.log('error, can not delete')
 
   }
+  const editingEvent = ref({})
+  const toEditingMode = (editEvent) => {
+    editingEvent.value = editEvent
+  }
+  const editEvent = async (editEvent) => {
+      // const res = await fetch(`http://10.4.56.123:8080/api/events/${editingEvent.id}`,{
+        editingEvent.value = editEvent
+
+    const res = await fetch(`http://localhost:8080/api/events/9`,{
+      method: 'PUT',
+      headers:{
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+          eventStartTime: `${editEvent.eventStartTime}:00Z`,
+          eventNotes: editEvent.eventNotes
+      })
+    })
+    if(res.status === 200){
+      console.log('edited successfully');
+    } else {
+      console.log('can not edit');
+    }
+  }
 
   onBeforeMount(async () =>{
     await getEvents();
@@ -45,7 +69,7 @@
         <div v-if="events.length>8" class="scroll-down"></div>
         <h5 class="mt-5">{{schedule()}}</h5>
         <div v-if="events.length !== 0">
-          <EventList :eventList="events" @delete="removeEvent" />
+          <EventList :eventList="events" :currentEvent="editingEvent" @delete="removeEvent" @edit="editEvent" @toEditingMode="toEditingMode"/>
         </div>
         
     </div>

@@ -1,12 +1,16 @@
 <script setup>
 import { ref } from "vue";
 import moment from 'moment';
-defineEmits(['delete','edit'])
+defineEmits(['delete', 'edit'])
 defineProps({
     eventList: {
         type: Array,
         require: true,
     },
+    currentEvent: {
+        type: Object,
+        defalut: {}
+    }
 });
 const DetailBtn = ref(false);
 const openDetail = () => {
@@ -15,7 +19,10 @@ const openDetail = () => {
 const closeDetail = () => {
     DetailBtn.value = false;
 };
-
+const edit = ref(false)
+const editMode = () => {
+    edit.value = true
+}
 const showIndex = ref(null);
 const deleteAlert = ref(false)
 const showAlert = () => { deleteAlert.value = true }
@@ -29,6 +36,10 @@ const showDeleted = () => {
 const closeDeleted = () => {
     deleted.value = false
 }
+const editEvent = ref({
+    eventNotes: "",
+    eventStartTime:""
+})
 </script>
 
 <template>
@@ -51,7 +62,7 @@ const closeDeleted = () => {
             <tbody>
                 <tr v-for="(event, index) in eventList" :key="index">
                     <td scope="row" style="padding-left: 25px;"><b>{{ index + 1 }}</b></td>
-                    <td>{{moment(event.eventStartTime).format('ddd, D MMM YYYY')}} </td>
+                    <td>{{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }} </td>
                     <td>{{ event.eventStartTime.slice(11, 16) }}</td>
                     <td>{{ event.eventCategory.eventCategoryName }}</td>
                     <td>{{ event.eventDuration }}</td>
@@ -68,7 +79,7 @@ const closeDeleted = () => {
                 <ul>
                     <li v-for="(event, index) in eventList" :key="index">
                         <div class="card-body-main" v-if="DetailBtn == true">
-                            <div class="card" style="width: 38rem; " v-if="showIndex === index">
+                            <div class="card" style="width: 38rem;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header"
                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index
@@ -83,7 +94,7 @@ const closeDeleted = () => {
                                     {{ event.bookingEmail }}<br /><br />
                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                    {{moment(event.eventStartTime).format('ddd, D MMM YYYY')}} at
+                                    {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }} at
                                     {{ event.eventStartTime.slice(11, 16) }}<br />
                                     {{ event.eventDuration }} minutes<br /><br />
 
@@ -95,8 +106,35 @@ const closeDeleted = () => {
                                                 event.eventNotes
                                         }}
                                     </p>
-                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;" @click="$emit('edit', event)">Edit Appointment</button>
-                                    <button class="btn btn-danger detail-btn-each" @click="showAlert">Cancel Appointment</button>
+                                    <!-- Edit -->
+                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;" v-on:click="editMode" @click="$emit('toEditingMode', event)">Edit Appointment</button>
+                                    <div class="containerV2" v-if="edit === true">
+                                        <div class="card" style="width: 38rem;">
+                                            <div class="card-body">
+                                                <div class="card-title">
+                                                    <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index + 1}}</div>
+                                                </div>
+                                                <div class="card-body" v-if="showIndex === index">
+                                                    {{ event.bookingName }}<br />
+                                                    {{ event.bookingEmail }}<br /><br />
+                                                    <span style="font-weight: bold; color: #e74694">Clinic</span><br />
+                                                    {{ event.eventCategory.eventCategoryName }}<br />
+                                                    <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + `T00:00`" id="meeting-time" name="meeting-time" class="date-form mx-auto" style="margin-bottom: 10px;" :value="currentEvent.eventStartTime"><br>
+                                                    {{ event.eventDuration }} minutes<br /><br />
+                                                    <p>Note :</p>
+                                                    <textarea class="form-control style-form" rows="3" maxlength="500" :value="currentEvent.eventNotes"></textarea>
+                                                    <div style="margin-top: 30px;">
+                                                        <button type="button" class="btn btn-success" style="margin-right: 40px;" @click="$emit('edit', editEvent)">Submit</button>
+                                                        <button type="button" class="btn btn-secondary" v-on:click="edit = false">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Delete -->
+                                    <button class="btn btn-danger detail-btn-each" @click="showAlert">Cancel
+                                        Appointment</button>
                                     <div class="containerV2" v-if="deleteAlert === true || deleted === true">
                                         <div class="card alert" v-if="deleteAlert === true">
                                             <div class="card-body">
@@ -217,7 +255,7 @@ const closeDeleted = () => {
     color: #e74694;
 }
 
-.detail-btn-each{
+.detail-btn-each {
     margin-top: 17px;
     margin-bottom: 10px;
 }

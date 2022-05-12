@@ -9,6 +9,8 @@ services:
     networks: 
       - oasip-network
     restart: always
+    environment:
+      TZ: "Asia/Bangkok"
 
 networks:
   oasip-network:

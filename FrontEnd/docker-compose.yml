@@ -3,12 +3,14 @@ services:
   oasip:
     build: ./
     image: oasip
-    container_name: oasip
+    container_name: frontend
     ports:
       - 80:80
     networks: 
       - oasip-network
     restart: always
+    environment:
+      TZ: "Asia/Bangkok"
     
 networks:
   oasip-network:

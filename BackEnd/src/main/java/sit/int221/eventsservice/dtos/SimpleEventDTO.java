@@ -17,7 +17,7 @@ public class SimpleEventDTO {
     @NotNull(message = "EventCategory shouldn't be null.")
     private SimpleEventCategoryDTO eventCategory;
     @NotBlank(message = "Name shouldn't be null or empty.")
-    @Size(max = 100)
+    @Size(max = 100 , message = "Name must less or equal then 100.")
     private String bookingName;
     @Email(message = "Invalid email address.")
     @Size(min = 1, max = 45)
@@ -26,7 +26,7 @@ public class SimpleEventDTO {
     private Instant eventStartTime;
     @NotNull(message = "Duration shouldn't be null.")
     private Integer eventDuration;
-    @Size(max = 500)
+    @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventNotes;
 
 }

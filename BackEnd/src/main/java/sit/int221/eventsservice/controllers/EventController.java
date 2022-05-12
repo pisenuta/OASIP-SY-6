@@ -50,32 +50,32 @@ public class EventController {
         return eventService.save(newEvent);
     }
 
-    @PutMapping({"/{Id}"})
-    public Event update(@RequestBody Event updateEvent, @PathVariable Integer Id) {
-        Event event = repository.findById(Id).map(e->mapEvent(e, updateEvent))
-                .orElseGet(()->
-                {
-                    updateEvent.setId(Id);
-                    return updateEvent;
-                });
-        return repository.saveAndFlush(event);
-    }
-
-    private Event mapEvent(Event existingEvent, Event updateEvent) {
-        existingEvent.setId(updateEvent.getId());
-        existingEvent.setBookingName(updateEvent.getBookingName());
-        existingEvent.setBookingEmail(updateEvent.getBookingEmail());
-        existingEvent.setEventStartTime(updateEvent.getEventStartTime());
-        existingEvent.setEventDuration(updateEvent.getEventDuration());
-        existingEvent.setEventNotes(updateEvent.getEventNotes());
-        return existingEvent;
-    }
-
 //    @PutMapping({"/{Id}"})
-//    public SimpleEventDTO updateEvent(@PathVariable Integer Id, @RequestBody SimpleEventDTO updateEvent){
-//        eventService.updateEvent(Id,updateEvent);
-//        return updateEvent;
+//    public Event update(@RequestBody @Valid Event updateEvent, @PathVariable Integer Id) {
+//        Event event = repository.findById(Id).map(e->mapEvent(e, updateEvent))
+//                .orElseGet(()->
+//                {
+//                    updateEvent.setId(Id);
+//                    return updateEvent;
+//                });
+//        return repository.saveAndFlush(event);
 //    }
+//
+//    private Event mapEvent(Event existingEvent, Event updateEvent) {
+//        existingEvent.setId(updateEvent.getId());
+//        existingEvent.setBookingName(updateEvent.getBookingName());
+//        existingEvent.setBookingEmail(updateEvent.getBookingEmail());
+//        existingEvent.setEventStartTime(updateEvent.getEventStartTime());
+//        existingEvent.setEventDuration(updateEvent.getEventDuration());
+//        existingEvent.setEventNotes(updateEvent.getEventNotes());
+//        return existingEvent;
+//    }
+
+    @PutMapping({"/{Id}"})
+    public SimpleEventDTO updateEvent(@PathVariable @Valid Integer Id, @RequestBody @Valid SimpleEventDTO updateEvent){
+        eventService.updateEvent(Id,updateEvent);
+        return updateEvent;
+    }
 
 
 }

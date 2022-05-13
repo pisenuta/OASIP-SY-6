@@ -1,15 +1,11 @@
 <script setup>
 import { ref } from "vue";
 import moment from 'moment';
-defineEmits(['delete', 'edit' , 'toEditingMode'])
+defineEmits(['delete', 'edit', 'toEditingMode'])
 const props = defineProps({
     eventList: {
         type: Array,
         require: true,
-    },
-    currentEvent: {
-        type: Object,
-        defalut: {}
     }
 });
 const DetailBtn = ref(false);
@@ -39,14 +35,15 @@ const closeDeleted = () => {
 
 const editTime = ref("")
 const editNote = ref("")
-const editEvent =(event)=> {
+const edited = ref(false)
+const editEvent = (event) => {
     console.log(event);
     event.eventStartTime = editTime.value
     event.eventNotes = editNote.value
     return event
 }
 
-const resetEditData =()=> {
+const resetEditData = () => {
     editTime.value = ""
     editNote.value = ""
 }
@@ -117,27 +114,38 @@ const resetEditData =()=> {
                                         }}
                                     </p>
                                     <!-- Edit -->
-                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;" v-on:click="editMode" 
-                                    @click="$emit('toEditingMode', event)">Edit Appointment</button>
+                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;"
+                                        v-on:click="editMode" @click="$emit('toEditingMode', event)">Edit
+                                        Appointment</button>
                                     <div class="containerV2" v-if="edit === true">
                                         <div class="card" style="width: 38rem;">
                                             <div class="card-body">
                                                 <div class="card-title">
-                                                    <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index + 1}}</div>
+                                                    <div class="card-header"
+                                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">
+                                                        Event #{{ index + 1 }}</div>
                                                 </div>
                                                 <div class="card-body" v-if="showIndex === index">
                                                     {{ event.bookingName }}<br />
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                                    <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + `T00:00`" id="meeting-time" name="meeting-time" 
-                                                    class="date-form mx-auto" style="margin-bottom: 10px;" v-model="editTime"><br>
-                                                    {{ event.eventDuration }} minutes<br/><br/>
+                                                    <input type="datetime-local"
+                                                        :min="new Date().toISOString().split('T')[0] + `T00:00`"
+                                                        id="meeting-time" name="meeting-time" class="date-form mx-auto"
+                                                        style="margin-bottom: 10px;" v-model="editTime"><br>
+                                                    {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
-                                                    <textarea class="form-control style-form" rows="3" maxlength="500" v-model="editNote"></textarea>
+                                                    <textarea class="form-control style-form" rows="3" maxlength="500"
+                                                        v-model="editNote"></textarea>
                                                     <div style="margin-top: 30px;">
-                                                        <button type="button" class="btn btn-success" style="margin-right: 40px;" @click="$emit('edit', editEvent(event), resetEditData())">Submit</button>
-                                                        <button type="button" class="btn btn-secondary" v-on:click="edit = false" @click="resetEditData()">Cancel</button>
+                                                        <button type="button" class="btn btn-success"
+                                                            style="margin-right: 40px;"
+                                                            @click="$emit('edit', editEvent(event), resetEditData())"
+                                                            v-on:click="edited = true">Submit</button>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            v-on:click="edit = false"
+                                                            @click="resetEditData()">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -177,6 +185,17 @@ const resetEditData =()=> {
                         <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> Event Successfully</p>
                         <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
                             @click="closeDeleted">OK</button>
+                    </div>
+                </div>
+            </div>
+            <div class="containerV2" v-if="edited === true">
+                <div class="card" v-if="edited === true">
+                    <div class="card-body" style="margin-top: 10px;">
+                        <img
+                            src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+                        <p class="card-text" style="margin-top: 10px;"><b>Edited</b> Event Successfully</p>
+                        <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
+                            v-on:click="edited = false, edit = false">OK</button>
                     </div>
                 </div>
             </div>

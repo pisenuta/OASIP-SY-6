@@ -28,10 +28,12 @@
       else console.log('error, can not delete')
 
   }
-
-  
+    const editingEvent = ref({})
+  const toEditingMode = (editEvent) => {
+    editingEvent.value = editEvent
+  }
   const editEvent = async (editEvent) => {
-      // const res = await fetch(`http://10.4.56.123:8080/api/events/${editingEvent.id}`,{
+      // const res = await fetch(`http://10.4.56.123:8080/api/events/${editEvent.id}`,{
     const res = await fetch(`http://localhost:8080/api/events/${editEvent.id}`,{
       method: 'PUT',
       headers:{
@@ -67,6 +69,10 @@
     }
   }
 
+  // const byDate = (a,b) => {
+  //   return new Date(b.eventStartTime).valueOf() - new Date(a.eventStartTime).valueOf();
+  // }
+
 </script>
  
 <template>
@@ -75,7 +81,7 @@
         <div v-if="events.length>8" class="scroll-down"></div>
         <h5 class="mt-5">{{schedule()}}</h5>
         <div v-if="events.length !== 0">
-          <EventList :eventList="events" :currentEvent="editingEvent" @delete="removeEvent" @edit="editEvent" @toEditingMode="ToEditingMode"/>
+          <EventList :eventList="events" @delete="removeEvent" @edit="editEvent" @toEditingMode="ToEditingMode"/>
         </div>
         
     </div>

@@ -76,5 +76,5 @@ public class EventController {
         eventService.updateEvent(Id,updateEvent);
         return updateEvent;
     }
-    
+
 }

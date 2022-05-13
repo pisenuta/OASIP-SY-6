@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from "vue";
 import moment from 'moment';
-defineEmits(['delete', 'edit'])
-defineProps({
+defineEmits(['delete', 'edit' , 'toEditingMode'])
+const props = defineProps({
     eventList: {
         type: Array,
         require: true,
@@ -36,10 +36,20 @@ const showDeleted = () => {
 const closeDeleted = () => {
     deleted.value = false
 }
-const editEvent = ref({
-    eventNotes: "",
-    eventStartTime:""
-})
+
+const editTime = ref("")
+const editNote = ref("")
+const editEvent =(event)=> {
+    console.log(event);
+    event.eventStartTime = editTime.value
+    event.eventNotes = editNote.value
+    return event
+}
+
+const resetEditData =()=> {
+    editTime.value = ""
+    editNote.value = ""
+}
 </script>
 
 <template>
@@ -107,7 +117,8 @@ const editEvent = ref({
                                         }}
                                     </p>
                                     <!-- Edit -->
-                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;" v-on:click="editMode" @click="$emit('toEditingMode', event)">Edit Appointment</button>
+                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;" v-on:click="editMode" 
+                                    @click="$emit('toEditingMode', event)">Edit Appointment</button>
                                     <div class="containerV2" v-if="edit === true">
                                         <div class="card" style="width: 38rem;">
                                             <div class="card-body">
@@ -119,13 +130,14 @@ const editEvent = ref({
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                                    <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + `T00:00`" id="meeting-time" name="meeting-time" class="date-form mx-auto" style="margin-bottom: 10px;" :value="currentEvent.eventStartTime"><br>
-                                                    {{ event.eventDuration }} minutes<br /><br />
+                                                    <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + `T00:00`" id="meeting-time" name="meeting-time" 
+                                                    class="date-form mx-auto" style="margin-bottom: 10px;" v-model="editTime"><br>
+                                                    {{ event.eventDuration }} minutes<br/><br/>
                                                     <p>Note :</p>
-                                                    <textarea class="form-control style-form" rows="3" maxlength="500" :value="currentEvent.eventNotes"></textarea>
+                                                    <textarea class="form-control style-form" rows="3" maxlength="500" v-model="editNote"></textarea>
                                                     <div style="margin-top: 30px;">
-                                                        <button type="button" class="btn btn-success" style="margin-right: 40px;" @click="$emit('edit', editEvent)">Submit</button>
-                                                        <button type="button" class="btn btn-secondary" v-on:click="edit = false">Cancel</button>
+                                                        <button type="button" class="btn btn-success" style="margin-right: 40px;" @click="$emit('edit', editEvent(event), resetEditData())">Submit</button>
+                                                        <button type="button" class="btn btn-secondary" v-on:click="edit = false" @click="resetEditData()">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>

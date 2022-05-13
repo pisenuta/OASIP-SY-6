@@ -4,7 +4,8 @@
   const events = ref([])
 
   const getEvents= async () =>{ 
-    const res = await fetch(`http://10.4.56.123:8080/api/events/` ,{
+    const res = await fetch(`http://localhost:8080/api/events` ,{
+    // const res = await fetch(`http://10.4.56.123:8080/api/events/` ,{
     // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/` ,{
     method: "GET",
   });
@@ -17,7 +18,8 @@
   }
 
   const removeEvent = async (removeEventId) =>{
-      const res = await fetch(`http://10.4.56.123:8080/api/events/${removeEventId}`,{method: 'DELETE'})
+      const res = await fetch(`http://localhost:8080/api/events/${removeEventId}`,{method: 'DELETE'})
+      // const res = await fetch(`http://10.4.56.123:8080/api/events/${removeEventId}`,{method: 'DELETE'})
       // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${removeEventId}`,{method: 'DELETE'})
       if(res.status === 200) {
         events.value = events.value.filter((event) => event.id !== removeEventId)
@@ -26,20 +28,24 @@
       else console.log('error, can not delete')
 
   }
-  const editingEvent = ref({})
-  const toEditingMode = (editEvent) => {
-    editingEvent.value = editEvent
-  }
+
+  
   const editEvent = async (editEvent) => {
       // const res = await fetch(`http://10.4.56.123:8080/api/events/${editingEvent.id}`,{
-        editingEvent.value = editEvent
-
-    const res = await fetch(`http://localhost:8080/api/events/9`,{
+    const res = await fetch(`http://localhost:8080/api/events/${editEvent.id}`,{
       method: 'PUT',
       headers:{
         'content-type': 'application/json'
       },
       body: JSON.stringify({
+        id: editEvent.id,
+            eventCategory: {
+                id: editEvent.eventCategory.id
+            },
+            bookingName: editEvent.bookingName,
+            bookingEmail: editEvent.bookingEmail,
+            eventDuration: editEvent.eventCategory.eventDuration,
+
           eventStartTime: `${editEvent.eventStartTime}:00Z`,
           eventNotes: editEvent.eventNotes
       })
@@ -69,7 +75,7 @@
         <div v-if="events.length>8" class="scroll-down"></div>
         <h5 class="mt-5">{{schedule()}}</h5>
         <div v-if="events.length !== 0">
-          <EventList :eventList="events" :currentEvent="editingEvent" @delete="removeEvent" @edit="editEvent" @toEditingMode="toEditingMode"/>
+          <EventList :eventList="events" :currentEvent="editingEvent" @delete="removeEvent" @edit="editEvent" @toEditingMode="ToEditingMode"/>
         </div>
         
     </div>

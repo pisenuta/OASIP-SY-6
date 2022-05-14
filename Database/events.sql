@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS `event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `event` (
-  `bookingId` int NOT NULL,
+  `bookingId` int NOT NULL AUTO_INCREMENT,
   `eventCategoryId` int NOT NULL,
   `bookingName` varchar(100) NOT NULL,
   `bookingEmail` varchar(45) NOT NULL,

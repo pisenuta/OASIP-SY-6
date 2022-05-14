@@ -19,6 +19,7 @@ import java.time.Instant;
 )
 public class Event {
     @Id
+    @GeneratedValue
     @Column(
             name = "bookingId",
             nullable = false

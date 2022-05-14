@@ -84,7 +84,7 @@ const createEvent = async (event) => {
             },
             bookingName: event.bookingName,
             bookingEmail: event.bookingEmail,
-            eventStartTime: `${event.eventStartTime}:00Z`,
+            eventStartTime: `${event.eventStartTime}`,
             eventDuration: event.eventCategory.eventDuration,
             eventNotes: event.eventNotes
         })

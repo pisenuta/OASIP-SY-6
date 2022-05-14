@@ -79,7 +79,6 @@ const createEvent = async (event) => {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
         body: JSON.stringify({
-            id: events.value.length + 1,
             eventCategory: {
                 id: event.eventCategory.id
             },

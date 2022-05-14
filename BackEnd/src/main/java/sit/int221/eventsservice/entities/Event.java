@@ -19,7 +19,7 @@ import java.time.Instant;
 )
 public class Event {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
             name = "bookingId",
             nullable = false

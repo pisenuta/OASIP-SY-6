@@ -1,5 +1,6 @@
 package sit.int221.eventsservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,6 +48,7 @@ public class Event {
             length = 45
     )
     private String bookingEmail;
+    @JsonFormat(timezone="Asia/Bangkok")
     @Column(
             name = "eventStartTime",
             nullable = false

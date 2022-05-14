@@ -16,22 +16,21 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SimpleEventDTO {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotNull(message = "EventCategory shouldn't be null.")
+//    @NotNull(message = "EventCategory shouldn't be null.")
     private SimpleEventCategoryDTO eventCategory;
-    @NotBlank(message = "Name shouldn't be null or empty.")
-    @Size(max = 100 , message = "Name must less or equal then 100.")
+//    @NotBlank(message = "Name shouldn't be null or empty.")
+//    @Size(max = 100 , message = "Name must less or equal then 100.")
     private String bookingName;
-    @Email(message = "Invalid email address.")
-    @Size(min = 1, max = 45)
+//    @Email(message = "Invalid email address.")
+//    @Size(min = 1, max = 45)
     private String bookingEmail;
-    @NotNull(message = "EventStartTime shouldn't be null.")
-    @FutureOrPresent(message = "StartTime mustn't be past.")
+//    @NotNull(message = "EventStartTime shouldn't be null.")
+//    @FutureOrPresent(message = "StartTime mustn't be past.")
     private Instant eventStartTime;
-    @NotNull(message = "Duration shouldn't be null.")
+//    @NotNull(message = "Duration shouldn't be null.")
     private Integer eventDuration;
-    @Size(max = 500, message = "Note must less or equal then 500.")
+//    @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventNotes;
-
 }

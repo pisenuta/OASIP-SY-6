@@ -46,7 +46,7 @@ public class EventController {
     }
 
     @PostMapping({""})
-    public Event create(@RequestBody @Valid SimpleEventDTO newEvent) {
+    public Event create(@RequestBody SimpleEventDTO newEvent) {
         return eventService.save(newEvent);
     }
 
@@ -72,7 +72,7 @@ public class EventController {
 //    }
 
     @PutMapping({"/{Id}"})
-    public SimpleEventDTO updateEvent(@PathVariable @Valid Integer Id, @RequestBody @Valid SimpleEventDTO updateEvent){
+    public SimpleEventDTO updateEvent(@PathVariable Integer Id, @RequestBody SimpleEventDTO updateEvent){
         eventService.updateEvent(Id,updateEvent);
         return updateEvent;
     }

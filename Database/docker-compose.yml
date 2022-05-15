@@ -11,7 +11,7 @@ services:
       - ./events.sql:/docker-entrypoint-initdb.d/events.sql
       - ./mysql-data:/var/lib/mysql
     environment:
-      - TZ: Asia/Bangkok
+      - TZ=Asia/Bangkok
       - MYSQL_ROOT_PASSWORD=1414
     restart: always
 

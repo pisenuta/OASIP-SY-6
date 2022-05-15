@@ -9,6 +9,8 @@ export default defineConfig({
     proxy: {
       '/api' : {
         target: 'http://intproj21.sit.kmutt.ac.th',
+        // target: 'http://10.4.56.123:8080',
+        // target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       }

@@ -41,7 +41,7 @@ const newEvent = ref({
     eventCategory: {},
     eventNotes: "",
     eventDuration: "",
-    eventStartTime:""
+    eventStartTime: ""
 })
 
 </script>
@@ -75,7 +75,7 @@ const newEvent = ref({
                     v-model="newEvent.eventStartTime" 
                     :class="{'border border-danger' : errorTime || errorFuture}"
                     class="datepicker"
-                />
+                ></Datepicker>
                 <div v-if="errorTime" class="error">Please choose start time.</div>
                 <div v-if="errorFuture && !errorTime" class="error">Can not choose past time.</div>
                 

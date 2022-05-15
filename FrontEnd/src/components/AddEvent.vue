@@ -91,7 +91,7 @@ const createEvent = async (event) => {
             },
             bookingName: event.bookingName,
             bookingEmail: event.bookingEmail,
-            eventStartTime: `${event.eventStartTime}:00Z`,
+            eventStartTime: event.eventStartTime,
             eventDuration: event.eventCategory.eventDuration,
             eventNotes: event.eventNotes
         })
@@ -110,8 +110,7 @@ const addAlert = ref(false)
 const added = () => {
     addAlert.value = false
 }
-console.log(new Date().toISOString().split('T')[0] + new Date().toISOString().slice(10,16));
-console.log(new Date().toISOString());
+
 </script>
  
 <template>

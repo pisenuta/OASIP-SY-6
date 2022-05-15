@@ -28,10 +28,6 @@
       else console.log('error, can not delete')
 
   }
-    const editingEvent = ref({})
-  const toEditingMode = (editEvent) => {
-    editingEvent.value = editEvent
-  }
   const editEvent = async (editEvent) => {
       const res = await fetch(`http://10.4.56.123:8080/api/events/${editEvent.id}`,{
     // const res = await fetch(`http://localhost:8080/api/events/${editEvent.id}`,{

@@ -33,10 +33,10 @@ const showDeleted = () => {
 const closeDeleted = () => {
     deleted.value = false
 }
-
+const edited = ref(false)
 const editTime = ref("")
 const editNote = ref("")
-const edited = ref(false)
+
 const editEvent = (event) => {
     console.log(event);
     event.eventStartTime = editTime.value
@@ -48,6 +48,7 @@ const resetEditData = () => {
     editTime.value = ""
     editNote.value = ""
 }
+
 </script>
 
 <template>
@@ -116,8 +117,7 @@ const resetEditData = () => {
                                     </p>
                                     <!-- Edit -->
                                     <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;"
-                                        v-on:click="editMode" @click="$emit('toEditingMode', event)">Edit
-                                        Appointment</button>
+                                        v-on:click="editMode" @click="$emit('toEditingMode', event)">Edit Appointment</button>
                                     <div class="containerV2" v-if="edit === true">
                                         <div class="card" style="width: 38rem;">
                                             <div class="card-body">
@@ -131,20 +131,26 @@ const resetEditData = () => {
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                                    <Datepicker :minDate="new Date()" v-model="editTime" class="datepicker" style="margin-bottom: 10px;"/>
-                                                    <!-- <input type="datetime-local"
+                                                    <!-- <Datepicker 
+                                                        :minDate="new Date()" 
+                                                        v-model="editTime"
+                                                        class="datepicker" 
+                                                        style="margin-bottom: 10px;" 
+                                                    /> -->
+                                                    <input type="datetime-local"
                                                         :min="new Date().toISOString().split('T')[0] + `T00:00`"
                                                         id="meeting-time" name="meeting-time" class="date-form mx-auto"
-                                                        style="margin-bottom: 10px;" v-model="editTime"><br> -->
+                                                        style="margin-bottom: 10px;" v-model="editTime"><br>
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
-                                                    <textarea class="form-control style-form" rows="3" maxlength="500"
-                                                        v-model="editNote"></textarea>
+                                                    <textarea class="form-control style-form" rows="3" maxlength="500" v-model="editNote"></textarea>
                                                     <div style="margin-top: 30px;">
                                                         <button type="button" class="btn btn-success"
                                                             style="margin-right: 40px;"
+                                                            v-on:click="edited = true"
                                                             @click="$emit('edit', editEvent(event), resetEditData())"
-                                                            v-on:click="edited = true">Submit</button>
+                                                            
+                                                            >Submit</button>
                                                         <button type="button" class="btn btn-secondary"
                                                             v-on:click="edit = false"
                                                             @click="resetEditData()">Cancel</button>
@@ -191,7 +197,7 @@ const resetEditData = () => {
                 </div>
             </div>
             <div class="containerV2" v-if="edited === true">
-                <div class="card" v-if="edited === true">
+                <div class="card">
                     <div class="card-body" style="margin-top: 10px;">
                         <img
                             src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">

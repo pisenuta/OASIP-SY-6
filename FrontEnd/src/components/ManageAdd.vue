@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 defineEmits(['create'])
 defineProps({
@@ -23,7 +25,7 @@ defineProps({
     type: Boolean,
     default:false
   },
-  errorNameL:{
+  errorFuture:{
     type: Boolean,
     default:false
   },
@@ -67,8 +69,16 @@ const newEvent = ref({
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Date - Time :</label><br>
-                <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + `T00:00`" id="meeting-time" name="meeting-time" class="date-form" v-model="newEvent.eventStartTime" :class="{'border border-danger' : errorTime}">
+                <!-- <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + new Date().toISOString().slice(10,16)" id="meeting-time" name="meeting-time" class="date-form" v-model="newEvent.eventStartTime" :class="{'border border-danger' : errorTime || errorFuture}"> -->
+                <Datepicker 
+                    :minDate="new Date()" 
+                    v-model="newEvent.eventStartTime" 
+                    :class="{'border border-danger' : errorTime || errorFuture}"
+                    class="datepicker"
+                />
                 <div v-if="errorTime" class="error">Please choose start time.</div>
+                <div v-if="errorFuture && !errorTime" class="error">Can not choose past time.</div>
+                
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Durations (minutes) :</label><br>
@@ -109,6 +119,14 @@ h3 {
 
 .date-form{
     height: 38px; 
+    width: 50%; 
+    margin-top: 10px;
+    margin-left: 25%;
+    border-radius: 5px;
+    border-color: #ced4da;
+}
+
+.datepicker{
     width: 50%; 
     margin-top: 10px;
     margin-left: 25%;

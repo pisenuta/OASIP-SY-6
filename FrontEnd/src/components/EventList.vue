@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import moment from 'moment';
+import Datepicker from '@vuepic/vue-datepicker';
 defineEmits(['delete', 'edit', 'toEditingMode'])
 const props = defineProps({
     eventList: {
@@ -130,10 +131,11 @@ const resetEditData = () => {
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                                    <input type="datetime-local"
+                                                    <Datepicker :minDate="new Date()" v-model="editTime" class="datepicker" style="margin-bottom: 10px;"/>
+                                                    <!-- <input type="datetime-local"
                                                         :min="new Date().toISOString().split('T')[0] + `T00:00`"
                                                         id="meeting-time" name="meeting-time" class="date-form mx-auto"
-                                                        style="margin-bottom: 10px;" v-model="editTime"><br>
+                                                        style="margin-bottom: 10px;" v-model="editTime"><br> -->
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
                                                     <textarea class="form-control style-form" rows="3" maxlength="500"

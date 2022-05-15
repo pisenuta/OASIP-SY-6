@@ -1,11 +1,12 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
+import moment from 'moment';
 import ManageAdd from './ManageAdd.vue'
 
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
-    // const res = await fetch('http://10.4.56.123:8080/api/eventcategory')
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
+    const res = await fetch('http://10.4.56.123:8080/api/eventcategory')
     // const res = await fetch('http://localhost:8080/api/eventcategory')
     if (res.status === 200) {
         categories.value = await res.json()
@@ -18,8 +19,8 @@ onBeforeMount(async () => {
 const events = ref([])
 
 const getEvents = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events` ,{
-    // const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events` ,{
+    const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
     // const res = await fetch(`http://localhost:8080/api/events`, {
         method: "GET",
     });
@@ -35,6 +36,7 @@ const errorClinic = ref(false)
 const errorEmail = ref(false)
 const errorTime = ref(false)
 const mailVali = ref(true)
+const errorFuture = ref(false)
 
 const createEvent = async (event) => {
     if(event.bookingName == null || event.bookingName == ''){
@@ -60,6 +62,11 @@ const createEvent = async (event) => {
     } else {
         errorTime.value = false
     }
+    if(moment(event.eventStartTime).isAfter(moment(new Date()))){
+        errorFuture.value = false
+    } else {
+        errorFuture.value = true
+    }
     
     var emailValidate = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -69,13 +76,13 @@ const createEvent = async (event) => {
         mailVali.value = false
         console.log('not validate');
     }
-    if(errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false){
+    if(errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true){
         return
     }
  
-        // const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
+        const res = await fetch(`http://10.4.56.123:8080/api/events/`, {
         // const res = await fetch(`http://localhost:8080/api/events`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,14 +104,14 @@ const createEvent = async (event) => {
     } else {
         console.log('error, can not add');
     }
-    
        
 }
 const addAlert = ref(false)
 const added = () => {
     addAlert.value = false
 }
-
+console.log(new Date().toISOString().split('T')[0] + new Date().toISOString().slice(10,16));
+console.log(new Date().toISOString());
 </script>
  
 <template>
@@ -117,6 +124,7 @@ const added = () => {
         :errorEmail="errorEmail"
         :errorTime="errorTime"
         :mailVali="mailVali"
+        :errorFuture="errorFuture"
         @create="createEvent" 
         />
         <div class="container" v-if="addAlert === true">

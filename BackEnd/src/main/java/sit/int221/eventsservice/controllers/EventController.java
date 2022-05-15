@@ -46,7 +46,7 @@ public class EventController {
     }
 
     @PostMapping({""})
-    public Event create(@RequestBody SimpleEventDTO newEvent) {
+    public Event create(@RequestBody @Valid SimpleEventDTO newEvent) {
         return eventService.save(newEvent);
     }
 

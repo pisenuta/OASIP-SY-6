@@ -24,25 +24,17 @@
         console.log('deleted successfully')
       }
       else console.log('error, can not delete')
-
   }
 
   const editEvent = async (editEvent) => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${editEvent.id}`,{
     // const res = await fetch(`http://10.4.56.123:8080/api/events/${editEvent.id}`,{
+    // const res = await fetch(`http://localhost:8080/api/events/${editEvent.id}`,{
       method: 'PUT',
       headers:{
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        id: editEvent.id,
-            eventCategory: {
-                id: editEvent.eventCategory.id
-            },
-            bookingName: editEvent.bookingName,
-            bookingEmail: editEvent.bookingEmail,
-            eventDuration: editEvent.eventCategory.eventDuration,
-
           eventStartTime: editEvent.eventStartTime,
           eventNotes: editEvent.eventNotes
       })

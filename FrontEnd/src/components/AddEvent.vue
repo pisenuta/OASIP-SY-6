@@ -124,7 +124,7 @@ const added = () => {
         @create="createEvent" 
         />
         <div class="container" v-if="addAlert === true">
-            <div class="card" style="width: 23rem; height: 15rem;">
+            <div class="card" id="add" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">
                     <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                     <p class="card-text" style="margin-top: 10px;">Added Event Successfully</p>
@@ -154,7 +154,7 @@ const added = () => {
     background-repeat: repeat-x;
 }
 
-.card {
+#add {
     position: fixed;
     top: 50%;
     left: 50%;

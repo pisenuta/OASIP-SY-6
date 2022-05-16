@@ -41,16 +41,16 @@ public class EventService {
     }
 
 
-    public Event updateEvent(Integer Id, SimpleEventDTO updateEvent) {
-        Event event = repository.findById(Id).map(e->mapEvent(modelMapper.map(e, SimpleEventDTO.class),updateEvent)).orElseGet(()->{
-            updateEvent.setId(Id);
-            return modelMapper.map(updateEvent, Event.class);
-        });
-        return repository.saveAndFlush(event);
-    }
-
-    public Event mapEvent(SimpleEventDTO event1, SimpleEventDTO event2){
-        event1=event2;
-        return modelMapper.map(event1, Event.class);
-    }
+//    public Event updateEvent(Integer Id, SimpleEventDTO updateEvent) {
+//        Event event = repository.findById(Id).map(e->mapEvent(modelMapper.map(e, SimpleEventDTO.class),updateEvent)).orElseGet(()->{
+//            updateEvent.setId(Id);
+//            return modelMapper.map(updateEvent, Event.class);
+//        });
+//        return repository.saveAndFlush(event);
+//    }
+//
+//    public Event mapEvent(SimpleEventDTO event1, SimpleEventDTO event2){
+//        event1=event2;
+//        return modelMapper.map(event1, Event.class);
+//    }
 }

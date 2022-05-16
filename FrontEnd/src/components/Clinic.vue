@@ -2,8 +2,8 @@
 import { ref, onBeforeMount } from 'vue'
 const categories = ref([])
 const getEventCategory = async () => {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
-    const res = await fetch(`http://10.4.56.123:8080/api/eventcategory`)
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
+    // const res = await fetch(`http://10.4.56.123:8080/api/eventcategory`)
     if (res.status === 200) {
         categories.value = await res.json()
     }
@@ -21,7 +21,7 @@ onBeforeMount(async () => {
         <div class="containerClinic mt-5">
             <div class="row">
                 <div class="col-4" v-for="(category, index) in categories" :key="index" :value="category">
-                    <div class="card-body">
+                    <div class="card-body-clinic">
                         <h5 class="card-title">{{category.eventCategoryName}}</h5>
                         <div v-if="category.eventCategoryDescription === null || category.eventCategoryDescription === ''">
                             <p>No Description.</p>
@@ -40,18 +40,26 @@ onBeforeMount(async () => {
 .body{
     font-family: 'Inter','Noto Sans Thai';
 }
-.card-body{
+.card-body-clinic{
     background-color: #212529;
     border-radius: 10px;
     height: 10rem;
     margin-bottom: 20px;
     width: 35rem;
 }
-.card-body h5{
+.card-body-clinic h5{
     color:#e74694;
     font-weight: bold;
 }
-.card-body p{
+.card-body-clinic p{
     color:white;
+}
+
+.col-4 {
+    transition: all .2s ease-in-out;
+}
+
+.col-4:hover {
+    transform: scale(1.04);
 }
 </style>

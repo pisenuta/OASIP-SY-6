@@ -66,7 +66,7 @@ const newEvent = ref({
                 <label for="email" class="form-label">Email :</label>
                 <input class="form-control style-form" id="email" maxlength="45" v-model="newEvent.bookingEmail" :class="{'border border-danger' : errorEmail || !mailVali}">
                 <div v-if="errorEmail" class="error">Please enter Email.</div>
-                <div v-if="!mailVali && !errorEmail" class="error">Validate your mail.</div>
+                <div v-if="!mailVali && !errorEmail" class="error">Invalid Email.</div>
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Date - Time :</label><br>

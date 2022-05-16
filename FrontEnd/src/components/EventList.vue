@@ -103,7 +103,7 @@ const resetEditData = () => {
                                     {{ event.bookingEmail }}<br /><br />
                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                    {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }} at
+                                    {{ formateDateTime(event.eventStartTime)}} at
                                     {{ event.eventStartTime.slice(11, 16) }}<br />
                                     {{ event.eventDuration }} minutes<br /><br />
 

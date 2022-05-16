@@ -12,3 +12,9 @@ const app = createApp(App)
 app.use(router)
 app.component('Datepicker', Datepicker);
 app.mount('#app')
+
+export function formateDateTime(date) {
+    const options = {year: "numeric", mouth: "long", day: "numeric",hour: "numeric", minute: "numeric"};
+    return new Date(date).toLocaleString("th-TH", options);
+}
+

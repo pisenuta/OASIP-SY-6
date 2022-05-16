@@ -49,6 +49,12 @@ const resetEditData = () => {
     editNote.value = ""
 }
 
+function formateTime(date) {
+    const options = {hour: "numeric", minute: "numeric"};
+    return new Date(date).toLocaleString("th-TH", options);
+}
+
+
 </script>
 
 <template>
@@ -72,7 +78,7 @@ const resetEditData = () => {
                 <tr v-for="(event, index) in eventList" :key="index">
                     <td scope="row" style="padding-left: 25px;"><b>{{ index + 1 }}</b></td>
                     <td>{{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }} </td>
-                    <td>{{ event.eventStartTime.slice(11, 16) }}</td>
+                    <td>{{ formateTime(event.eventStartTime) }}</td>
                     <td>{{ event.eventCategory.eventCategoryName }}</td>
                     <td>{{ event.eventDuration }}</td>
                     <td style="width: 40%;">{{ event.bookingName }}</td>
@@ -103,8 +109,8 @@ const resetEditData = () => {
                                     {{ event.bookingEmail }}<br /><br />
                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                    {{ formateDateTime(event.eventStartTime)}} at
-                                    {{ event.eventStartTime.slice(11, 16) }}<br />
+                                    {{ moment(event.eventStartTime).format('ddd, D MMM YYYY')}} at
+                                    {{ formateTime(event.eventStartTime) }}<br />
                                     {{ event.eventDuration }} minutes<br /><br />
 
                                     <p v-if="event.eventNotes == null || event.eventNotes == []" style="color: #a2a5aa">
@@ -131,16 +137,16 @@ const resetEditData = () => {
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                                     {{ event.eventCategory.eventCategoryName }}<br />
-                                                    <!-- <Datepicker 
+                                                    <Datepicker 
                                                         :minDate="new Date()" 
                                                         v-model="editTime"
                                                         class="datepicker" 
                                                         style="margin-bottom: 10px;" 
-                                                    /> -->
-                                                    <input type="datetime-local"
+                                                    />
+                                                    <!-- <input type="datetime-local"
                                                         :min="new Date().toISOString().split('T')[0] + `T00:00`"
                                                         id="meeting-time" name="meeting-time" class="date-form mx-auto"
-                                                        style="margin-bottom: 10px;" v-model="editTime"><br>
+                                                        style="margin-bottom: 10px;" v-model="editTime"><br> -->
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
                                                     <textarea class="form-control style-form" rows="3" maxlength="500" v-model="editNote"></textarea>

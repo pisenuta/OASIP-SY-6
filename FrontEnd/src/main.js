@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 // createApp(App).mount('#app')
@@ -13,8 +12,4 @@ app.use(router)
 app.component('Datepicker', Datepicker);
 app.mount('#app')
 
-export function formateDateTime(date) {
-    const options = {year: "numeric", mouth: "long", day: "numeric",hour: "numeric", minute: "numeric"};
-    return new Date(date).toLocaleString("th-TH", options);
-}
 

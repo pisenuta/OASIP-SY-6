@@ -7,6 +7,10 @@ const props = defineProps({
     eventList: {
         type: Array,
         require: true,
+    },
+    errorEditTime: {
+        type: Boolean,
+        default: false
     }
 });
 const DetailBtn = ref(false);
@@ -38,10 +42,13 @@ const editTime = ref("")
 const editNote = ref("")
 
 const editEvent = (event) => {
-    console.log(event);
-    event.eventStartTime = editTime.value
-    event.eventNotes = editNote.value
-    return event
+    if(editTime.value === null || editTime.value === ''){
+        event.eventNotes = editNote.value
+    } else {
+        event.eventStartTime = editTime.value
+        event.eventNotes = editNote.value
+        return event
+    } 
 }
 
 const resetEditData = () => {
@@ -155,7 +162,6 @@ function formateTime(date) {
                                                             style="margin-right: 40px;"
                                                             v-on:click="edited = true"
                                                             @click="$emit('edit', editEvent(event), resetEditData())"
-                                                            
                                                             >Submit</button>
                                                         <button type="button" class="btn btn-secondary"
                                                             v-on:click="edit = false"

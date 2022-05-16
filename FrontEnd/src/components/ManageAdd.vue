@@ -55,6 +55,7 @@ const newEvent = ref({
                     <option v-for="(category, index) in categoryList" :key="index" :value="category">{{ category.eventCategoryName }}</option>
                 </select>
                 <div v-if="errorClinic" class="error">Please select a clinic.</div>
+                
             </div>
             <div class="mb-3">
                 <label for="name" class="form-label">Name :</label>

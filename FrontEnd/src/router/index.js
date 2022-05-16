@@ -3,12 +3,14 @@ import ShowAllEvent from '../components/ShowAllEvent.vue'
 import HomePage from '../components/Home.vue'
 import AddEvent from '../components/AddEvent.vue'
 import AboutUs from '../components/AboutUs.vue'
+import Clinic from '../components/Clinic.vue'
 
 const routes = [
     { path: '/', component: HomePage },
     { path: '/show-all-events', component: ShowAllEvent },
     { path: '/add-event', component: AddEvent },
-    { path: '/about-us', component: AboutUs }
+    { path: '/about-us', component: AboutUs },
+    { path: '/clinic', component: Clinic }
 ]
 
 const history = createWebHashHistory('/sy6/');

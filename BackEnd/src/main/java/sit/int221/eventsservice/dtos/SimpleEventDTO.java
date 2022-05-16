@@ -24,7 +24,8 @@ public class SimpleEventDTO {
     @Size(max = 100 , message = "Name must less or equal then 100.")
     private String bookingName;
     @Email(message = "Invalid email address.")
-    @Size(min = 1, max = 45)
+    @NotBlank(message = "Email shouldn't be null or empty.")
+    @Size(max = 45, message = "Email must less or equal then 45.")
     private String bookingEmail;
     @NotNull(message = "EventStartTime shouldn't be null.")
     @FutureOrPresent(message = "StartTime mustn't be past.")

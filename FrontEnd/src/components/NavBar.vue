@@ -12,6 +12,7 @@
             <div class="d-flex">
                 <router-link to="/add-event" class="nav-link" style="margin-right: 7px;"><span class="hover-underline-animation">Add Event</span></router-link>
                 <router-link to="/show-all-events" class="nav-link"><span class="hover-underline-animation">Show All Event</span></router-link>
+                <router-link to="/about-us" class="nav-link"><span class="hover-underline-animation">About Us</span></router-link>
             </div>
         </div>
     </nav>

@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.7'
 services:
   db: 
     container_name: dbevents
@@ -12,6 +12,8 @@ services:
       - TZ=Asia/Bangkok
       - MYSQL_ROOT_PASSWORD=1414
     restart: unless-stopped
+    networks: 
+      - oasip-network
   
   backend:
     build: ./BackEnd
@@ -19,11 +21,11 @@ services:
     container_name: backend
     expose:
       - "8080"
-    links:
-      - db
     environment:
       - host_db=db
     restart: on-failure
+    networks: 
+      - oasip-network
      
   frontend:
     build: ./FrontEnd
@@ -31,11 +33,11 @@ services:
     container_name: frontend
     ports:
       - 3000:80
-    links: 
-      - backend
     restart: always
     volumes:
       - ./FrontEnd/conf.d/conf.conf:/etc/nginx/conf.conf
+    networks: 
+      - oasip-network
 
   revers_proxy:
     container_name: revers_proxy
@@ -43,11 +45,17 @@ services:
     restart: unless-stopped
     volumes:
       - ./FrontEnd/proxyconf.d/revers_proxy.conf:/etc/nginx/revers_proxy.conf
-    links: 
-      - frontend
-      - backend
     depends_on:
       - frontend
     ports:
       - "80:80"
+    networks: 
+      - oasip-network
+
+networks:
+  oasip-network:
+    external:
+     name: oasip-network
+
+
 

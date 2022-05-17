@@ -40,7 +40,7 @@ public class EventService {
         return repository.saveAndFlush(e);
     }
 
-    
+
 //    public Event updateEvent(Integer Id, SimpleEventDTO updateEvent) {
 //        Event event = repository.findById(Id).map(e->mapEvent(modelMapper.map(e, SimpleEventDTO.class),updateEvent)).orElseGet(()->{
 //            updateEvent.setId(Id);

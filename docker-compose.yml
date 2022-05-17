@@ -22,6 +22,7 @@ services:
     expose:
       - "8080"
     environment:
+      - TZ=Asia/Bangkok
       - host_db=db
     restart: on-failure
     networks: 
@@ -34,17 +35,19 @@ services:
     ports:
       - 3000:80
     restart: always
+    environment:
+      - TZ=Asia/Bangkok
     volumes:
-      - ./FrontEnd/conf.d/conf.conf:/etc/nginx/conf.conf
+      - ./FrontEnd/conf.d/nginx.conf:/etc/nginx/nginx.conf
     networks: 
       - oasip-network
-
+      
   revers_proxy:
     container_name: revers_proxy
     image: nginx:stable-alpine
     restart: unless-stopped
     volumes:
-      - ./FrontEnd/proxyconf.d/revers_proxy.conf:/etc/nginx/revers_proxy.conf
+      - ./FrontEnd/proxyconf.d/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
       - frontend
     ports:

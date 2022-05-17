@@ -1,33 +1,53 @@
 version: '3.3'
 services:
-  dbevents: 
+  db: 
     container_name: dbevents
-    image: mysql
-    ports:
-      - 3306:3306
+    image: mysql:latest
+    expose:
+      - "3306"
     volumes:
       - ./Database/events.sql:/docker-entrypoint-initdb.d/events.sql
       - ./Database/mysql-data:/var/lib/mysql
     environment:
+      - TZ=Asia/Bangkok
       - MYSQL_ROOT_PASSWORD=1414
-    restart: always
+    restart: unless-stopped
   
   backend:
     build: ./BackEnd
     image: backendimg
     container_name: backend
-    ports:
-      - 8080:8080
-    links: 
-      - dbevents
-    restart: always
+    expose:
+      - "8080"
+    links:
+      - db
+    environment:
+      - host_db = db
+    restart: on-failure
      
-  oasip:
+  frontend:
     build: ./FrontEnd
-    image: oasip
-    container_name: oasip
+    image: frontendimg
+    container_name: frontend
     ports:
       - 80:80
     links: 
       - backend
     restart: always
+    volumes:
+      - ./FrontEnd/conf.d:/etc/nginx/conf.d
+
+  revers_proxy:
+    container_name: revers_proxy
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    volumes:
+      - ./FrontEnd/proxyconf.d:/etc/nginx/conf.d
+    links: 
+      - frontend
+      - backend
+    depends_on:
+      - frontend
+    ports:
+      - "80:80"
+

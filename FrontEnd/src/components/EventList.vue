@@ -40,7 +40,6 @@ const closeDeleted = () => {
 const edited = ref(false)
 const editTime = ref("")
 const editNote = ref("")
-
 const editEvent = (event) => {
     if(editTime.value === null || editTime.value === ''){
         event.eventNotes = editNote.value
@@ -50,18 +49,14 @@ const editEvent = (event) => {
         return event
     } 
 }
-
 const resetEditData = () => {
     editTime.value = ""
     editNote.value = ""
 }
-
 function formateTime(date) {
     const options = {hour: "numeric", minute: "numeric"};
     return new Date(date).toLocaleString("th-TH", options);
 }
-
-
 </script>
 
 <template>
@@ -100,8 +95,8 @@ function formateTime(date) {
             <div class="container" v-if="DetailBtn == true">
                 <ul>
                     <li v-for="(event, index) in eventList" :key="index">
-                        <div class="card-body-main" v-if="DetailBtn == true">
-                            <div class="card" style="width: 38rem;" v-if="showIndex === index">
+                        <div class="card-body " v-if="DetailBtn == true">
+                            <div class="card popDetail" style="width: 38rem;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header"
                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index
@@ -111,7 +106,7 @@ function formateTime(date) {
                                         &times;
                                     </button>
                                 </div>
-                                <div class="card-body" v-if="showIndex === index">
+                                <div class="card-body" v-if="showIndex === index" style="text-align: center;">
                                     {{ event.bookingName }}<br />
                                     {{ event.bookingEmail }}<br /><br />
                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
@@ -132,14 +127,14 @@ function formateTime(date) {
                                     <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;"
                                         v-on:click="editMode" @click="$emit('toEditingMode', event)">Edit Appointment</button>
                                     <div class="containerV2" v-if="edit === true">
-                                        <div class="card" style="width: 38rem;">
+                                        <div class="card popEdit" style="width: 38rem;" >
                                             <div class="card-body">
                                                 <div class="card-title">
                                                     <div class="card-header"
                                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px;">
                                                         Event #{{ index + 1 }}</div>
                                                 </div>
-                                                <div class="card-body" v-if="showIndex === index">
+                                                <div v-if="showIndex === index">
                                                     {{ event.bookingName }}<br />
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
@@ -209,7 +204,7 @@ function formateTime(date) {
                 </div>
             </div>
             <div class="containerV2" v-if="edited === true">
-                <div class="card">
+                <div class="card alertEdit">
                     <div class="card-body" style="margin-top: 10px;">
                         <img
                             src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
@@ -225,24 +220,49 @@ function formateTime(date) {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans+Thai&display=swap');
-
 .body {
     font-family: 'Inter', 'Noto Sans Thai';
 }
-
-.card .alert {
+.popEdit{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.alert {
     background-color: #bb2d3b;
     width: 28rem;
     color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
-
+.alertEdit{
+    width: 28rem;
+    color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    color: black;
+}
 .deleted {
     width: 28rem;
     height: 15.5rem;
     background-color: #198754;
     color: white;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
-
 .containerV2 {
     position: fixed;
     min-width: 100%;
@@ -257,7 +277,6 @@ function formateTime(date) {
     background-color: rgba(0, 0, 0, 0);
     background-repeat: repeat-x;
 }
-
 .container {
     position: fixed;
     min-width: 100%;
@@ -272,8 +291,7 @@ function formateTime(date) {
     background-color: rgba(0, 0, 0, 0.5);
     background-repeat: repeat-x;
 }
-
-.card-body-main {
+.popDetail {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -283,7 +301,6 @@ function formateTime(date) {
     font-size: 18px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
-
 .card-title {
     padding: 10px 15px;
     display: flex;
@@ -291,7 +308,6 @@ function formateTime(date) {
     align-items: center;
     margin-bottom: -30px;
 }
-
 .card-title .close-detail {
     cursor: pointer;
     border: none;
@@ -301,38 +317,30 @@ function formateTime(date) {
     font-weight: bold;
     margin-top: -2%;
 }
-
 .close-detail:hover {
     color: #e74694;
 }
-
 .detail-btn-each {
     margin-top: 17px;
     margin-bottom: 10px;
 }
-
 .detail-Btn {
     color: #e74694;
     cursor: pointer;
 }
-
 .detail-Btn:hover {
     text-decoration: underline;
 }
-
 ul {
     list-style-type: none;
 }
-
 td {
     height: 80px;
 }
-
 thead {
     height: 82px;
     color: white;
 }
-
 #list-table {
     width: 70%;
     border-radius: 15px 15px 15px 15px;

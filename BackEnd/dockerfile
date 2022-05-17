@@ -13,10 +13,10 @@
 
 FROM openjdk:17 as build
 WORKDIR /workspace/app
-COPY ./OASIP-SY-6/BackEnd/mvnw .
-COPY ./OASIP-SY-6/BackEnd/.mvn .mvn
-COPY ./OASIP-SY-6/BackEnd/pom.xml .
-COPY ./OASIP-SY-6/BackEnd/src src
+COPY ./mvnw .
+COPY ./.mvn .mvn
+COPY ./pom.xml .
+COPY ./src src
 RUN ./mvnw install -DskipTests
 
 FROM openjdk:17

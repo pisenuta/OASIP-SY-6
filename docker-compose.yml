@@ -30,7 +30,7 @@ services:
     image: frontendimg
     container_name: frontend
     ports:
-      - 80:80
+      - 3000:80
     links: 
       - backend
     restart: always

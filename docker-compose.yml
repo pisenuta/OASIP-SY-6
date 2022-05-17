@@ -35,14 +35,14 @@ services:
       - backend
     restart: always
     volumes:
-      - ./FrontEnd/conf.d/conf.conf:/etc/nginx/conf.d
+      - ./FrontEnd/conf.d/conf.conf:/etc/nginx/conf.d/conf.conf
 
   revers_proxy:
     container_name: revers_proxy
     image: nginx:stable-alpine
     restart: unless-stopped
     volumes:
-      - ./FrontEnd/proxyconf.d/revers_proxy.conf:/etc/nginx/conf.d
+      - ./FrontEnd/proxyconf.d/revers_proxy.conf:/etc/nginx/conf.d/revers_proxy.conf
     links: 
       - frontend
       - backend

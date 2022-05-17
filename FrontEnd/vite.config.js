@@ -14,8 +14,7 @@ export default defineConfig({
         secure: false,
       }
     }
-  },
-  base: "/sy6/",
+  }
 })
 
 

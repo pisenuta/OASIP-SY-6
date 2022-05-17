@@ -22,7 +22,7 @@ services:
     links:
       - db
     environment:
-      - host_db = db
+      - host_db=db
     restart: on-failure
      
   frontend:

@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+import javax.validation.constraints.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,5 +17,4 @@ public class SimpleEventCategoryDTO {
     private String eventCategoryName;
     private String eventCategoryDescription;
     private Integer eventDuration;
-
 }

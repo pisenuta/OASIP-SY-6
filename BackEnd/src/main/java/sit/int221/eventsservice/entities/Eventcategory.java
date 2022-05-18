@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.validation.constraints.*;
+
 @Getter
 @Setter
 @ToString
@@ -27,16 +29,22 @@ public class Eventcategory {
             nullable = false,
             length = 100
     )
+    @NotBlank(message = "Clinic name shouldn't be null or empty.")
+    @Size(max = 100 , message = "Name must less or equal then 100.")
     private String eventCategoryName;
     @Lob
     @Column(
             name = "eventCategoryDescription"
     )
+    @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventCategoryDescription;
     @Column(
             name = "eventDuration",
             nullable = false
     )
+    @NotNull(message = "Duration shouldn't be null")
+    @Max(value = 480, message = "Duration must less or equal then 480.")
+    @Min(value = 10 , message = "Duration must more then 10.")
     private Integer eventDuration;
     @JsonIgnore
     @OneToMany(

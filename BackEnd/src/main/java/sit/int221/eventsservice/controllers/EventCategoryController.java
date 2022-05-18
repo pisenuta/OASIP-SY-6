@@ -46,7 +46,7 @@ public class EventCategoryController {
     }
 
     @PutMapping({"/{Id}"})
-    public Eventcategory updateCategory(@RequestBody Eventcategory updateEventcategory, @PathVariable Integer Id) {
+    public Eventcategory updateCategory(@Valid @RequestBody Eventcategory updateEventcategory, @PathVariable Integer Id) {
         Eventcategory eventcategory = eventcategoryRepository.findById(Id).map(c->mapEventcategory(c, updateEventcategory))
                 .orElseGet(()->
                 {

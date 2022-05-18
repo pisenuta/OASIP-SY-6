@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  reverse_proxy:
+    build: ./
+    image: reverse_proxyimg
+    container_name: reverse_proxy
+    ports:
+      - "80:80"
+    networks: 
+      - oasip-network
+    restart: on-failure
+
+networks:
+  oasip-network:
+    external:
+     name: oasip-network
+    
+

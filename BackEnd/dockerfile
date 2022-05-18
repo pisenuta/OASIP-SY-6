@@ -1,3 +1,4 @@
+#style 1
 # FROM maven AS build
 # RUN mkdir -p /backend
 # WORKDIR /backend
@@ -11,22 +12,27 @@
 # EXPOSE 8080
 # ENTRYPOINT ["java","-jar","app.jar"]
 
-FROM openjdk:17 as build
-WORKDIR /workspace/app
-COPY ./mvnw .
-COPY ./.mvn .mvn
-COPY ./pom.xml .
-COPY ./src src
-RUN ./mvnw install -DskipTests
 
-FROM openjdk:17
-VOLUME /tmp
-ARG APP=/workspace/app/target
-COPY --from=build ${APP}/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
+# style 2
+# FROM openjdk:17 as build
+# WORKDIR /workspace/app
+# COPY ./mvnw .
+# COPY ./.mvn .mvn
+# COPY ./pom.xml .
+# COPY ./src src
+# RUN ./mvnw install -DskipTests
+
+# FROM openjdk:17
+# VOLUME /tmp
+# ARG APP=/workspace/app/target
+# COPY --from=build ${APP}/*.jar app.jar
+# ENTRYPOINT ["java","-jar","/app.jar"]
 
 
-# FROM openjdk:17-jdk-slim
-# ARG JAR_FILE=./target/*.jar
-# COPY ${JAR_FILE} app.jar
-# ENTRYPOINT ["java", "-jar", "/app.jar"]
+# style 3
+FROM openjdk:17-jdk-slim
+RUN ./mvnw clean
+RUN ./mvnw package
+ARG JAR_FILE=./target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java", "-jar", "/app.jar"]

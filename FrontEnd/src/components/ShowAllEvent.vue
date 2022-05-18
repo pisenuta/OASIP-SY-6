@@ -68,7 +68,7 @@
         <div v-if="events.length>8" class="scroll-down"></div>
         <h5 class="mt-5">{{schedule()}}</h5>
         <div v-if="events.length !== 0">
-          <EventList :eventList="events" @delete="removeEvent" @edit="editEvent" @toEditingMode="ToEditingMode"/>
+          <EventList :eventList="events" @delete="removeEvent" @edit="editEvent"/>
         </div>
         
     </div>

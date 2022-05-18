@@ -7,10 +7,6 @@ const props = defineProps({
     eventList: {
         type: Array,
         require: true,
-    },
-    errorEditTime: {
-        type: Boolean,
-        default: false
     }
 });
 const DetailBtn = ref(false);
@@ -125,7 +121,7 @@ function formateTime(date) {
                                     </p>
                                     <!-- Edit -->
                                     <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;"
-                                        v-on:click="editMode" @click="$emit('toEditingMode', event)">Edit Appointment</button>
+                                        v-on:click="editMode">Edit Appointment</button>
                                     <div class="containerV2" v-if="edit === true">
                                         <div class="card popEdit" style="width: 38rem;" >
                                             <div class="card-body">

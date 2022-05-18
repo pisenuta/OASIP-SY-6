@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.dtos.SimpleEventCategoryDTO;
 import sit.int221.eventsservice.dtos.SimpleEventDTO;
+import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Eventcategory;
 import sit.int221.eventsservice.repositories.EventcategoryRepository;
 
@@ -33,17 +34,13 @@ public class EventCategoryService {
         return (SimpleEventCategoryDTO) this.modelMapper.map(eventcategory, SimpleEventCategoryDTO.class);
     }
 
-//    private SimpleEventCategoryDTO convertEntityToDto(Eventcategory eventcategory){
-//        SimpleEventCategoryDTO SimpleEventCategoryDTO = new SimpleEventCategoryDTO();
-//        SimpleEventDTO.setId(eventcategory.getId());
-//        SimpleEventCategoryDTO.setEventCategoryName(eventcategory.getEventCategoryName());
-//        SimpleEventCategoryDTO.setEventCategoryDescription(eventcategory.getEventCategoryDescription());
-//        SimpleEventCategoryDTO.setEventDuration(eventcategory.getEventDuration());
-//        return SimpleEventCategoryDTO;
-//    }
-
     public List<SimpleEventCategoryDTO> getAllSimpleEventCategory() {
         List<Eventcategory> eventcategories = repository.findAll();
         return listMapper.mapList(eventcategories, SimpleEventCategoryDTO.class, modelMapper);
     }
+
+//    public Eventcategory save(SimpleEventDTO newEvent) {
+//        Event e = modelMapper.map(newEvent, Event.class);
+//        return repository.saveAndFlush(e);
+//    }
 }

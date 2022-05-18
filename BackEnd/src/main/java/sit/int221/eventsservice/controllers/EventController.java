@@ -46,12 +46,12 @@ public class EventController {
     }
 
     @PostMapping({""})
-    public Event create(@RequestBody @Valid SimpleEventDTO newEvent) {
+    public Event create(@Valid @RequestBody SimpleEventDTO newEvent) {
         return eventService.save(newEvent);
     }
 
     @PutMapping({"/{Id}"})
-    public Event update(@RequestBody @Valid Event updateEvent, @PathVariable Integer Id) {
+    public Event update(@Valid @RequestBody Event updateEvent, @PathVariable Integer Id) {
         Event event = repository.findById(Id).map(e->mapEvent(e, updateEvent))
                 .orElseGet(()->
                 {

@@ -12,6 +12,7 @@ import sit.int221.eventsservice.repositories.EventcategoryRepository;
 import sit.int221.eventsservice.services.EventCategoryService;
 import sit.int221.eventsservice.services.EventService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -28,6 +29,9 @@ public class EventCategoryController {
     @Autowired
     private EventService eventService;
 
+    @Autowired
+    private EventcategoryRepository eventcategoryRepository;
+
     public EventCategoryController() {
     }
 
@@ -41,9 +45,21 @@ public class EventCategoryController {
         return this.eventCategoryService.getAllSimpleEventCategory();
     }
 
-    @PostMapping({""})
-    public Event create(@RequestBody SimpleEventDTO newEvent) {
-        return eventService.save(newEvent);
+    @PutMapping({"/{Id}"})
+    public Eventcategory updateCategory(@RequestBody Eventcategory updateEventcategory, @PathVariable Integer Id) {
+        Eventcategory eventcategory = eventcategoryRepository.findById(Id).map(c->mapEventcategory(c, updateEventcategory))
+                .orElseGet(()->
+                {
+                    updateEventcategory.setId(Id);
+                    return updateEventcategory;
+                });
+        return eventcategoryRepository.saveAndFlush(eventcategory);
     }
 
+    private Eventcategory mapEventcategory(Eventcategory existingEventcat, Eventcategory updateEventcategory) {
+        existingEventcat.setEventCategoryName(updateEventcategory.getEventCategoryName());
+        existingEventcat.setEventCategoryDescription(updateEventcategory.getEventCategoryDescription());
+        existingEventcat.setEventDuration(updateEventcategory.getEventDuration());
+        return existingEventcat;
+    }
 }

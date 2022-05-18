@@ -28,7 +28,7 @@ ENTRYPOINT ["java","-jar","app.jar"]
 # ENTRYPOINT ["java","-jar","/app.jar"]
 
 
-# # style 3
+# # style 3 (error)
 # FROM openjdk:17-jdk-slim
 # RUN ./mvnw clean
 # RUN ./mvnw package

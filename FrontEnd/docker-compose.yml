@@ -2,7 +2,7 @@ version: '3.7'
 services:
   oasip:
     build: ./
-    image: oasip
+    image: frontendimg
     container_name: frontend
     ports:
       - 3000:3000

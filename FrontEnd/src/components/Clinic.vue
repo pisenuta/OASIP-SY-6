@@ -20,23 +20,36 @@ const showIndex = ref(null);
 const editClinicPop = ref(false)
 const errorClinicName = ref(false)
 const errorDuration = ref(false)
+const notUnique = ref(false)
+const wrongDuration = ref(false)
+const editedPop = ref(false)
 const modifyClinic = async (clinic) => {
     if(clinic.eventCategoryName == null || clinic.eventCategoryName == ''){
         errorClinicName.value = true
     } else {
         errorClinicName.value = false
     }
-
+    if(categories.value.find((c) => clinic.eventCategoryName === c.eventCategoryName)){
+        notUnique.value = true
+    } else {
+        notUnique.value = false
+    }
     if(clinic.eventDuration == null || clinic.eventDuration == '' || clinic.eventDuration == 0){
         errorDuration.value = true
     } else {
         errorDuration.value = false
     }
 
-    if(errorClinicName.value == true || errorDuration.value == true){
-        return
+    if(clinic.eventDuration < 0 || clinic.eventDuration > 480){
+        wrongDuration.value = true
+    } else {
+        wrongDuration.value = false
     }
-    const res = await fetch(`http://localhost:8080/api/eventcategory/${clinic.id}`,{
+
+    if(errorClinicName.value == true || errorDuration.value == true || wrongDuration.value == true){
+        return false
+    } else {
+        const res = await fetch(`http://localhost:8080/api/eventcategory/${clinic.id}`,{
       method: 'PUT',
       headers:{
         'content-type': 'application/json'
@@ -46,16 +59,20 @@ const modifyClinic = async (clinic) => {
     if(res.status === 200){
         const modifyClinic = await res.json()
         categories.value = categories.value.map((clinic) => 
-        clinic.id === modifyNote.id ? {
+        clinic.id === modifyClinic.id ? {
             ...clinic,
             eventCategoryName: modifyClinic.eventCategoryName,
             eventCategoryDescription:modifyClinic.eventCategoryDescription,
             eventDuration:modifyClinic.eventDuration
             }: clinic)
+        editedPop.value = true
+        editingClinic.value = {}
         console.log('edited successfully');
     } else {
         console.log('can not edit');
     }
+    }
+    
   }
 
 const editingClinic = ref({})
@@ -63,6 +80,11 @@ const toEditingMode = (editClinic) =>{
     editingClinic.value = editClinic
     console.log(editingClinic.value)
 }
+
+const cancel = () => {
+    location.reload();
+}
+
 </script>
  
 <template>
@@ -93,23 +115,25 @@ const toEditingMode = (editClinic) =>{
                         <div class="card" style="width: 38rem;" v-if="showIndex === index">
                             <div class="card-title">
                                 <div class="card-header header"
-                                    style="color: #e74694; font-weight: bold; letter-spacing: 1px;">
+                                    style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 20px;">
                                     Edit Clinic
                                 </div>
                             </div>
                             <div class="card-body edit-clinic">
                                 <p class="label-clinic">Clinic :</p>
-                                <input class="form-control clinic-form mb-3" maxlength="100" v-model="editingClinic.eventCategoryName">
-                                <p class="error" v-if="errorClinicName === true">ใส่ชื่อ</p>
+                                <input class="form-control clinic-form mb-3" maxlength="100" v-model="editingClinic.eventCategoryName" :class="{'border border-danger' : errorClinicName || notUnique}">
+                                <p class="error-clinic" v-if="errorClinicName === true">Enter Clinic name.</p>
+                                <p class="error-clinic" v-if="notUnique === true">Category Name is not unique.</p>
                                 <p class="label-clinic">Duration (minutes) :</p>
-                                <input type="number" min="1" max="480" class="form-control clinic-form mb-3" v-model="editingClinic.eventDuration">
+                                <input type="number" min="1" max="480" class="form-control clinic-form mb-3" v-model="editingClinic.eventDuration" :class="{'border border-danger' : errorDuration || wrongDuration}">
+                                <p class="error-clinic" v-if="errorDuration === true">Enter Duration.</p>
+                                <p class="error-clinic" v-if="wrongDuration === true">Duration must between 1 and 480.</p>
                                 <p class="label-clinic">Description :</p>
                                 <textarea class="form-control clinic-form mb-4" rows="3" maxlength="500" v-model="editingClinic.eventCategoryDescription"></textarea>
                                 <div style="text-align: center;">
-                                    <button type="button" class="btn btn-success" style="margin-right: 40px;"
-                                    v-on:click="edited = true" @click="modifyClinic(editingClinic)">Save</button>
+                                    <button type="button" class="btn btn-success" style="margin-right: 40px;" @click="modifyClinic(editingClinic)">Save</button>
                                 <button type="button" class="btn btn-secondary" v-on:click="editClinicPop = false"
-                                    @click="resetEditData()">Cancel</button>
+                                    @click="cancel()">Cancel</button>
                                 </div>
                                 
                             </div>
@@ -117,6 +141,15 @@ const toEditingMode = (editClinic) =>{
                     </div>
                 </li>
             </ul>
+            </div>
+        </div>
+        <div class="container" v-if="editedPop === true">
+            <div class="card" id="add" style="width: 23rem; height: 15rem;">
+                <div class="card-body" style="margin-top: 10px;">
+                    <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+                    <p class="card-text" style="margin-top: 10px;">Edit Clinic Successfully</p>
+                    <router-link to="/clinic"><button type="button" class="btn btn-success" v-on:click="editClinicPop = false , editedPop = false" style="width: 100px; margin-top: 5px;">OK</button></router-link>
+                </div>
             </div>
         </div>
     </div>
@@ -127,6 +160,12 @@ const toEditingMode = (editClinic) =>{
 
 ul {
     list-style-type: none;
+}
+.error-clinic{
+    color: red;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-left: 15.5%;
 }
 .label-clinic{
     margin-left: 12%;
@@ -188,10 +227,11 @@ ul {
     background-color: #212529;
     border-radius: 10px;
     height: 12rem;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     width: 35rem;
     margin-left: auto;
     margin-right: auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .clinic-body h5 {

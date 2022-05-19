@@ -15,9 +15,10 @@ import java.util.Map;
 
 public class HandleError {
     private Date timestamp = new Date();
-    private Integer status = 400;
-    private String message = "Bad Request";
-    private String error = "Validation failed";
+    private Integer status;
+    private String path;
+    private String message;
+    private String error;
     private Map<String,String> filedErrors;
 }
 

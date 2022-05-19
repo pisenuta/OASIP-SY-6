@@ -1,5 +1,8 @@
 package sit.int221.eventsservice.services;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import sit.int221.eventsservice.advice.ApplicationExceptionHandler;
 import sit.int221.eventsservice.dtos.SimpleEventDTO;
 import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.repositories.EventRepository;
@@ -36,8 +40,28 @@ public class EventService {
     }
 
     public Event save(SimpleEventDTO newEvent) {
+        Date newEventStartTime = Date.from(newEvent.getEventStartTime());
+        Date newEventEndTime = findEndDate(Date.from(newEvent.getEventStartTime()), newEvent.getEventDuration());
+        List<SimpleEventDTO> eventList = getAllSimpleEvent();
+
+        for (int i = 0; i < eventList.size(); i++) {
+            Date eventStartTime = Date.from(eventList.get(i).getEventStartTime());
+            Date eventEndTime = findEndDate(Date.from(eventList.get(i).getEventStartTime()), eventList.get(i).getEventDuration());
+            if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
+                    newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
+                    newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
+                    newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
+                    newEventStartTime.equals(eventStartTime))
+            {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time is overlapping");
+            }
+        }
         Event e = modelMapper.map(newEvent, Event.class);
         return repository.saveAndFlush(e);
+    }
+
+    public Date findEndDate(Date date, Integer duration) {
+        return new Date(date.getTime()+(duration*60000+60000));
     }
 
 

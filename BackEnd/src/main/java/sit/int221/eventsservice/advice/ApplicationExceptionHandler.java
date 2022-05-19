@@ -2,24 +2,29 @@ package sit.int221.eventsservice.advice;
 
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import sit.int221.eventsservice.advice.HandleError;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
 @RestControllerAdvice
-public class ApplicationExceptionHandler {
+public class ApplicationExceptionHandler extends Exception{
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleInvalidArgument(MethodArgumentNotValidException ex) {
+    public HandleError handleInvalidArgument(MethodArgumentNotValidException ex) {
+        HandleError errors = new HandleError();
         Map<String, String> errorMap = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errorMap.put(error.getField(), error.getDefaultMessage());
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errorMap.put(fieldName, errorMessage);
         });
-        return errorMap;
+        errors.setFiledErrors(errorMap);
+        return errors;
     }
-
 }

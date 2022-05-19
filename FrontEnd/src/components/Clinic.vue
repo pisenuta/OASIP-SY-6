@@ -4,8 +4,7 @@ const categories = ref([])
 const getEventCategory = async () => {
     // const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
     // const res = await fetch(`http://10.4.56.123:8080/api/eventcategory`, {
-    const res = await fetch(`http://localhost:5000/eventCategory`, {
-    // const res = await fetch(`http://localhost:8080/api/eventcategory`, {
+    const res = await fetch(`http://localhost:8080/api/eventcategory/`, {
         method: "GET",
     });
     if (res.status === 200) {
@@ -18,30 +17,40 @@ onBeforeMount(async () => {
 
 const showIndex = ref(null);
 
-const editClinic = ref(false)
-const editDuration = ref("")
-const editDescription = ref("")
-const editName = ref("")
-const modifyClinic = async () => {
-    const res = await fetch(`http://localhost:5000/eventCategory/${editingClinic.id}`,{
+const editClinicPop = ref(false)
+const errorClinicName = ref(false)
+const errorDuration = ref(false)
+const modifyClinic = async (clinic) => {
+    if(clinic.eventCategoryName == null || clinic.eventCategoryName == ''){
+        errorClinicName.value = true
+    } else {
+        errorClinicName.value = false
+    }
+
+    if(clinic.eventDuration == null || clinic.eventDuration == '' || clinic.eventDuration == 0){
+        errorDuration.value = true
+    } else {
+        errorDuration.value = false
+    }
+
+    if(errorClinicName.value == true || errorDuration.value == true){
+        return
+    }
+    const res = await fetch(`http://localhost:8080/api/eventcategory/${clinic.id}`,{
       method: 'PUT',
       headers:{
         'content-type': 'application/json'
       },
-      body: JSON.stringify({
-          eventCategoryName: editingClinic.eventCategoryName,
-          eventCategoryDescription: editingClinic.eventCategoryDescription,
-          eventDuration: editingClinic.eventDuration
-      })
+      body: JSON.stringify(clinic)
     })
     if(res.status === 200){
-        const modifyNote = await res.json()
+        const modifyClinic = await res.json()
         categories.value = categories.value.map((clinic) => 
         clinic.id === modifyNote.id ? {
             ...clinic,
-            eventCategoryName: modifyNote.eventCategoryName,
-            eventCategoryDescription:modifyNote.eventCategoryDescription,
-            eventDuration:modifyNote.eventDuration
+            eventCategoryName: modifyClinic.eventCategoryName,
+            eventCategoryDescription:modifyClinic.eventCategoryDescription,
+            eventDuration:modifyClinic.eventDuration
             }: clinic)
         console.log('edited successfully');
     } else {
@@ -50,17 +59,10 @@ const modifyClinic = async () => {
   }
 
 const editingClinic = ref({})
- const toEditingMode = (editClinic) =>{
+const toEditingMode = (editClinic) =>{
     editingClinic.value = editClinic
     console.log(editingClinic.value)
-  }
-const updateClinic = computed(() => {
-    return {id: editingClinic.id, 
-            eventCategoryName: editingClinic.eventCategoryName,
-            eventCategoryDescription:editingClinic.eventCategoryDescription,
-            eventDuration:editingClinic.eventDuration
-    }
-  })
+}
 </script>
  
 <template>
@@ -71,7 +73,7 @@ const updateClinic = computed(() => {
                 <div class="col-4 col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
                     <div class="card-body clinic-body">
                         <img src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
-                            v-on:click="showIndex = index, editClinic = true" @click="toEditingMode(category)">
+                            v-on:click="showIndex = index, editClinicPop = true" @click="toEditingMode(category)">
                         <h5 class="clinic-title">{{ category.eventCategoryName }}</h5>
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>
                         <div
@@ -84,7 +86,7 @@ const updateClinic = computed(() => {
             </div>
         </div>
         <div>
-            <div class="container" v-if="editClinic == true">
+            <div class="container" v-if="editClinicPop == true">
             <ul>
                 <li v-for="(category, index) in categories" :key="index" :value="category">
                     <div class="card-body clinic-popup">
@@ -92,12 +94,13 @@ const updateClinic = computed(() => {
                             <div class="card-title">
                                 <div class="card-header header"
                                     style="color: #e74694; font-weight: bold; letter-spacing: 1px;">
-                                    {{ category.eventCategoryName }}
+                                    Edit Clinic
                                 </div>
                             </div>
                             <div class="card-body edit-clinic">
                                 <p class="label-clinic">Clinic :</p>
                                 <input class="form-control clinic-form mb-3" maxlength="100" v-model="editingClinic.eventCategoryName">
+                                <p class="error" v-if="errorClinicName === true">ใส่ชื่อ</p>
                                 <p class="label-clinic">Duration (minutes) :</p>
                                 <input type="number" min="1" max="480" class="form-control clinic-form mb-3" v-model="editingClinic.eventDuration">
                                 <p class="label-clinic">Description :</p>
@@ -105,7 +108,7 @@ const updateClinic = computed(() => {
                                 <div style="text-align: center;">
                                     <button type="button" class="btn btn-success" style="margin-right: 40px;"
                                     v-on:click="edited = true" @click="modifyClinic(editingClinic)">Save</button>
-                                <button type="button" class="btn btn-secondary" v-on:click="editClinic = false"
+                                <button type="button" class="btn btn-secondary" v-on:click="editClinicPop = false"
                                     @click="resetEditData()">Cancel</button>
                                 </div>
                                 

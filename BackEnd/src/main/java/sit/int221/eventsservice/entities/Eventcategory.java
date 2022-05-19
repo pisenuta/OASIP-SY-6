@@ -44,7 +44,7 @@ public class Eventcategory {
     )
     @NotNull(message = "Duration shouldn't be null")
     @Max(value = 480, message = "Duration must less or equal then 480.")
-    @Min(value = 10 , message = "Duration must more then 10.")
+    @Min(value = 1 , message = "Duration must more then 1.")
     private Integer eventDuration;
     @JsonIgnore
     @OneToMany(

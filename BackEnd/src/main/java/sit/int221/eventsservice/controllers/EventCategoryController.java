@@ -49,7 +49,7 @@ public class EventCategoryController {
     public Eventcategory updateCategory(@Valid @RequestBody Eventcategory updateEventcategory, @PathVariable Integer Id) {
         Eventcategory eventcategory = eventcategoryRepository.findById(Id).map(c->mapEventcategory(c, updateEventcategory))
                 .orElseGet(()->
-                {
+                {   
                     updateEventcategory.setId(Id);
                     return updateEventcategory;
                 });
@@ -57,7 +57,7 @@ public class EventCategoryController {
     }
 
     private Eventcategory mapEventcategory(Eventcategory existingEventcat, Eventcategory updateEventcategory) {
-        existingEventcat.setEventCategoryName(updateEventcategory.getEventCategoryName());
+        existingEventcat.setEventCategoryName(updateEventcategory.getEventCategoryName().trim());
         existingEventcat.setEventCategoryDescription(updateEventcategory.getEventCategoryDescription());
         existingEventcat.setEventDuration(updateEventcategory.getEventDuration());
         return existingEventcat;

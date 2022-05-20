@@ -32,6 +32,10 @@ defineProps({
   mailVali:{
     type: Boolean,
     default:false
+  },
+  overlap:{
+    type: Boolean,
+    default:false
   }
 })
 
@@ -75,11 +79,12 @@ const newEvent = ref({
                     locale="th"
                     :minDate="new Date()" 
                     v-model="newEvent.eventStartTime" 
-                    :class="{'border border-danger' : errorTime || errorFuture}"
+                    :class="{'border border-danger' : errorTime || errorFuture || overlap}"
                     class="datepicker"
                 ></Datepicker>
                 <div v-if="errorTime" class="error">Please choose start time.</div>
                 <div v-if="errorFuture && !errorTime" class="error">Can not choose past time.</div>
+                <div v-if="overlap" class="error">Time is overlapping !</div>
                 
             </div>
             <div class="mb-3">

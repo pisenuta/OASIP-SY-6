@@ -5,8 +5,9 @@ import ManageAdd from './ManageAdd.vue'
 
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
     // const res = await fetch(`http://10.4.56.123:8080/api/eventcategory`)
+    const res = await fetch(`http://localhost:8080/api/eventcategory/`)
     if (res.status === 200) {
         categories.value = await res.json()
     }
@@ -35,6 +36,7 @@ const errorEmail = ref(false)
 const errorTime = ref(false)
 const mailVali = ref(true)
 const errorFuture = ref(false)
+const overlap = ref(false)
 
 const createEvent = async (event) => {
     if(event.bookingName == null || event.bookingName == ''){
@@ -42,7 +44,6 @@ const createEvent = async (event) => {
     } else {
         errorName.value = false
     }
-
     if(event.bookingEmail == null || event.bookingEmail == ''){
         errorEmail.value = true
     } else {
@@ -78,8 +79,9 @@ const createEvent = async (event) => {
         return
     }
  
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
     // const res = await fetch(`http://10.4.56.123:8080/api/events`, {
+    const res = await fetch(`http://localhost:8080/api/events/`, {
         method: 'POST',
         headers: { 'content-Type': 'application/json' },
         body: JSON.stringify({
@@ -98,7 +100,8 @@ const createEvent = async (event) => {
         events.value.push(addedEvent)
         console.log('added successfully');
         addAlert.value = true
-    } else {
+    } else if (res.status == 400){
+        overlap.value = true
         console.log('error, can not add');
     }
        
@@ -121,6 +124,7 @@ const added = () => {
         :errorTime="errorTime"
         :mailVali="mailVali"
         :errorFuture="errorFuture"
+        :overlap="overlap"
         @create="createEvent" 
         />
         <div class="container" v-if="addAlert === true">

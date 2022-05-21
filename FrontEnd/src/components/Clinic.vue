@@ -1,5 +1,6 @@
 -<script setup>
 import { ref, onBeforeMount, computed } from 'vue'
+import editClinic from '../components/editClinic.vue'
 const categories = ref([])
 const getEventCategory = async () => {
     // const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
@@ -46,15 +47,20 @@ const modifyClinic = async (clinic) => {
         wrongDuration.value = false
     }
 
-    if(errorClinicName.value == true || errorDuration.value == true || wrongDuration.value == true){
-        return false
-    } else {
-        const res = await fetch(`http://localhost:8080/api/eventcategory/${clinic.id}`,{
+    if(errorClinicName.value == true || errorDuration.value == true || wrongDuration.value == true || notUnique.value == false){
+        return 
+    }
+
+    const res = await fetch(`http://localhost:8080/api/eventcategory/${clinic.id}`,{
       method: 'PUT',
       headers:{
         'content-type': 'application/json'
       },
-      body: JSON.stringify(clinic)
+      body: JSON.stringify({
+        eventCategoryName: clinic.eventCategoryName,
+        eventCategoryDescription:clinic.eventCategoryDescription,
+        eventDuration:clinic.eventDuration
+      })
     })
     if(res.status === 200){
         const modifyClinic = await res.json()
@@ -66,14 +72,14 @@ const modifyClinic = async (clinic) => {
             eventDuration:modifyClinic.eventDuration
             }: clinic)
         editedPop.value = true
+        notUnique.value = false
         editingClinic.value = {}
         console.log('edited successfully');
     } else {
         console.log('can not edit');
     }
-    }
+}
     
-  }
 
 const editingClinic = ref({})
 const toEditingMode = (editClinic) =>{
@@ -81,8 +87,12 @@ const toEditingMode = (editClinic) =>{
     console.log(editingClinic.value)
 }
 
-const cancel = () => {
-    location.reload();
+const cancelPop = () =>{
+    editClinicPop.value = false
+    errorClinicName.value = false
+    errorDuration.value = false
+    wrongDuration.value = false
+    notUnique.value == false
 }
 
 </script>
@@ -120,20 +130,15 @@ const cancel = () => {
                                 </div>
                             </div>
                             <div class="card-body edit-clinic">
-                                <p class="label-clinic">Clinic :</p>
-                                <input class="form-control clinic-form mb-3" maxlength="100" v-model="editingClinic.eventCategoryName" :class="{'border border-danger' : errorClinicName || notUnique}">
-                                <p class="error-clinic" v-if="errorClinicName === true">Enter Clinic name.</p>
-                                <p class="error-clinic" v-if="notUnique === true">Category Name is not unique.</p>
-                                <p class="label-clinic">Duration (minutes) :</p>
-                                <input type="number" min="1" max="480" class="form-control clinic-form mb-3" v-model="editingClinic.eventDuration" :class="{'border border-danger' : errorDuration || wrongDuration}">
-                                <p class="error-clinic" v-if="errorDuration === true">Enter Duration.</p>
-                                <p class="error-clinic" v-if="wrongDuration === true">Duration must between 1 and 480.</p>
-                                <p class="label-clinic">Description :</p>
-                                <textarea class="form-control clinic-form mb-4" rows="3" maxlength="500" v-model="editingClinic.eventCategoryDescription"></textarea>
                                 <div style="text-align: center;">
-                                    <button type="button" class="btn btn-success" style="margin-right: 40px;" @click="modifyClinic(editingClinic)">Save</button>
-                                <button type="button" class="btn btn-secondary" v-on:click="editClinicPop = false"
-                                    @click="cancel()">Cancel</button>
+                                    <editClinic
+                                        :currentClinic="editingClinic"
+                                        :errorClinicName="errorClinicName"
+                                        :errorDuration="errorDuration"
+                                        :wrongDuration="wrongDuration"
+                                        :notUnique="notUnique"
+                                        @updateClinic="modifyClinic"/>  
+                                    <button type="button" class="btn btn-secondary" @click="cancelPop">Cancel</button>
                                 </div>
                                 
                             </div>
@@ -160,15 +165,6 @@ const cancel = () => {
 
 ul {
     list-style-type: none;
-}
-.error-clinic{
-    color: red;
-    font-size: 14px;
-    margin-top: -10px;
-    margin-left: 15.5%;
-}
-.label-clinic{
-    margin-left: 12%;
 }
 .clinic-popup{
     position: fixed;

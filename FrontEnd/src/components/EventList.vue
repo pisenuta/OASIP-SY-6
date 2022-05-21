@@ -39,6 +39,7 @@ const editNote = ref("")
 const editEvent = (event) => {
     if(editTime.value === null || editTime.value === ''){
         event.eventNotes = editNote.value
+        editNote.value =  event.eventStartTime
     } else {
         event.eventStartTime = editTime.value
         event.eventNotes = editNote.value
@@ -141,10 +142,7 @@ function formateTime(date) {
                                                         class="datepicker" 
                                                         style="margin-bottom: 10px;" 
                                                     />
-                                                    <!-- <input type="datetime-local"
-                                                        :min="new Date().toISOString().split('T')[0] + `T00:00`"
-                                                        id="meeting-time" name="meeting-time" class="date-form mx-auto"
-                                                        style="margin-bottom: 10px;" v-model="editTime"><br> -->
+                                                    <p class="noti">* If you not insert start date, The date will remain the same date</p>
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
                                                     <textarea class="form-control style-form" rows="3" maxlength="500" v-model="editNote"></textarea>
@@ -247,6 +245,10 @@ function formateTime(date) {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     text-align: center;
     color: black;
+}
+.noti{
+    font-size: 13px;
+    color:#BB2D3B;
 }
 .deleted {
     width: 28rem;

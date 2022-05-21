@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
 import EventList from './EventList.vue'
-import moment from 'moment';
 const events = ref([])
 
 const getEvents = async () => {
@@ -51,6 +50,7 @@ const editEvent = async (editEvent) => {
 
 onBeforeMount(async () => {
   await getEvents();
+  await getEventCategory();
 })
 
 const schedule = () => {
@@ -58,13 +58,15 @@ const schedule = () => {
     return "No Scheduled Event"
   }
 }
-
-const byPast = events.value.filter((e) => moment().isBefore(e.eventStartTime))
-const byUpcoming = events.value.filter((e) => moment().isAfter(e.eventStartTime))
-
-console.log(byUpcoming);
-console.log(byPast);
-console.log(moment());
+const categories = ref([])
+const getEventCategory = async () => {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
+    // const res = await fetch(`http://10.4.56.123:8080/api/eventcategory`)
+    const res = await fetch(`http://localhost:8080/api/eventcategory/`)
+    if (res.status === 200) {
+        categories.value = await res.json()
+    }
+}
 
 </script>
  
@@ -74,8 +76,7 @@ console.log(moment());
     <div v-if="events.length > 8" class="scroll-down"></div>
     <select class="form-select filter-form  mt-4" aria-label="Default select example">
       <option selected>All</option>
-      <option value="upcoming">Upcoming</option>
-      <option value="past">Past</option>
+      <option v-for="(category, index) in categories" :key="index" :value="category">{{ category.eventCategoryName }}</option>
     </select>
 
     <h5 class="mt-4">{{ schedule() }}</h5>
@@ -94,7 +95,7 @@ console.log(moment());
   font-family: 'Radio Canada', 'Noto Sans Thai';
 }
 .filter-form{
-  width: 8rem;
+  width: 16rem;
   margin:auto;
 }
 

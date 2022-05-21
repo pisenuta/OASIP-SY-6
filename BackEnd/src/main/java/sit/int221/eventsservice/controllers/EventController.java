@@ -63,7 +63,7 @@ public class EventController {
         Date newEventEndTime = eventService.findEndDate(Date.from(updateEvent.getEventStartTime()), updateEvent.getEventDuration());
         List<SimpleEventDTO> eventList = getEvents();
         for (int i = 0; i < eventList.size(); i++) {
-            if (updateEvent.getEventCategory().getId() == eventList.get(i).getEventCategory().getId()) { //เช็คเฉพาะ EventCategory เดียวกัน
+            if (updateEvent.getEventCategory().getId() == eventList.get(i).getEventCategory().getId()&& eventList.get(i).getId() != Id) { //เช็คเฉพาะ EventCategory เดียวกัน และเช็คว่า
                 List errors = new ArrayList();
                 Date eventStartTime = Date.from(eventList.get(i).getEventStartTime());
                 Date eventEndTime = eventService.findEndDate(Date.from(eventList.get(i).getEventStartTime()), eventList.get(i).getEventDuration());

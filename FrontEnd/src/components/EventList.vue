@@ -7,6 +7,14 @@ const props = defineProps({
     eventList: {
         type: Array,
         require: true,
+    },
+    overlap:{
+        type: Boolean,
+        defalut: false
+    },
+    edited:{
+        type: Boolean,
+        default: false
     }
 });
 const DetailBtn = ref(false);
@@ -33,18 +41,13 @@ const showDeleted = () => {
 const closeDeleted = () => {
     deleted.value = false
 }
-const edited = ref(false)
 const editTime = ref("")
 const editNote = ref("")
+
 const editEvent = (event) => {
-    if(editTime.value === null || editTime.value === ''){
-        event.eventNotes = editNote.value
-        editNote.value =  event.eventStartTime
-    } else {
-        event.eventStartTime = editTime.value
-        event.eventNotes = editNote.value
-        return event
-    } 
+    event.eventStartTime = editTime.value
+    event.eventNotes = editNote.value
+    return event
 }
 const resetEditData = () => {
     editTime.value = ""
@@ -142,6 +145,7 @@ function formateTime(date) {
                                                         class="datepicker" 
                                                         style="margin-bottom: 10px;" 
                                                     />
+                                                    <p v-if="overlap" class="error">Time is overlapping</p>
                                                     <p class="noti">* If you not insert start date, The date will remain the same date</p>
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
@@ -149,7 +153,6 @@ function formateTime(date) {
                                                     <div style="margin-top: 30px;">
                                                         <button type="button" class="btn btn-success"
                                                             style="margin-right: 40px;"
-                                                            v-on:click="edited = true"
                                                             @click="$emit('edit', editEvent(event), resetEditData())"
                                                             >Submit</button>
                                                         <button type="button" class="btn btn-secondary"
@@ -217,6 +220,12 @@ function formateTime(date) {
 .body {
     font-family: 'Inter', 'Noto Sans Thai';
 }
+.error{
+    color: red;
+    font-size: 13px;
+    text-align: left;
+    margin-bottom: -1px;
+}
 .popEdit{
     position: fixed;
     top: 50%;
@@ -248,7 +257,7 @@ function formateTime(date) {
 }
 .noti{
     font-size: 13px;
-    color:#BB2D3B;
+    color:red;
 }
 .deleted {
     width: 28rem;

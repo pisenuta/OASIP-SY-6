@@ -74,7 +74,6 @@ const newEvent = ref({
             </div>
             <div class="mb-3">
                 <label for="meeting-time" >Date - Time :</label><br>
-                <!-- <input type="datetime-local" :min="new Date().toISOString().split('T')[0] + new Date().toISOString().slice(10,16)" id="meeting-time" name="meeting-time" class="date-form" v-model="newEvent.eventStartTime" :class="{'border border-danger' : errorTime || errorFuture}"> -->
                 <Datepicker 
                     locale="th"
                     :minDate="new Date()" 

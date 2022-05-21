@@ -88,11 +88,11 @@ const createEvent = async (event) => {
             eventCategory: {
                 id: event.eventCategory.id
             },
-            bookingName: event.bookingName,
-            bookingEmail: event.bookingEmail,
+            bookingName: event.bookingName.trim(),
+            bookingEmail: event.bookingEmail.trim(),
             eventStartTime: event.eventStartTime,
             eventDuration: event.eventCategory.eventDuration,
-            eventNotes: event.eventNotes
+            eventNotes: event.eventNotes.trim()
         })
     })
     if (res.status == 201 || res.status == 200) {

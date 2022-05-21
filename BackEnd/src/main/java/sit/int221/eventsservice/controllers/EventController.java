@@ -55,12 +55,29 @@ public class EventController {
 
     @PostMapping({""})
     public Event create(@Valid @RequestBody SimpleEventDTO newEvent) throws OverlappedExceptionHandler {
-//        List<Event> events = repository.findAllByEventCategory(newEvent.getEventCategory().getId());
         return eventService.save(newEvent);
     }
 
     @PutMapping({"/{Id}"})
-    public ResponseEntity update(@Valid @RequestBody EventPutDTO updateEvent, @PathVariable Integer Id) {
+    public ResponseEntity update(@Valid @RequestBody EventPutDTO updateEvent, @PathVariable Integer Id) throws OverlappedExceptionHandler {
+        Date newEventStartTime = Date.from(updateEvent.getEventStartTime());
+        Date newEventEndTime = eventService.findEndDate(Date.from(updateEvent.getEventStartTime()), updateEvent.getEventDuration());
+        List<SimpleEventDTO> eventList = getEvents();
+        for (int i = 0; i < eventList.size(); i++) {
+            if (updateEvent.getEventCategory().getId() == eventList.get(i).getEventCategory().getId()){ //เช็คเฉพาะ EventCategory เดียวกัน
+                List errors = new ArrayList();
+                Date eventStartTime = Date.from(eventList.get(i).getEventStartTime());
+                Date eventEndTime = eventService.findEndDate(Date.from(eventList.get(i).getEventStartTime()), eventList.get(i).getEventDuration());
+                if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
+                        newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
+                        newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
+                        newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
+                        newEventStartTime.equals(eventStartTime))
+                {
+                    throw new OverlappedExceptionHandler(errors.toString());
+                }
+            }
+        }
         Event event = repository.findById(Id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
         );
@@ -75,6 +92,6 @@ public class EventController {
 
     @GetMapping({"/datetime"})
     public List <SimpleEventDTO> getEventByDateTime(@RequestParam String Date) {
-        return  this.eventService.getEventByDateTime(Date+"", Date);
+        return  this.eventService.getEventByDateTime(Date+"T00:00:00Z", Date+"T23:59:00Z");
     }
 }

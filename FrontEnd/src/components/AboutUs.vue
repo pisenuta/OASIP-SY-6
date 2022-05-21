@@ -13,6 +13,7 @@
                         <div class="card-body us">
                             <h3 class="card-title">Tarathep Siripis</h3>
                             <p class="card-text">63130500055</p>
+                            <a href="https://github.com/pphaiaiai" target="_blank"><img src="https://api.iconify.design/bytesize/github.svg?width=35"/></a>
                         </div>
                     </div>
                 </div>
@@ -22,11 +23,15 @@
                         <div class="card-body us">
                             <h3 class="card-title">Thanyakorn Thalaengdi</h3>
                             <p class="card-text">63130500056</p>
+                            <a href="https://github.com/pisenuta" target="_blank"><img src="https://api.iconify.design/bytesize/github.svg?width=35"/></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <h3 class="mx-auto mt-5" id="topic" style="font-size: 32px;font-weight: bolder;">
+        Our Repository : <a href="https://github.com/pisenuta/OASIP-SY-6" target="_blank"><img src="https://api.iconify.design/brandico/github-text.svg?width=40" style="padding-right: 5px; padding-left: 4px;"/>
+        <img src="https://api.iconify.design/bytesize/github.svg?width=35"/></a> </h3>
     </div>
 
 </template>
@@ -46,7 +51,7 @@
 }
 
 #topic {
-    margin-bottom: 3em;
+    margin-bottom: 2em;
 }
 
 #pa {

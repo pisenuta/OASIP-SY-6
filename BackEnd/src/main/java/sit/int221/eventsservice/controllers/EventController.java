@@ -18,7 +18,6 @@ import sit.int221.eventsservice.entities.Eventcategory;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.services.EventService;
 
-import javax.persistence.Id;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -47,7 +46,7 @@ public class EventController {
 
     @DeleteMapping({"/{Id}"})
     public void delete(@PathVariable Integer Id) {
-        repository.findById(Id).orElseThrow(()->
+        repository.findById(Id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND,
                         Id + " does not exist !!!"));
         repository.deleteById(Id);
@@ -64,7 +63,7 @@ public class EventController {
         Date newEventEndTime = eventService.findEndDate(Date.from(updateEvent.getEventStartTime()), updateEvent.getEventDuration());
         List<SimpleEventDTO> eventList = getEvents();
         for (int i = 0; i < eventList.size(); i++) {
-            if (updateEvent.getEventCategory().getId() == eventList.get(i).getEventCategory().getId()){ //เช็คเฉพาะ EventCategory เดียวกัน
+            if (updateEvent.getEventCategory().getId() == eventList.get(i).getEventCategory().getId()) { //เช็คเฉพาะ EventCategory เดียวกัน
                 List errors = new ArrayList();
                 Date eventStartTime = Date.from(eventList.get(i).getEventStartTime());
                 Date eventEndTime = eventService.findEndDate(Date.from(eventList.get(i).getEventStartTime()), eventList.get(i).getEventDuration());
@@ -72,8 +71,7 @@ public class EventController {
                         newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
                         newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
                         newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
-                        newEventStartTime.equals(eventStartTime))
-                {
+                        newEventStartTime.equals(eventStartTime)) {
                     throw new OverlappedExceptionHandler(errors.toString());
                 }
             }
@@ -82,8 +80,11 @@ public class EventController {
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
         );
         modelMapper.map(updateEvent, event);
+        repository.saveAndFlush(event);
         return ResponseEntity.status(200).body(event);
     }
+
+
 
     @GetMapping({"/clinic"})
     public List <SimpleEventDTO> getEventByCategory(@RequestParam Eventcategory eventCategoryId) {
@@ -93,5 +94,15 @@ public class EventController {
     @GetMapping({"/datetime"})
     public List <SimpleEventDTO> getEventByDateTime(@RequestParam String Date) {
         return  this.eventService.getEventByDateTime(Date+"T00:00:00Z", Date+"T23:59:00Z");
+    }
+
+    @GetMapping({"/schedule-past"})
+    public List <SimpleEventDTO> getPastEvent(@RequestParam Instant DateTime) {
+        return this.eventService.getPastEvent(DateTime);
+    }
+
+    @GetMapping({"/schedule-comingup"})
+    public List <SimpleEventDTO> getUpcomingEvent(@RequestParam Instant DateTime) {
+        return this.eventService.getUpcomingEvent(DateTime);
     }
 }

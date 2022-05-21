@@ -7,12 +7,11 @@ import sit.int221.eventsservice.dtos.SimpleEventDTO;
 import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Eventcategory;
 
-import java.awt.print.Pageable;
 import java.time.Instant;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
-
+    
     List<Event> findAllByEventStartTimeBeforeOrderByEventStartTimeDesc(Instant instantTime);
 
     List<Event> findAllByEventStartTimeAfterOrderByEventStartTimeAsc(Instant instantTime);

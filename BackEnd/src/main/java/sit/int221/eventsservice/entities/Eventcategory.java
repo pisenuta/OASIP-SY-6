@@ -2,6 +2,7 @@ package sit.int221.eventsservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
@@ -31,6 +32,7 @@ public class Eventcategory {
     )
     @NotBlank(message = "Clinic name shouldn't be null or empty.")
     @Size(max = 100 , message = "Name must less or equal then 100.")
+    @UniqueElements(message = "Clinic name must be unique.")
     private String eventCategoryName;
     @Lob
     @Column(

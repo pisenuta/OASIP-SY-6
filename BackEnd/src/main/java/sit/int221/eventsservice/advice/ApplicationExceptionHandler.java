@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.HandleError;
 
+import javax.validation.UnexpectedTypeException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +44,17 @@ public class ApplicationExceptionHandler extends Exception{
         errors.setError("Time is Overlapped");
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("message", rs.getMessage());
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(UnexpectedTypeException.class)
+    public HandleUnexpectedType HandleUnique(UnexpectedTypeException ue) {
+        HandleUnexpectedType errors = new HandleUnexpectedType();
+        errors.setStatus(500);
+        errors.setPath("/api/eventcategory");
+        errors.setMessage("Internal Server Error");
+        errors.setError("Clinic name must be unique.");
         return errors;
     }
 

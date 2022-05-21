@@ -34,12 +34,12 @@ public class ApplicationExceptionHandler extends Exception{
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ResponseStatusException.class)
-    public HandleOverlappedError handleOverlapped(ResponseStatusException rs) {
+    @ExceptionHandler(OverlappedExceptionHandler.class)
+    public HandleOverlappedError handleOverlapped(OverlappedExceptionHandler rs) {
         HandleOverlappedError errors = new HandleOverlappedError();
-        errors.setStatus(rs.getRawStatusCode());
+        errors.setStatus(400);
         errors.setPath("/api/events");
-        errors.setMessage(rs.getStatus());
+        errors.setMessage("Bad Request");
         errors.setError("Time is Overlapped");
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("message", rs.getMessage());

@@ -13,7 +13,7 @@ import java.util.Map;
 public class HandleOverlappedError {
         private Date timestamp = new Date();
         private Integer status;
-        private HttpStatus message;
+        private String message;
         private String path;
         private String error;
 }

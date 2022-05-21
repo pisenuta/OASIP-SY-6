@@ -1,16 +1,24 @@
 package sit.int221.eventsservice.controllers;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
+import sit.int221.eventsservice.dtos.EventPutDTO;
 import sit.int221.eventsservice.dtos.SimpleEventDTO;
 import sit.int221.eventsservice.entities.Event;
+import sit.int221.eventsservice.entities.Eventcategory;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.services.EventService;
 
+import javax.persistence.Id;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -46,31 +54,27 @@ public class EventController {
     }
 
     @PostMapping({""})
-    public Event create(@Valid @RequestBody SimpleEventDTO newEvent) {
+    public Event create(@Valid @RequestBody SimpleEventDTO newEvent) throws OverlappedExceptionHandler {
+//        List<Event> events = repository.findAllByEventCategory(newEvent.getEventCategory().getId());
         return eventService.save(newEvent);
     }
 
     @PutMapping({"/{Id}"})
-    public Event update(@Valid @RequestBody Event updateEvent, @PathVariable Integer Id) {
-        Event event = repository.findById(Id).map(e->mapEvent(e, updateEvent))
-                .orElseGet(()->
-                {
-                    updateEvent.setId(Id);
-                    return updateEvent;
-                });
-        return repository.saveAndFlush(event);
+    public ResponseEntity update(@Valid @RequestBody EventPutDTO updateEvent, @PathVariable Integer Id) {
+        Event event = repository.findById(Id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
+        );
+        modelMapper.map(updateEvent, event);
+        return ResponseEntity.status(200).body(event);
     }
 
-    private Event mapEvent(Event existingEvent, Event updateEvent) {
-        existingEvent.setEventStartTime(updateEvent.getEventStartTime());
-        existingEvent.setEventNotes(updateEvent.getEventNotes());
-        return existingEvent;
+    @GetMapping({"/clinic"})
+    public List <SimpleEventDTO> getEventByCategory(@RequestParam Eventcategory eventCategoryId) {
+        return this.eventService.getEventByCategoryId(eventCategoryId);
     }
 
-//    @PutMapping({"/{Id}"})
-//    public SimpleEventDTO updateEvent(@PathVariable Integer Id, @RequestBody SimpleEventDTO updateEvent){
-//        eventService.updateEvent(Id,updateEvent);
-//        return updateEvent;
-//    }
-
+    @GetMapping({"/datetime"})
+    public List <SimpleEventDTO> getEventByDateTime(@RequestParam String Date) {
+        return  this.eventService.getEventByDateTime(Date+"", Date);
+    }
 }

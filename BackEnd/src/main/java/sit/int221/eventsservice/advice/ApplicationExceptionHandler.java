@@ -57,11 +57,4 @@ public class ApplicationExceptionHandler extends Exception{
         errors.setError("Clinic name must be unique.");
         return errors;
     }
-
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    @ExceptionHandler(ResponseStatusException.class)
-//    public HandleError handleNotfound(ResponseStatusException rs) {
-//        HandleError errors = new HandleError();
-//        return errors;
-//    }
 }

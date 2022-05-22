@@ -89,16 +89,4 @@ public class EventService {
         List<Event> eventByDateTime = repository.findAllByEventStartTimeBetween(Instant.parse(startTime), Instant.parse(endTime));
         return  listMapper.mapList(eventByDateTime, SimpleEventDTO.class, modelMapper);
     }
-//    public Event updateEvent(Integer Id, SimpleEventDTO updateEvent) {
-//        Event event = repository.findById(Id).map(e->mapEvent(modelMapper.map(e, SimpleEventDTO.class),updateEvent)).orElseGet(()->{
-//            updateEvent.setId(Id);
-//            return modelMapper.map(updateEvent, Event.class);
-//        });
-//        return repository.saveAndFlush(event);
-//    }
-//
-//    public Event mapEvent(SimpleEventDTO event1, SimpleEventDTO event2){
-//        event1=event2;
-//        return modelMapper.map(event1, Event.class);
-//    }
 }

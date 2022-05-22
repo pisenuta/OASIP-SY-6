@@ -38,9 +38,4 @@ public class EventCategoryService {
         List<Eventcategory> eventcategories = repository.findAll();
         return listMapper.mapList(eventcategories, SimpleEventCategoryDTO.class, modelMapper);
     }
-
-//    public Eventcategory save(SimpleEventDTO newEvent) {
-//        Event e = modelMapper.map(newEvent, Event.class);
-//        return repository.saveAndFlush(e);
-//    }
 }

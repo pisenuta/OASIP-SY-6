@@ -28,12 +28,14 @@ public class Eventcategory {
     @Column(
             name = "eventCategoryName",
             nullable = false,
-            length = 100
+            length = 100,
+            unique = true
     )
     @NotBlank(message = "Clinic name shouldn't be null or empty.")
     @Size(max = 100 , message = "Name must less or equal then 100.")
-    @UniqueElements(message = "Clinic name must be unique.")
+//    @UniqueElements(message = "Clinic name must be unique.")
     private String eventCategoryName;
+
     @Lob
     @Column(
             name = "eventCategoryDescription"
@@ -56,4 +58,5 @@ public class Eventcategory {
 
     public Eventcategory() {
     }
+
 }

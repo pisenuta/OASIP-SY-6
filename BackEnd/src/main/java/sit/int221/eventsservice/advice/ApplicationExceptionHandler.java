@@ -1,6 +1,7 @@
 package sit.int221.eventsservice.advice;
 
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -48,9 +49,9 @@ public class ApplicationExceptionHandler extends Exception{
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(UnexpectedTypeException.class)
-    public HandleUnexpectedType HandleUnique(UnexpectedTypeException ue) {
-        HandleUnexpectedType errors = new HandleUnexpectedType();
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public HandleCheckUnique handleCheckUnique(DataIntegrityViolationException de) {
+        HandleCheckUnique errors = new HandleCheckUnique();
         errors.setStatus(500);
         errors.setPath("/api/eventcategory");
         errors.setMessage("Internal Server Error");

@@ -45,9 +45,14 @@ const editTime = ref("")
 const editNote = ref("")
 
 const editEvent = (event) => {
-    event.eventStartTime = editTime.value
+    if(editTime.value === null || editTime.value === ''){
+        event.eventNotes = editNote.value
+    } else {
+        event.eventStartTime = editTime.value
     event.eventNotes = editNote.value
     return event
+    }
+    
 }
 const resetEditData = () => {
     editTime.value = ""

@@ -5,17 +5,14 @@ import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
 
 const events = ref([])
-const filterEvent = ref('All')
+const filterEvent = ref()
 const filterStatus = ref('All')
 const filterDate = ref()
 const SortByCategory = async (id) => {
   let res
   if (filterEvent.value !== '' && filterEvent.value !== 'All') {
     console.log(filterEvent.value);
-    res = await fetch(`http://localhost:8080/api/events/clinic?eventCategoryId=${id}`, { method: "GET", })
-  }
-  else {
-    res = await fetch(`http://localhost:8080/api/events/`, { method: "GET", })
+    res = await fetch(`http://localhost:8080/api/events/clinic?eventCategoryId=${id}`, { method: "GET" })
   }
 
   if (res.status === 200) {
@@ -57,9 +54,9 @@ const SortByStatus = async () => {
   }
 }
 
-const SortByDate = async () => {
+const SortByDate = async (f) => {
   let res
-  const date = moment(filterDate).format().slice(0, 10)
+  const date = moment(f).format().slice(0, 10)
   if (filterDate.value !== '') {
     res = await fetch(`http://localhost:8080/api/events/datetime?Date=${date}`, { method: "GET", })
     if (res.status === 200) {
@@ -68,7 +65,7 @@ const SortByDate = async () => {
     } else {
       console.log('can not');
     }
-  } else if (filterDate.value === '') {
+  } else if (filterDate.value === null) {
     res = await fetch(`http://localhost:8080/api/events/`, { method: "GET", })
     if (res.status === 200) {
       events.value = await res.json();
@@ -103,7 +100,7 @@ const editEvent = async (editEvent) => {
     body: JSON.stringify({
       eventStartTime: editEvent.eventStartTime,
       eventNotes: editEvent.eventNotes.trim(),
-      eventDuration: editEvent.eventDuration.trim(),
+      eventDuration: editEvent.eventDuration,
       eventCategory: editEvent.eventCategory
     })
   })
@@ -117,12 +114,23 @@ const editEvent = async (editEvent) => {
   }
 }
 
+const getAllEvent = async () => {
+  const res = await fetch(`http://localhost:8080/api/events/`, {
+    method: "GET",
+  });
+  if (res.status === 200) {
+    events.value = await res.json()
+  } else {
+    console.log('can not');
+  }
+}
+
 onBeforeMount(async () => {
   await SortByCategory();
   await SortByStatus();
   await SortByDate();
   await getEventCategory();
-
+  await getAllEvent();
 })
 
 const schedule = () => {
@@ -140,27 +148,56 @@ const getEventCategory = async () => {
   }
 }
 
+const useSortCategory = ref(false)
+const useSortStatus = ref(false)
+const useSortDate = ref(false)
 </script>
  
 <template>
   <div class="body">
     <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Schedule</h3>
     <div v-if="events.length > 8" class="scroll-down"></div>
-    <div style="display: flex">
-      <select class="form-select filter-form  mt-4" v-model="filterEvent" style="display: block;justify-content: center;">
-        <option selected>All</option>
-        <option v-for="(category, index) in categories" :key="index" :value="category.id">{{ category.eventCategoryName
-        }}
-        </option>
-      </select>
-      <select class="form-select filter-form mt-4" style="width: 8rem;display: block;" v-model="filterStatus">
-        <option selected>All</option>
-        <option value="Past">Past</option>
-        <option value="Upcoming">Upcoming</option>
-      </select>
-      <Datepicker :enableTimePicker="false" v-model="filterDate" class="datepicker" style="width: 12rem;display: block;" />
-      <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529" 
-        @click="SortByCategory(filterEvent), SortByStatus(filterStatus), SortByDate(filterDate)" class="filter-btn">
+
+    <div class="mt-5" style="justify-content: space-around;display: flex;margin-bottom: 40px;">
+      <button type="button" class="btn btn-dark"
+        v-on:click="useSortCategory = true, useSortStatus = false, useSortDate = false">Sort By Category</button>
+      <div v-if="useSortCategory == true">
+        <form class="form-inline">
+          <select class="form-select filter-form" v-model="filterEvent">
+            <option v-for="(category, index) in categories" :key="index" :value="category.id">{{
+                category.eventCategoryName
+            }} </option>
+          </select>
+          <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529"
+            @click="SortByCategory(filterEvent)" class="filter-btn">
+        </form>
+      </div>
+
+      <button type="button" class="btn btn-dark"
+        v-on:click="useSortCategory = false, useSortStatus = true, useSortDate = false">Sort By Status</button>
+      <div v-if="useSortStatus == true">
+        <form class="form-inline">
+          <select class="form-select filter-form" style="width: 8rem;" v-model="filterStatus">
+            <option value="Past">Past</option>
+            <option value="Upcoming">Upcoming</option>
+          </select>
+          <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529"
+            @click="SortByStatus(filterStatus)" class="filter-btn">
+        </form>
+      </div>
+
+      <button type="button" class="btn btn-dark"
+        v-on:click="useSortCategory = false, useSortStatus = false, useSortDate = true">Sort By Date</button>
+      <div v-if="useSortDate == true">
+        <form class="form-inline">
+          <Datepicker :enableTimePicker="false" v-model="filterDate" class="datepicker" style="width: 12rem; margin-top: 0px;" />
+            <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529"
+            @click="SortByDate(filterDate)" class="filter-btn" style="margin-top: -40px;">
+        </form>
+      </div>
+
+      <button type="button" class="btn btn-dark all-btn" @click="getAllEvent()"
+        v-on:click="useSortCategory = false, useSortStatus = false, useSortDate = false">All</button>
     </div>
 
     <h5 class="mt-4">{{ schedule() }}</h5>
@@ -178,15 +215,27 @@ const getEventCategory = async () => {
 .body {
   font-family: 'Radio Canada', 'Noto Sans Thai';
 }
+.all-btn{
+  background-color: #e74694;
+  border-color: #e74694;
+  color: black;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.form-inline {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
 
 .filter-btn {
   cursor: pointer;
   width: 20px;
+  margin-left: 15px;
 }
 
 .filter-form {
   width: 16rem;
-  margin: auto;
 }
 
 h5,

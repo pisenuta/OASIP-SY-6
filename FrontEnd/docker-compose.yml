@@ -4,8 +4,6 @@ services:
     build: ./
     image: frontendimg
     container_name: frontend
-    ports:
-      - 3000:3000
     networks: 
       - oasip-network
     restart: always

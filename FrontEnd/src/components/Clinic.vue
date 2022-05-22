@@ -1,10 +1,9 @@
 -<script setup>
-import { ref, onBeforeMount, computed } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import editClinic from '../components/editClinic.vue'
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcategory` , {
-    // const res = await fetch(`http://localhost:8080/api/eventcategory/`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory` , {
         method: "GET",
     });
     if (res.status === 200) {
@@ -29,7 +28,7 @@ const modifyClinic = async (clinic) => {
     } else {
         errorClinicName.value = false
     }
-    if(categories.value.find((c) => clinic.eventCategoryName === c.eventCategoryName)){
+    if(categories.value.find((c) => clinic.eventCategoryName === c.eventCategoryName) && clinic.eventCategoryName !== editingClinic.value.eventCategoryName){
         notUnique.value = true
     } else {
         notUnique.value = false
@@ -46,11 +45,11 @@ const modifyClinic = async (clinic) => {
         wrongDuration.value = false
     }
 
-    if(errorClinicName.value == true || errorDuration.value == true || wrongDuration.value == true || notUnique.value == false){
+    if(errorClinicName.value == true || errorDuration.value == true || wrongDuration.value == true || notUnique.value == true){
         return 
     }
 
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcategory/${clinic.id}`,{
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory/${clinic.id}`,{
       method: 'PUT',
       headers:{
         'content-type': 'application/json'
@@ -91,7 +90,7 @@ const cancelPop = () =>{
     errorClinicName.value = false
     errorDuration.value = false
     wrongDuration.value = false
-    notUnique.value == false
+    notUnique.value = false
 }
 
 </script>

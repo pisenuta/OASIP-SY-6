@@ -15,7 +15,6 @@ import sit.int221.eventsservice.services.EventService;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping({"/api/eventcategory"})
 public class EventCategoryController {

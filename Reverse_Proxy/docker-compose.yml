@@ -1,13 +1,14 @@
 version: '3.7'
 services:
   reverse_proxy:
-    build: ./
-    image: reverse_proxyimg
+    image: nginx
     container_name: reverse_proxy
     ports:
       - "80:80"
     networks: 
       - oasip-network
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     restart: on-failure
 
 networks:

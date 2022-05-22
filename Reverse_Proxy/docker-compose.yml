@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   reverse_proxy:
-    image: nginx
+    image: node:lts-alpine
     container_name: reverse_proxy
     ports:
       - "80:80"

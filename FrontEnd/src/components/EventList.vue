@@ -135,13 +135,14 @@ function formateDate(date) {
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                                     {{ event.eventCategory.eventCategoryName }}<br />
+                                                    <p v-if="overlap" class="error">Time is overlapping</p>
                                                     <Datepicker 
                                                         :minDate="new Date()" 
                                                         v-model="editTime"
                                                         class="datepicker" 
+                                                        :class="{'border border-danger' : overlap}"
                                                         style="margin-bottom: 10px;" 
                                                     />
-                                                    <p v-if="overlap" class="error">Time is overlapping</p>
                                                     <p class="noti">* If you not insert start date, The date will remain the same date</p>
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
@@ -220,7 +221,7 @@ function formateDate(date) {
     color: red;
     font-size: 13px;
     text-align: left;
-    margin-bottom: -1px;
+    margin-bottom: -8px;
 }
 .popEdit{
     position: fixed;

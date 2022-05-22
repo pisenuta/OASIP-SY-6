@@ -10,16 +10,23 @@ const filterStatus = ref()
 const filterDate = ref()
 const SortByCategory = async (id) => {
   let res
-  if (filterEvent.value !== '') {
+  if (filterEvent.value !== '' || filterEvent.value !== null || filterEvent.value !== undefined) {
     console.log(filterEvent.value);
-    res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/clinic?eventCategoryId=${id}`, { method: "GET" })
-  }
-
-  if (res.status === 200) {
-    events.value = await res.json();
-    events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
-  } else {
-    console.log('can not');
+    res = await fetch(`http://localhost:8080/api/events/clinic?eventCategoryId=${id}`, { method: "GET" })
+    if (res.status === 200) {
+      events.value = await res.json();
+      events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
+    } else {
+      console.log('can not');
+    }
+  } else if (filterEvent.value === '' || filterEvent.value === null || filterEvent.value === undefined){
+    res = await fetch(`http://localhost:8080/api/events/`, { method: "GET", })
+    if (res.status === 200) {
+      events.value = await res.json();
+      events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
+    } else {
+      console.log('can not');
+    }
   }
 }
 
@@ -27,7 +34,7 @@ const SortByStatus = async () => {
   let res
   const day = moment().format().slice(0, 19) + 'Z'
   if (filterStatus.value == 'Past') {
-    res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/schedule-past?DateTime=${day}`, { method: "GET", })
+    res = await fetch(`http://localhost:8080/api/events/schedule-past?DateTime=${day}`, { method: "GET", })
     if (res.status === 200) {
       events.value = await res.json();
       events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
@@ -36,7 +43,7 @@ const SortByStatus = async () => {
     }
   }
   else if (filterStatus.value == 'Upcoming') {
-    res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/schedule-comingup?DateTime=${day}`, { method: "GET", })
+    res = await fetch(`http://localhost:8080/api/events/schedule-comingup?DateTime=${day}`, { method: "GET", })
     if (res.status === 200) {
       events.value = await res.json();
       events.value.sort(function (a, b) { return new Date(a.eventStartTime) - new Date(b.eventStartTime); });
@@ -50,7 +57,7 @@ const SortByDate = async (f) => {
   let res
   const date = moment(f).format().slice(0, 10)
   if (filterDate.value !== '') {
-    res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/datetime?Date=${date}`, { method: "GET", })
+    res = await fetch(`http://localhost:8080/api/events/datetime?Date=${date}`, { method: "GET", })
     if (res.status === 200) {
       events.value = await res.json();
       events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
@@ -58,7 +65,7 @@ const SortByDate = async (f) => {
       console.log('can not');
     }
   } else if (filterDate.value === null || filterDate.value === '') {
-    res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/`, { method: "GET", })
+    res = await fetch(`http://localhost:8080/api/events/`, { method: "GET", })
     if (res.status === 200) {
       events.value = await res.json();
       events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
@@ -69,7 +76,7 @@ const SortByDate = async (f) => {
 }
 
 const removeEvent = async (removeEventId) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${removeEventId}`,{method: 'DELETE'})
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${removeEventId}`, { method: 'DELETE' })
   if (res.status === 200) {
     events.value = events.value.filter((event) => event.id !== removeEventId)
     console.log('deleted successfully')
@@ -80,7 +87,7 @@ const removeEvent = async (removeEventId) => {
 const overlap = ref(false)
 const edited = ref(false)
 const editEvent = async (editEvent) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${editEvent.id}`,{
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${editEvent.id}`, {
     method: 'PUT',
     headers: {
       'content-type': 'application/json'
@@ -104,7 +111,7 @@ const editEvent = async (editEvent) => {
 }
 
 const getAllEvent = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/`, {
+  const res = await fetch(`http://localhost:8080/api/events/`, {
     method: "GET",
   });
   if (res.status === 200) {
@@ -135,9 +142,9 @@ const getEventCategory = async () => {
   }
 }
 const cancelEdit = () => {
-  if (overlap.value == true){
-        location.reload()
-    }
+  if (overlap.value == true) {
+    location.reload()
+  }
 }
 const useSortCategory = ref(false)
 const useSortStatus = ref(false)
@@ -181,8 +188,9 @@ const useSortDate = ref(false)
         v-on:click="useSortCategory = false, useSortStatus = false, useSortDate = true">Sort By Date</button>
       <div v-if="useSortDate == true">
         <form class="form-inline">
-          <Datepicker :enableTimePicker="false" v-model="filterDate" class="datepicker" style="width: 12rem; margin-top: 0px;" />
-            <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529"
+          <Datepicker :enableTimePicker="false" v-model="filterDate" class="datepicker"
+            style="width: 12rem; margin-top: 0px;" />
+          <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529"
             @click="SortByDate(filterDate)" class="filter-btn" style="margin-top: -40px;">
         </form>
       </div>
@@ -193,13 +201,8 @@ const useSortDate = ref(false)
 
     <h5 class="mt-4">{{ schedule() }}</h5>
     <div v-if="events.length !== 0">
-      <EventList 
-        :eventList="events" 
-        :overlap="overlap" 
-        :edited="edited" 
-        @delete="removeEvent" 
-        @edit="editEvent" 
-        @cancelEdit="cancelEdit"/>
+      <EventList :eventList="events" :overlap="overlap" :edited="edited" @delete="removeEvent" @edit="editEvent"
+        @cancelEdit="cancelEdit" />
     </div>
 
   </div>
@@ -212,13 +215,15 @@ const useSortDate = ref(false)
 .body {
   font-family: 'Radio Canada', 'Noto Sans Thai';
 }
-.all-btn{
+
+.all-btn {
   background-color: #e74694;
   border-color: #e74694;
   color: black;
   padding-left: 20px;
   padding-right: 20px;
 }
+
 .form-inline {
   display: flex;
   flex-flow: row wrap;

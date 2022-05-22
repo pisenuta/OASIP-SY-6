@@ -8,33 +8,22 @@ const events = ref([])
 const filterEvent = ref()
 const filterStatus = ref()
 const filterDate = ref()
+
 const SortByCategory = async (id) => {
-  let res
-  if (filterEvent.value !== '' || filterEvent.value !== null || filterEvent.value !== undefined) {
-    console.log(filterEvent.value);
-    res = await fetch(`http://localhost:8080/api/events/clinic?eventCategoryId=${id}`, { method: "GET" })
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/clinic?eventCategoryId=${id}`, { method: "GET" })
     if (res.status === 200) {
       events.value = await res.json();
       events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
     } else {
       console.log('can not');
     }
-  } else if (filterEvent.value === '' || filterEvent.value === null || filterEvent.value === undefined){
-    res = await fetch(`http://localhost:8080/api/events/`, { method: "GET", })
-    if (res.status === 200) {
-      events.value = await res.json();
-      events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
-    } else {
-      console.log('can not');
-    }
-  }
 }
 
 const SortByStatus = async () => {
   let res
   const day = moment().format().slice(0, 19) + 'Z'
   if (filterStatus.value == 'Past') {
-    res = await fetch(`http://localhost:8080/api/events/schedule-past?DateTime=${day}`, { method: "GET", })
+    res = await fetch(`${import.meta.env.VITE_BASE_URL}events/schedule-past?DateTime=${day}`, { method: "GET", })
     if (res.status === 200) {
       events.value = await res.json();
       events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
@@ -43,9 +32,10 @@ const SortByStatus = async () => {
     }
   }
   else if (filterStatus.value == 'Upcoming') {
-    res = await fetch(`http://localhost:8080/api/events/schedule-comingup?DateTime=${day}`, { method: "GET", })
+    res = await fetch(`${import.meta.env.VITE_BASE_URL}events/schedule-comingup?DateTime=${day}`, { method: "GET", })
     if (res.status === 200) {
       events.value = await res.json();
+      //Ascending
       events.value.sort(function (a, b) { return new Date(a.eventStartTime) - new Date(b.eventStartTime); });
     } else {
       console.log('can not');
@@ -57,26 +47,19 @@ const SortByDate = async (f) => {
   let res
   const date = moment(f).format().slice(0, 10)
   if (filterDate.value !== '') {
-    res = await fetch(`http://localhost:8080/api/events/datetime?Date=${date}`, { method: "GET", })
-    if (res.status === 200) {
-      events.value = await res.json();
-      events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
-    } else {
-      console.log('can not');
-    }
-  } else if (filterDate.value === null || filterDate.value === '') {
-    res = await fetch(`http://localhost:8080/api/events/`, { method: "GET", })
-    if (res.status === 200) {
-      events.value = await res.json();
-      events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
-    } else {
-      console.log('can not');
-    }
+    res = await fetch(`${import.meta.env.VITE_BASE_URL}events/datetime?Date=${date}`, { method: "GET", })
+  } 
+  
+  if (res.status === 200) {
+    events.value = await res.json();
+    events.value.sort(function (a, b) { return new Date(a.eventStartTime) - new Date(b.eventStartTime); });
+  } else {
+    console.log('can not');
   }
 }
 
 const removeEvent = async (removeEventId) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${removeEventId}`, { method: 'DELETE' })
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${removeEventId}`, { method: 'DELETE' })
   if (res.status === 200) {
     events.value = events.value.filter((event) => event.id !== removeEventId)
     console.log('deleted successfully')
@@ -87,7 +70,7 @@ const removeEvent = async (removeEventId) => {
 const overlap = ref(false)
 const edited = ref(false)
 const editEvent = async (editEvent) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${editEvent.id}`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${editEvent.id}`, {
     method: 'PUT',
     headers: {
       'content-type': 'application/json'
@@ -106,16 +89,16 @@ const editEvent = async (editEvent) => {
   } else {
     edited.value = false
     overlap.value = true
-    console.log(res.statusText);
   }
 }
 
 const getAllEvent = async () => {
-  const res = await fetch(`http://localhost:8080/api/events/`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/`, {
     method: "GET",
   });
   if (res.status === 200) {
-    events.value = await res.json()
+    events.value = await res.json();
+    events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
   } else {
     console.log('can not');
   }
@@ -123,9 +106,6 @@ const getAllEvent = async () => {
 
 onBeforeMount(async () => {
   await getAllEvent();
-  await SortByCategory();
-  await SortByStatus();
-  await SortByDate();
   await getEventCategory();
 })
 

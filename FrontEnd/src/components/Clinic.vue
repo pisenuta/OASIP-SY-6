@@ -3,8 +3,7 @@ import { ref, onBeforeMount } from 'vue'
 import editClinic from '../components/editClinic.vue'
 const categories = ref([])
 const getEventCategory = async () => {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcategory` , {
-    const res = await fetch(`http://localhost:8080/api/eventcategory`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory` , {
         method: "GET",
     });
     if (res.status === 200) {
@@ -50,7 +49,7 @@ const modifyClinic = async (clinic) => {
         return 
     }
 
-    const res = await fetch(`http://localhost:8080/api/eventcategory/${clinic.id}`,{
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory/${clinic.id}`,{
       method: 'PUT',
       headers:{
         'content-type': 'application/json'

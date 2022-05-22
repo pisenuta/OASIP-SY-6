@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
-defineEmits(['delete', 'edit', 'toEditingMode'])
+defineEmits(['delete', 'edit', 'toEditingMode', 'cancelEdit'])
 const props = defineProps({
     eventList: {
         type: Array,
@@ -17,29 +17,15 @@ const props = defineProps({
         default: false
     }
 });
-const DetailBtn = ref(false);
-const openDetail = () => {
-    DetailBtn.value = true;
-};
-const closeDetail = () => {
-    DetailBtn.value = false;
-};
-const edit = ref(false)
-const editMode = () => {
-    edit.value = true
-}
+const DetailPopUp = ref(false);
+const editingMode = ref(false)
 const showIndex = ref(null);
-const deleteAlert = ref(false)
-const showAlert = () => { deleteAlert.value = true }
-const hideAlert = () => { deleteAlert.value = false }
+const confirmDelete = ref(false)
 const deleted = ref(false)
 const showDeleted = () => {
-    deleteAlert.value = false
+    confirmDelete.value = false
     deleted.value = true
-    DetailBtn.value = false
-}
-const closeDeleted = () => {
-    deleted.value = false
+    DetailPopUp.value = false
 }
 const editTime = ref("")
 const editNote = ref("")
@@ -49,10 +35,9 @@ const editEvent = (event) => {
         event.eventNotes = editNote.value
     } else {
         event.eventStartTime = editTime.value
-    event.eventNotes = editNote.value
-    return event
+        event.eventNotes = editNote.value
     }
-    
+    return event
 }
 const resetEditData = () => {
     editTime.value = ""
@@ -62,6 +47,7 @@ function formateTime(date) {
     const options = {hour: "numeric", minute: "numeric"};
     return new Date(date).toLocaleString("th-TH", options);
 }
+
 </script>
 
 <template>
@@ -90,24 +76,24 @@ function formateTime(date) {
                     <td>{{ event.eventDuration }}</td>
                     <td style="width: 40%;">{{ event.bookingName }}</td>
                     <td>
-                        <span class="detail-Btn" v-on:click="showIndex = index" @click="openDetail"
+                        <span class="detail-Btn" v-on:click="showIndex = index , DetailPopUp = true"
                             style="padding-right: 15px; font-weight: bold;">More</span>
                     </td>
                 </tr>
             </tbody>
         </table>
         <div>
-            <div class="container" v-if="DetailBtn == true">
+            <div class="container" v-if="DetailPopUp == true">
                 <ul>
                     <li v-for="(event, index) in eventList" :key="index">
-                        <div class="card-body " v-if="DetailBtn == true">
+                        <div class="card-body " v-if="DetailPopUp == true">
                             <div class="card popDetail" style="width: 38rem;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header"
                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index
                                                 + 1
                                         }}</div>
-                                    <button class="close-detail" @click="closeDetail" v-on:click="showIndex = null">
+                                    <button class="close-detail" @click="closeDetail" v-on:click="showIndex = null , DetailPopUp = false">
                                         &times;
                                     </button>
                                 </div>
@@ -130,8 +116,8 @@ function formateTime(date) {
                                     </p>
                                     <!-- Edit -->
                                     <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;"
-                                        v-on:click="editMode">Edit Appointment</button>
-                                    <div class="containerV2" v-if="edit === true">
+                                        v-on:click="editingMode = true">Edit Appointment</button>
+                                    <div class="containerV2" v-if="editingMode === true">
                                         <div class="card popEdit" style="width: 38rem;" >
                                             <div class="card-body">
                                                 <div class="card-title">
@@ -161,8 +147,8 @@ function formateTime(date) {
                                                             @click="$emit('edit', editEvent(event), resetEditData())"
                                                             >Submit</button>
                                                         <button type="button" class="btn btn-secondary"
-                                                            v-on:click="edit = false"
-                                                            @click="resetEditData()">Cancel</button>
+                                                            v-on:click="editingMode = false"
+                                                            @click="$emit('cancelEdit',resetEditData())">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -170,10 +156,10 @@ function formateTime(date) {
                                     </div>
 
                                     <!-- Delete -->
-                                    <button class="btn btn-danger detail-btn-each" @click="showAlert">Cancel
+                                    <button class="btn btn-danger detail-btn-each" v-on:click="confirmDelete = true">Cancel
                                         Appointment</button>
-                                    <div class="containerV2" v-if="deleteAlert === true || deleted === true">
-                                        <div class="card alert" v-if="deleteAlert === true">
+                                    <div class="containerV2" v-if="confirmDelete === true || deleted === true">
+                                        <div class="card alert" v-if="confirmDelete === true">
                                             <div class="card-body">
                                                 <img
                                                     src="https://api.iconify.design/akar-icons/circle-alert.svg?color=white&width=75&height=75">
@@ -184,7 +170,7 @@ function formateTime(date) {
                                                     @click="$emit('delete', event.id)"
                                                     v-on:click="showDeleted">OK</button>
                                                 <button type="button" class="btn btn-secondary"
-                                                    style="margin-left: 30px;" @click="hideAlert">Cancel</button>
+                                                    style="margin-left: 30px;" v-on:click="confirmDelete = false">Cancel</button>
                                             </div>
                                         </div>
                                     </div>
@@ -201,7 +187,7 @@ function formateTime(date) {
                             src="https://api.iconify.design/healthicons/yes-outline.svg?color=white&width=90&height=90">
                         <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> Event Successfully</p>
                         <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
-                            @click="closeDeleted">OK</button>
+                            v-on:click="deleted = false">OK</button>
                     </div>
                 </div>
             </div>
@@ -212,7 +198,7 @@ function formateTime(date) {
                             src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                         <p class="card-text" style="margin-top: 10px;"><b>Edited</b> Event Successfully</p>
                         <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
-                            v-on:click="edited = false, edit = false">OK</button>
+                            v-on:click="edited = false, editingMode = false">OK</button>
                     </div>
                 </div>
             </div>

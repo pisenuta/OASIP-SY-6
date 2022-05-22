@@ -8,5 +8,6 @@ RUN mvn -f pom.xml clean
 RUN mvn install -DskipTests
 
 FROM openjdk:17-jdk-slim as production-stage
+EXPOSE 8080
 COPY --from=build-stage /backend/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]

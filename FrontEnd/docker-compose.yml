@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   oasip:
-    image: frontendimg
+    image: pphaiaiai/frontendimg
     container_name: frontend
     networks: 
       - oasip-network

@@ -48,6 +48,11 @@ function formateTime(date) {
     return new Date(date).toLocaleString("th-TH", options);
 }
 
+function formateDate(date) {
+    const options = {year: "numeric", month: "long", day: "numeric"};
+    return new Date(date).toLocaleString("en-TH", options);
+}
+
 </script>
 
 <template>
@@ -70,7 +75,7 @@ function formateTime(date) {
             <tbody>
                 <tr v-for="(event, index) in eventList" :key="index">
                     <td scope="row" style="padding-left: 25px;"><b>{{ index + 1 }}</b></td>
-                    <td>{{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }} </td>
+                    <td>{{ formateDate(moment(event.eventStartTime).format('ddd, D MMM YYYY')) }} </td>
                     <td>{{ formateTime(event.eventStartTime) }}</td>
                     <td>{{ event.eventCategory.eventCategoryName }}</td>
                     <td>{{ event.eventDuration }}</td>

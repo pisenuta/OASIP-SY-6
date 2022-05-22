@@ -6,11 +6,11 @@ import Datepicker from '@vuepic/vue-datepicker'
 
 const events = ref([])
 const filterEvent = ref()
-const filterStatus = ref('All')
+const filterStatus = ref()
 const filterDate = ref()
 const SortByCategory = async (id) => {
   let res
-  if (filterEvent.value !== '' && filterEvent.value !== 'All') {
+  if (filterEvent.value !== '') {
     console.log(filterEvent.value);
     res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/clinic?eventCategoryId=${id}`, { method: "GET" })
   }
@@ -115,11 +115,11 @@ const getAllEvent = async () => {
 }
 
 onBeforeMount(async () => {
+  await getAllEvent();
   await SortByCategory();
   await SortByStatus();
   await SortByDate();
   await getEventCategory();
-  await getAllEvent();
 })
 
 const schedule = () => {
@@ -130,7 +130,6 @@ const schedule = () => {
 const categories = ref([])
 const getEventCategory = async () => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
-  // const res = await fetch(`http://localhost:8080/api/eventcategory/`)
   if (res.status === 200) {
     categories.value = await res.json()
   }

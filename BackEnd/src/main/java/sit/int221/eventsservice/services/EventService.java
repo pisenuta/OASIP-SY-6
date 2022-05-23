@@ -54,10 +54,8 @@ public class EventService {
                     newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
                     newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
                     newEventStartTime.equals(eventStartTime))
-            {
-                throw new OverlappedExceptionHandler(errors.toString());
+                { throw new OverlappedExceptionHandler(errors.toString()); }
             }
-        }
         }
         Event e = modelMapper.map(newEvent, Event.class);
         return repository.saveAndFlush(e);

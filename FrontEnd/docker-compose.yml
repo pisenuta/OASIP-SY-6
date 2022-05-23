@@ -1,9 +1,10 @@
 version: '3.7'
 services:
   oasip:
-    image: pphaiaiai/frontendimg
+    build: ./
+    image: frontendimg
     container_name: frontend
-    networks: 
+    networks:
       - oasip-network
     restart: always
     environment:

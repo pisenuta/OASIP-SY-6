@@ -1,7 +1,8 @@
 version: '3.7'
 services:
   backend:
-    image: pphaiaiai/backendimg
+    build: ./
+    image: backendimg
     container_name: backend
     networks: 
       - oasip-network

@@ -18,7 +18,7 @@ import javax.validation.constraints.*;
 @Table(
         name = "eventcategory"
 )
-public class Eventcategory {
+public class Category {
     @Id
     @Column(
             name = "eventCategoryId",
@@ -56,7 +56,7 @@ public class Eventcategory {
     )
     private Set<Event> events = new LinkedHashSet();
 
-    public Eventcategory() {
+    public Category() {
     }
 
 }

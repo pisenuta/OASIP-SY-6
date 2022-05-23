@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SimpleEventCategoryDTO {
+public class SimpleCategoryDTO {
     private Integer id;
     private String eventCategoryName;
     private String eventCategoryDescription;

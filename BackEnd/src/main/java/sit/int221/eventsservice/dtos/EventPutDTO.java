@@ -1,6 +1,5 @@
 package sit.int221.eventsservice.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class EventPutDTO {
     @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventNotes;
 
-    private SimpleEventCategoryDTO eventCategory;
+    private SimpleCategoryDTO eventCategory;
 
     private Integer eventDuration;
 }

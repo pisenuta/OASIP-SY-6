@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.validation.constraints.*;
 import java.time.Instant;
 
@@ -19,7 +18,7 @@ public class SimpleEventDTO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotNull(message = "EventCategory shouldn't be null.")
-    private SimpleEventCategoryDTO eventCategory;
+    private SimpleCategoryDTO eventCategory;
     @NotBlank(message = "Name shouldn't be null or empty.")
     @Size(max = 100 , message = "Name must less or equal then 100.")
     private String bookingName;

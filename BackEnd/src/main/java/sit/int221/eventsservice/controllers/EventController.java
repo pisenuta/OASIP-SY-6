@@ -14,7 +14,7 @@ import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
 import sit.int221.eventsservice.dtos.EventPutDTO;
 import sit.int221.eventsservice.dtos.SimpleEventDTO;
 import sit.int221.eventsservice.entities.Event;
-import sit.int221.eventsservice.entities.Eventcategory;
+import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.services.EventService;
 
@@ -29,9 +29,6 @@ public class EventController {
     private ModelMapper modelMapper;
     @Autowired
     private EventRepository repository;
-
-    public EventController() {
-    }
 
     @GetMapping({"/{Id}"})
     public SimpleEventDTO getEventById(@PathVariable Integer Id) {
@@ -84,9 +81,8 @@ public class EventController {
     }
 
 
-
     @GetMapping({"/clinic"})
-    public List <SimpleEventDTO> getEventByCategory(@RequestParam Eventcategory eventCategoryId) {
+    public List <SimpleEventDTO> getEventByCategory(@RequestParam Category eventCategoryId) {
         return this.eventService.getEventByCategoryId(eventCategoryId);
     }
 

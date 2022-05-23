@@ -1,13 +1,11 @@
 package sit.int221.eventsservice.controllers;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sit.int221.eventsservice.dtos.SimpleCategoryDTO;
+import sit.int221.eventsservice.dtos.CategoryDTO;
 import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.repositories.CategoryRepository;
 import sit.int221.eventsservice.services.CategoryService;
-import sit.int221.eventsservice.services.EventService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,13 +22,8 @@ public class CategoryController {
     public CategoryController() {
     }
 
-    @GetMapping({"/{Id}"})
-    public SimpleCategoryDTO getSimpleCategoryById(@PathVariable Integer Id) {
-        return this.categoryService.getSimpleEventCategoryById(Id);
-    }
-
     @GetMapping({""})
-    public List<SimpleCategoryDTO> getCategory() {
+    public List<CategoryDTO> getCategory() {
         return this.categoryService.getAllSimpleEventCategory();
     }
 

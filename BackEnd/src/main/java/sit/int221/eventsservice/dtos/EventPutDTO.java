@@ -20,7 +20,7 @@ public class EventPutDTO {
     @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventNotes;
 
-    private SimpleCategoryDTO eventCategory;
+    private CategoryDTO eventCategory;
 
     private Integer eventDuration;
 }

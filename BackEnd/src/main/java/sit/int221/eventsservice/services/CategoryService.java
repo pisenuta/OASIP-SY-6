@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import sit.int221.eventsservice.dtos.SimpleCategoryDTO;
+import sit.int221.eventsservice.dtos.CategoryDTO;
 import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.repositories.CategoryRepository;
 
@@ -24,15 +24,15 @@ public class CategoryService {
         this.repository = repository;
     }
 
-    public SimpleCategoryDTO getSimpleEventCategoryById(Integer id) {
+    public CategoryDTO getSimpleEventCategoryById(Integer id) {
         Category category = (Category)this.repository.findById(id).orElseThrow(() -> {
             return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
         });
-        return (SimpleCategoryDTO) this.modelMapper.map(category, SimpleCategoryDTO.class);
+        return (CategoryDTO) this.modelMapper.map(category, CategoryDTO.class);
     }
 
-    public List<SimpleCategoryDTO> getAllSimpleEventCategory() {
+    public List<CategoryDTO> getAllSimpleEventCategory() {
         List<Category> eventcategories = repository.findAll();
-        return listMapper.mapList(eventcategories, SimpleCategoryDTO.class, modelMapper);
+        return listMapper.mapList(eventcategories, CategoryDTO.class, modelMapper);
     }
 }

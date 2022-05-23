@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
-import sit.int221.eventsservice.dtos.SimpleEventDTO;
+import sit.int221.eventsservice.dtos.EventDTO;
 import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.repositories.EventRepository;
@@ -29,21 +29,21 @@ public class EventService {
         this.repository = repository;
     }
 
-    public SimpleEventDTO getSimpleEventById(Integer id) {
+    public EventDTO getSimpleEventById(Integer id) {
         Event event = (Event)this.repository.findById(id).orElseThrow(() -> {
             return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
         });
-        return (SimpleEventDTO)this.modelMapper.map(event, SimpleEventDTO.class);
+        return (EventDTO)this.modelMapper.map(event, EventDTO.class);
     }
 
-    public List<SimpleEventDTO> getAllSimpleEvent() {
-        return this.listMapper.mapList(this.repository.findAll(Sort.by("eventStartTime").descending()), SimpleEventDTO.class, this.modelMapper);
+    public List<EventDTO> getAllSimpleEvent() {
+        return this.listMapper.mapList(this.repository.findAll(Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
     }
 
-    public Event save(SimpleEventDTO newEvent) throws OverlappedExceptionHandler {
+    public Event save(EventDTO newEvent) throws OverlappedExceptionHandler {
         Date newEventStartTime = Date.from(newEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(newEvent.getEventStartTime()), newEvent.getEventDuration());
-        List<SimpleEventDTO> eventList = getAllSimpleEvent();
+        List<EventDTO> eventList = getAllSimpleEvent();
         for (int i = 0; i < eventList.size(); i++) {
             if (newEvent.getEventCategory().getId() == eventList.get(i).getEventCategory().getId()){ //เช็คเฉพาะ EventCategory เดียวกัน
             List errors = new ArrayList();
@@ -67,23 +67,23 @@ public class EventService {
         return new Date(date.getTime()+(duration*60000+60000));
     }
 
-    public List<SimpleEventDTO> getEventByCategoryId(Category eventCategoryId){
+    public List<EventDTO> getEventByCategoryId(Category eventCategoryId){
         List<Event> eventByCategory =repository.findAllByEventCategoryOrderByEventCategoryDesc(eventCategoryId);
-        return listMapper.mapList(eventByCategory, SimpleEventDTO.class, modelMapper);
+        return listMapper.mapList(eventByCategory, EventDTO.class, modelMapper);
     }
 
-    public List<SimpleEventDTO> getPastEvent(Instant instant) {
+    public List<EventDTO> getPastEvent(Instant instant) {
         List<Event> pastEvent = repository.findAllByEventStartTimeBeforeOrderByEventStartTimeDesc(instant);
-        return listMapper.mapList(pastEvent, SimpleEventDTO.class, modelMapper);
+        return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
     }
 
-    public List<SimpleEventDTO> getUpcomingEvent(Instant instant) {
+    public List<EventDTO> getUpcomingEvent(Instant instant) {
         List<Event> pastEvent = repository.findAllByEventStartTimeAfterOrderByEventStartTimeAsc(instant);
-        return listMapper.mapList(pastEvent, SimpleEventDTO.class, modelMapper);
+        return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
     }
 
-    public List<SimpleEventDTO> getEventByDateTime(String startTime, String endTime) {
+    public List<EventDTO> getEventByDateTime(String startTime, String endTime) {
         List<Event> eventByDateTime = repository.findAllByEventStartTimeBetween(Instant.parse(startTime), Instant.parse(endTime));
-        return  listMapper.mapList(eventByDateTime, SimpleEventDTO.class, modelMapper);
+        return  listMapper.mapList(eventByDateTime, EventDTO.class, modelMapper);
     }
 }

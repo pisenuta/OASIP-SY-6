@@ -102,9 +102,6 @@ const createEvent = async (event) => {
        
 }
 const addAlert = ref(false)
-const added = () => {
-    addAlert.value = false
-}
 
 </script>
  
@@ -127,7 +124,7 @@ const added = () => {
                 <div class="card-body" style="margin-top: 10px;">
                     <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                     <p class="card-text" style="margin-top: 10px;">Added Event Successfully</p>
-                    <router-link to="/show-all-events"><button type="button" class="btn btn-success" @click="added" style="width: 100px; margin-top: 5px;">OK</button></router-link>
+                    <router-link to="/show-all-events"><button type="button" class="btn btn-success" v-on:click="addAlert = false" style="width: 100px; margin-top: 5px;">OK</button></router-link>
                 </div>
             </div>
         </div>

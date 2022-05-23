@@ -48,11 +48,6 @@ function formateTime(date) {
     return new Date(date).toLocaleString("th-TH", options);
 }
 
-function formateDate(date) {
-    const options = {year: "numeric", month: "long", day: "numeric"};
-    return new Date(date).toLocaleString("en-TH", options);
-}
-
 </script>
 
 <template>

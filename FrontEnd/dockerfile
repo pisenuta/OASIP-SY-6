@@ -10,4 +10,3 @@ RUN npm run build
 #CREATE NGINX SERVER (production build)
 FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /frontend/dist /usr/share/nginx/html
-CMD [ "nginx", "-g", "daemon off;" ]

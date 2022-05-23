@@ -99,8 +99,8 @@ const createEvent = async (event) => {
         overlap.value = true
         console.log('error, can not add');
     }
-       
 }
+
 const addAlert = ref(false)
 
 </script>

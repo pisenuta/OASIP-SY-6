@@ -1,10 +1,8 @@
 package sit.int221.eventsservice.advice;
 
 import lombok.*;
-import org.springframework.http.HttpStatus;
-
 import java.util.Date;
-import java.util.Map;
+
 @Getter
 @Setter
 @AllArgsConstructor

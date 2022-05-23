@@ -5,7 +5,7 @@ import ManageAdd from './ManageAdd.vue'
 
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`)
     if (res.status === 200) {
         categories.value = await res.json()
     }

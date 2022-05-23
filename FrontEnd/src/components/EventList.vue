@@ -75,7 +75,7 @@ function formateDate(date) {
             <tbody>
                 <tr v-for="(event, index) in eventList" :key="index">
                     <td scope="row" style="padding-left: 25px;"><b>{{ index + 1 }}</b></td>
-                    <td>{{ formateDate(moment(event.eventStartTime).format('ddd, D MMM YYYY')) }} </td>
+                    <td>{{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }} </td>
                     <td>{{ formateTime(event.eventStartTime) }}</td>
                     <td>{{ event.eventCategory.eventCategoryName }}</td>
                     <td>{{ event.eventDuration }}</td>

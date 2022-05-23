@@ -93,7 +93,7 @@ const editEvent = async (editEvent) => {
 }
 
 const getAllEvent = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
     method: "GET",
   });
   if (res.status === 200) {
@@ -116,7 +116,7 @@ const schedule = () => {
 }
 const categories = ref([])
 const getEventCategory = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}eventcategory`)
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`)
   if (res.status === 200) {
     categories.value = await res.json()
   }

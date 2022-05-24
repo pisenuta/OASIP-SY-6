@@ -15,6 +15,10 @@ const props = defineProps({
     edited:{
         type: Boolean,
         default: false
+    },    
+    errorPast:{
+        type: Boolean,
+        default: false
     }
 });
 const DetailPopUp = ref(false);
@@ -130,6 +134,7 @@ function formateTime(date) {
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                                     {{ event.eventCategory.eventCategoryName }}<br />
+                                                    <p v-if="errorPast && !overlap" class="error">Can not choose past time.</p>
                                                     <p v-if="overlap" class="error">Time is overlapping</p>
                                                     <Datepicker 
                                                         :minDate="new Date()" 

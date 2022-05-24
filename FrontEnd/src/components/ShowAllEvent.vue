@@ -10,13 +10,13 @@ const filterStatus = ref()
 const filterDate = ref()
 
 const SortByCategory = async (id) => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/clinic?eventCategoryId=${id}`, { method: "GET" })
-    if (res.status === 200) {
-      events.value = await res.json();
-      events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
-    } else {
-      console.log('can not');
-    }
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/clinic?eventCategoryId=${id}`, { method: "GET" })
+  if (res.status === 200) {
+    events.value = await res.json();
+    events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
+  } else {
+    console.log('can not');
+  }
 }
 
 const SortByStatus = async () => {
@@ -43,13 +43,13 @@ const SortByStatus = async () => {
   }
 }
 
-const SortByDate = async (f) => {
+const SortByDate = async (selectDate) => {
   let res
-  const date = moment(f).format().slice(0, 10)
+  const date = moment(selectDate).format().slice(0, 10)
   if (filterDate.value !== '') {
     res = await fetch(`${import.meta.env.VITE_BASE_URL}events/datetime?Date=${date}`, { method: "GET", })
-  } 
-  
+  }
+
   if (res.status === 200) {
     events.value = await res.json();
     events.value.sort(function (a, b) { return new Date(a.eventStartTime) - new Date(b.eventStartTime); });
@@ -69,7 +69,16 @@ const removeEvent = async (removeEventId) => {
 
 const overlap = ref(false)
 const edited = ref(false)
+const errorPast = ref(false)
 const editEvent = async (editEvent) => {
+  if (moment(editEvent.eventStartTime).isAfter(moment(new Date()))) {
+    errorPast.value = false
+  } else {
+    errorPast.value = true
+  }
+  if(errorPast.value == true){
+        return
+  }
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${editEvent.id}`, {
     method: 'PUT',
     headers: {
@@ -181,7 +190,7 @@ const useSortDate = ref(false)
 
     <h5 class="mt-4">{{ schedule() }}</h5>
     <div v-if="events.length !== 0">
-      <EventList :eventList="events" :overlap="overlap" :edited="edited" @delete="removeEvent" @edit="editEvent"
+      <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
         @cancelEdit="cancelEdit" />
     </div>
 

@@ -131,7 +131,7 @@ const getEventCategory = async () => {
   }
 }
 const cancelEdit = () => {
-  if (overlap.value == true) {
+  if (overlap.value == true || errorPast.value == true) {
     location.reload()
   }
 }

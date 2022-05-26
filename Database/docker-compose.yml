@@ -3,8 +3,6 @@ services:
   dbevents: 
     container_name: dbevents
     image: mysql
-    ports:
-      - "3306"
     networks: 
       - oasip-network
     volumes:

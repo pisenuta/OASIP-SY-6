@@ -55,9 +55,9 @@ const modifyClinic = async (clinic) => {
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        eventCategoryName: clinic.eventCategoryName,
-        eventCategoryDescription:clinic.eventCategoryDescription,
-        eventDuration:clinic.eventDuration
+        eventCategoryName: clinic.eventCategoryName.trim(),
+        eventCategoryDescription:clinic.eventCategoryDescription.trim(),
+        eventDuration:clinic.eventDuration.trim()
       })
     })
     if(res.status === 200){

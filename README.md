@@ -1,5 +1,5 @@
 # OASIP-SY-6
-Version-Integrated Project I
+Version: Integrated Project I
 ### Team: PP
 | No. | Name              | Student ID   |
 |:---:|-------------------|--------------|

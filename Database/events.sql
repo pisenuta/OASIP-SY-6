@@ -29,19 +29,11 @@ CREATE TABLE `event` (
   `eventNotes` text(500),
   PRIMARY KEY (`bookingId`),
   KEY `fk_Event_EventCategory_idx` (`eventCategoryId`),
-  CONSTRAINT `fk_Event_EventCategory` FOREIGN KEY (`eventCategoryId`) REFERENCES `eventcategory` (`eventCategoryId`)
+  CONSTRAINT `fk_Event_EventCategory` FOREIGN KEY (`eventCategoryId`) REFERENCES `eventcategory` (`eventCategoryId`),
+  KEY `fk_Event_User_idx` (`userId`),
+  CONSTRAINT `fk_Event_User` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `event`
---
-
-LOCK TABLES `event` WRITE;
-/*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES (1,2,'Somchai Jaidee (OR-7)','somchai.jai@mail.kmutt.ac.th','2022-05-23 13:30:00',30,NULL),(2,1,'Somsri Rakdee (SJ-3)','somsri.rak@mail.kmutt.ac.th','2022-04-27 09:30:00',30,'ขอปรึกษาปัญหาเพื่อนไม่ช่วยงาน'),(3,3,'สมเกียรติ ขยันเรียน กลุ่ม TT-4','somkiat.kay@kmutt.ac.th','2022-05-23 16:30:00',15,NULL);
-/*!40000 ALTER TABLE `event` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `eventcategory`

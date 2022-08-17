@@ -5,7 +5,7 @@
     <div class="title">
       <h1><p>OASIP-SY-6</p> Online Appointment Scheduling</h1>
     </div>
-      <img src="../assets/mainHome.jpeg" class="main">
+      <img src="../assets/home.png" class="main">
     <div class="caption">
       <h2>
         The website for Booking Appointment is easy to use. Just clicks 
@@ -28,7 +28,7 @@
 .title {
     font-family: 'Radio Canada', sans-serif;
     margin-top: 4em;
-    margin-bottom: 3em;
+    margin-bottom: -50px;
 }
 
 .caption{
@@ -49,7 +49,7 @@
 }
 
 .main {
-  width: 50%;
+  width: 40%;
 }
 
 p {

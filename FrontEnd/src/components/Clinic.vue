@@ -147,7 +147,7 @@ const cancelPop = () =>{
             </div>
         </div>
         <div class="container" v-if="editedPop === true">
-            <div class="card" id="add" style="width: 23rem; height: 15rem;">
+            <div class="card" id="center-popup" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">
                     <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                     <p class="card-text" style="margin-top: 10px;">Edit Clinic Successfully</p>

@@ -21,18 +21,32 @@ public class UserService {
     private ListMapper listMapper;
 
     @Autowired
-    public UserService(UserRepository repository){
+    public UserService(UserRepository repository) {
         this.repository = repository;
     }
 
-    public List<UserDTO> getAllUser(){
+    public List<UserDTO> getAllUser() {
         return this.listMapper.mapList(this.repository.findAll(Sort.by("name").descending()), UserDTO.class, this.modelMapper);
     }
 
-    public UserDTO getUserById(Integer id){
-        User user = this.repository.findById(id).orElseThrow(()-> {
+    public UserDTO getUserById(Integer id) {
+        User user = this.repository.findById(id).orElseThrow(() -> {
             return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
         });
-        return this.modelMapper.map(user , UserDTO.class);
+        return this.modelMapper.map(user, UserDTO.class);
+    }
+
+    public User save(UserDTO newUser) {
+        List<UserDTO> userList = getAllUser();
+
+        for(int i = 0; i < userList.size(); i++){
+            if (newUser.getName().equals(userList.get(i).getName())){
+                throw new RuntimeException("User name must be unique.");
+            } else if (newUser.getEmail().equals(userList.get(i).getEmail())){
+                throw new RuntimeException("User email must be unique.");
+            }
+        }
+        User user = modelMapper.map(newUser, User.class);
+        return repository.saveAndFlush(user);
     }
 }

@@ -2,14 +2,13 @@ package sit.int221.eventsservice.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sit.int221.eventsservice.dtos.UserDTO;
+import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.UserRepository;
 import sit.int221.eventsservice.services.UserService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -33,4 +32,10 @@ public class UserController {
     public UserDTO getUserByI(@PathVariable Integer Id){
         return this.userService.getUserById(Id);
     }
+
+    @PostMapping({""})
+    public User create(@Valid @RequestBody UserDTO newUser){
+        return userService.save(newUser);
+    }
+
 }

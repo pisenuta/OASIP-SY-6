@@ -30,9 +30,9 @@ public class User {
     @Column(name = "role", nullable = false)
     private String role;
 
-    @Column(name = "createdOn", nullable = false)
+    @Column(name = "createdOn", nullable = false , insertable = false , updatable = false)
     private Instant createdOn;
 
-    @Column(name = "updatedOn", nullable = false)
+    @Column(name = "updatedOn", nullable = false , insertable = false , updatable = false)
     private Instant updatedOn;
 }

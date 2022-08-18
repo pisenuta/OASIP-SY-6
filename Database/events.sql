@@ -75,7 +75,7 @@ CREATE TABLE `user` (
   `email` VARCHAR(50) NOT NULL,
   `role` ENUM('admin', 'lecturer', 'student') NOT NULL,
   `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`userId`));
 
 INSERT INTO `user` VALUES
@@ -83,6 +83,7 @@ INSERT INTO `user` VALUES
 (2,'Somchai Jaidee','somchai.jai@kmutt.ac.th','lecturer','2022-08-08 15:00:00+07:00','2022-08-08 15:00:00+07:00'),
 (3,'Komkrid Rakdee','komkrid.rak@mail.kmutt.ac.th','student','2022-08-08 15:00:01+07:00','2022-08-08 15:00:01+07:00'),
 (4,'สมเกียรติ ขยันเรียน','somkiat.kay@kmutt.ac.th','student','2022-08-16 09:00:00+07:00','2022-08-16 09:00:00+07:00');
+
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

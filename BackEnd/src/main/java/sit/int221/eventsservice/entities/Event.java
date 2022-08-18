@@ -64,6 +64,10 @@ public class Event {
     )
     private String eventNotes;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User user;
+
     public Event() {
     }
 }

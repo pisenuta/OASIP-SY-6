@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import sit.int221.eventsservice.entities.Role;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
@@ -17,5 +18,5 @@ public class UserEditDTO {
     private String name;
     @NotNull(message = "Email shouldn't be null.")
     private String email;
-    private String role;
+    private Role role;
 }

@@ -2,13 +2,18 @@ package sit.int221.eventsservice.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.dtos.UserDTO;
+import sit.int221.eventsservice.dtos.UserEditDTO;
 import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.UserRepository;
 import sit.int221.eventsservice.services.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Past;
 import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -24,18 +29,45 @@ public class UserController {
     private UserRepository repository;
 
     @GetMapping({""})
-    public List<UserDTO> getUsers(){
+    public List<UserDTO> getUsers() {
         return this.userService.getAllUser();
     }
 
     @GetMapping({"/{Id}"})
-    public UserDTO getUserByI(@PathVariable Integer Id){
+    public UserDTO getUserByI(@PathVariable Integer Id) {
         return this.userService.getUserById(Id);
     }
 
     @PostMapping({""})
-    public User create(@Valid @RequestBody UserDTO newUser){
+    public User create(@Valid @RequestBody UserDTO newUser) {
         return userService.save(newUser);
+    }
+
+    @DeleteMapping({"/{Id}"})
+    public void delete(@PathVariable Integer Id) {
+        repository.findById(Id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        Id + " does not exist !!!"));
+        repository.deleteById(Id);
+    }
+
+    @PutMapping({"/{Id}"})
+    public ResponseEntity update(@Valid @RequestBody UserEditDTO updateUser, @PathVariable Integer Id) throws RuntimeException {
+        List<UserDTO> userList = getUsers();
+
+        for(int i = 0; i < userList.size(); i++) {
+            if(updateUser.getName().equals(userList.get(i).getName()) && userList.get(i).getUserId() != Id){
+                throw new RuntimeException("User name must be unique.");
+            } else if(updateUser.getEmail().equals(userList.get(i).getEmail()) && userList.get(i).getUserId() != Id){
+                throw new RuntimeException("User email must be unique.");
+            }
+        }
+            User user = repository.findById(Id).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
+            );
+        modelMapper.map(updateUser, user);
+        repository.saveAndFlush(user);
+        return ResponseEntity.status(200).body(user);
     }
 
 }

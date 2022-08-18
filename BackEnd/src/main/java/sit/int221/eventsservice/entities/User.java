@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,13 +28,17 @@ public class User {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
-    @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private String role;
+    private Role role;
 
     @Column(name = "createdOn", nullable = false , insertable = false , updatable = false)
     private Instant createdOn;
 
     @Column(name = "updatedOn", nullable = false , insertable = false , updatable = false)
     private Instant updatedOn;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Event> events = new LinkedHashSet<>();
+
 }

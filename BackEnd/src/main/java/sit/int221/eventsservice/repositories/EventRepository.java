@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
-
     List<Event> findAllByEventStartTimeBeforeOrderByEventStartTimeDesc(Instant instantTime);
 
     List<Event> findAllByEventStartTimeAfterOrderByEventStartTimeAsc(Instant instantTime);
@@ -17,5 +16,4 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findAllByEventCategoryOrderByEventCategoryDesc(Category eventCategory);
 
     List<Event> findAllByEventStartTimeBetween(Instant starTime, Instant endTime);
-
 }

@@ -58,4 +58,16 @@ public class ApplicationExceptionHandler extends Exception{
         errors.setError("Clinic name must be unique.");
         return errors;
     }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(CheckUniqueUserExceptionHandler.class)
+    public HandleCheckUnique handleCheckUniqueUser(CheckUniqueUserExceptionHandler cu) {
+        HandleCheckUnique errors = new HandleCheckUnique();
+        String mser = cu.getMessage().toString();
+        errors.setStatus(500);
+        errors.setPath("/api/users");
+        errors.setMessage("Internal Server Error");
+        errors.setError(mser);
+        return errors;
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import sit.int221.eventsservice.advice.CheckUniqueUserExceptionHandler;
 import sit.int221.eventsservice.dtos.UserDTO;
 import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.UserRepository;
@@ -36,14 +37,14 @@ public class UserService {
         return this.modelMapper.map(user, UserDTO.class);
     }
 
-    public User save(UserDTO newUser) {
+    public User save(UserDTO newUser) throws CheckUniqueUserExceptionHandler {
         List<UserDTO> userList = getAllUser();
 
         for(int i = 0; i < userList.size(); i++){
             if (newUser.getName().equals(userList.get(i).getName())){
-                throw new RuntimeException("User name must be unique.");
+                throw new CheckUniqueUserExceptionHandler("User name must be unique.");
             } else if (newUser.getEmail().equals(userList.get(i).getEmail())){
-                throw new RuntimeException("User email must be unique.");
+                throw new CheckUniqueUserExceptionHandler("User email must be unique.");
             }
         }
         User user = modelMapper.map(newUser, User.class);

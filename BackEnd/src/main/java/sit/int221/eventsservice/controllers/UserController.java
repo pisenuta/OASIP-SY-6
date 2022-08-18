@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import sit.int221.eventsservice.advice.CheckUniqueUserExceptionHandler;
 import sit.int221.eventsservice.dtos.UserDTO;
 import sit.int221.eventsservice.dtos.UserEditDTO;
 import sit.int221.eventsservice.entities.User;
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping({""})
-    public User create(@Valid @RequestBody UserDTO newUser) {
+    public User create(@Valid @RequestBody UserDTO newUser) throws CheckUniqueUserExceptionHandler {
         return userService.save(newUser);
     }
 
@@ -52,14 +53,14 @@ public class UserController {
     }
 
     @PutMapping({"/{Id}"})
-    public ResponseEntity update(@Valid @RequestBody UserEditDTO updateUser, @PathVariable Integer Id) throws RuntimeException {
+    public ResponseEntity update(@Valid @RequestBody UserEditDTO updateUser, @PathVariable Integer Id) throws CheckUniqueUserExceptionHandler {
         List<UserDTO> userList = getUsers();
 
         for(int i = 0; i < userList.size(); i++) {
             if(updateUser.getName().equals(userList.get(i).getName()) && userList.get(i).getUserId() != Id){
-                throw new RuntimeException("User name must be unique.");
+                throw new CheckUniqueUserExceptionHandler("User name must be unique.");
             } else if(updateUser.getEmail().equals(userList.get(i).getEmail()) && userList.get(i).getUserId() != Id){
-                throw new RuntimeException("User email must be unique.");
+                throw new CheckUniqueUserExceptionHandler("User email must be unique.");
             }
         }
             User user = repository.findById(Id).orElseThrow(

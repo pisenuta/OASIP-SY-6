@@ -17,7 +17,7 @@ const getUser = async () => {
 };
 
 const removeUser = async (removeUserId) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${removeUserId}`, { method: 'DELETE' })
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`, { method: 'DELETE' })
   // const res = await fetch(`http://localhost:8080/api/users/${removeUserId}`, { method: 'DELETE' })
   if (res.status === 200) {
     users.value = users.value.filter((user) => user.userId !== removeUserId)

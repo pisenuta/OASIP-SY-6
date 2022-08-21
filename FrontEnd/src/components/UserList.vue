@@ -2,6 +2,7 @@
 import { ref, onBeforeMount } from "vue";
 import moment from 'moment';
 import editUser from '../components/editUser.vue';
+import addUser from '../components/addUser.vue';
 
 const users = ref([]);
 
@@ -35,6 +36,7 @@ const showIndex = ref(null);
 const deleted = ref(false);
 
 const editUserPop = ref(false);
+const editedUser = ref(false);
 const notUniqueName = ref(false);
 const notUniqueEmail = ref(false);
 const errorName = ref(false);
@@ -48,80 +50,167 @@ const toEditingMode = (editUser) => {
 }
 const cancelEdit = () => {
   editUserPop.value = false
+  notUniqueName.value = false
+  notUniqueEmail.value = false
+  errorName.value = false
+  errorEmail.value = false
+  errorRole.value = false
+  invaildEmail.value = false
 }
 
 const modifyUser = async (user) => {
-    if(user.name == null || user.name == ''){
-        errorName.value = true
-    } else {
-        errorName.value = false
-    }
-    if(users.value.find((u) => user.name === u.name) && user.name !== editingUser.value.name){
-        notUniqueName.value = true
-    } else {
-        notUniqueName.value = false
-    }
-    if(users.value.find((u) => user.email === u.email) && user.email !== editingUser.value.email){
-        notUniqueEmail.value = true
-    } else {
-        notUniqueEmail.value = false
-    }
-    if(user.email == null || user.email == ''){
-        errorEmail.value = true
-    } else {
-        errorEmail.value = false
-    }
-    if(user.role == null || user.role == ''){
-        errorRole.value = true
-    } else {
-        errorRole.value = false
-    }
-    var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (user.name == null || user.name == '') {
+    errorName.value = true
+  } else {
+    errorName.value = false
+  }
+  if (users.value.find((u) => user.name === u.name) && user.name !== editingUser.value.name) {
+    notUniqueName.value = true
+  } else {
+    notUniqueName.value = false
+  }
+  if (users.value.find((u) => user.email === u.email) && user.email !== editingUser.value.email) {
+    notUniqueEmail.value = true
+  } else {
+    notUniqueEmail.value = false
+  }
+  if (user.email == null || user.email == '') {
+    errorEmail.value = true
+  } else {
+    errorEmail.value = false
+  }
+  if (user.role == null || user.role == '') {
+    errorRole.value = true
+  } else {
+    errorRole.value = false
+  }
+  var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if(user.email.match(emailValidate)){
-      invaildEmail.value = false
-    } else {
-      invaildEmail.value = true
-    }
+  if (user.email.match(emailValidate)) {
+    invaildEmail.value = false
+  } else {
+    invaildEmail.value = true
+  }
 
-    if(errorName.value == true || notUniqueName.value == true || notUniqueEmail.value == true || errorEmail.value == true
-      || errorRole.value == true || invaildEmail.value == true){
-        return 
-    }
+  if (errorName.value == true || notUniqueName.value == true || notUniqueEmail.value == true || errorEmail.value == true
+    || errorRole.value == true || invaildEmail.value == true) {
+    return
+  }
 
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories/${clinic.id}`,{
-      const res = await fetch(`http://localhost:8080/api/users/${user.userId}`,{
-      method: 'PUT',
-      headers:{
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: user.name,
-        email:user.email,
-        role:user.role
-      })
+  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories/${clinic.id}`,{
+  const res = await fetch(`http://localhost:8080/api/users/${user.userId}`, {
+    method: 'PUT',
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: user.name,
+      email: user.email,
+      role: user.role
     })
-    if(res.status === 200){
-        const modifyUser = await res.json()
-        users.value = users.value.map((user) => 
-        user.userId === modifyUser.userId ? {
-            ...user,
-            name: modifyUser.name,
-            email:modifyUser.email,
-            role:modifyUser.role
-            }: user)
-        // editedPop.value = true
-        editUserPop.value = false
-        editingUser.value = {}
-        console.log('edited successfully');
-    } else {
-        console.log('can not edit');
-    }
+  })
+  if (res.status === 200) {
+    const modifyUser = await res.json()
+    users.value = users.value.map((user) =>
+      user.userId === modifyUser.userId ? {
+        ...user,
+        name: modifyUser.name.trim(),
+        email: modifyUser.email.trim(),
+        role: modifyUser.role
+      } : user)
+    editedUser.value = true
+    editUserPop.value = false
+    editingUser.value = {}
+    console.log('edited successfully');
+  } else {
+    console.log('can not edit');
+  }
 }
 
 function formateTime(date) {
   const options = { hour: "numeric", minute: "numeric" };
   return new Date(date).toLocaleString("th-TH", options);
+}
+
+const addUserPop = ref(false)
+const addedUser = ref(false)
+const notUniqueAddName = ref(false);
+const notUniqueAddEmail = ref(false);
+const errorAddName = ref(false);
+const errorAddEmail = ref(false);
+const errorAddRole = ref(false);
+const invaildAddEmail = ref(false);
+const cancelAdd = () => {
+  addUserPop.value = false
+  notUniqueAddName.value = false
+  notUniqueAddEmail.value = false
+  errorAddName.value = false
+  errorAddRole.value = false
+  errorAddEmail.value = false
+  invaildAddEmail.value = false
+}
+
+const createUser = async (user) => {
+  if (user.name == null || user.name == '') {
+    errorAddName.value = true
+  } else {
+    errorAddName.value = false
+  }
+  if (users.value.find((u) => user.name === u.name) && user.name !== editingUser.value.name) {
+    notUniqueAddName.value = true
+  } else {
+    notUniqueAddName.value = false
+  }
+  if (users.value.find((u) => user.email === u.email) && user.email !== editingUser.value.email) {
+    notUniqueAddEmail.value = true
+  } else {
+    notUniqueAddEmail.value = false
+  }
+  if (user.email == null || user.email == '') {
+    errorAddEmail.value = true
+  } else {
+    errorAddEmail.value = false
+  }
+  if (user.role == null || user.role == '') {
+    errorAddRole.value = true
+  } else {
+    errorAddRole.value = false
+  }
+  var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  if (user.email.match(emailValidate)) {
+    invaildAddEmail.value = false
+  } else {
+    invaildAddEmail.value = true
+  }
+
+  if (errorAddName.value == true || notUniqueAddName.value == true || notUniqueAddEmail.value == true || errorAddEmail.value == true
+    || errorAddRole.value == true || invaildAddEmail.value == true) {
+    return
+  }
+
+  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
+  const res = await fetch(`http://localhost:8080/api/users/`, {
+    method: 'POST',
+    headers: { 'content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: user.name.trim(),
+      email: user.email.trim(),
+      role: user.role,
+    })
+  })
+  if (res.status == 201 || res.status == 200) {
+    const addedEvent = await res.json()
+    users.value.push(addedEvent)
+    addedUser.value = true
+    console.log('added successfully');
+  } else if (res.status == 400) {
+    console.log('error, can not add');
+  }
+}
+
+const reload = () => {
+  location.reload();
 }
 </script>
 
@@ -133,18 +222,40 @@ function formateTime(date) {
     <div v-if="users.value === 0">
       <p style="color: #646464">No User</p>
     </div>
-    <button class="btn-grad mx-auto">Add User</button>
+    <button class="btn-grad mx-auto" v-on:click="addUserPop = true">Add User</button>
+
+    <!-- add -->
+    <div v-if="addUserPop == true">
+      <div class="container">
+        <addUser @cancelAdd="cancelAdd" :errorName="errorAddName" :errorEmail="errorAddEmail" :errorRole="errorAddRole"
+          :notUniqueName="notUniqueAddName" :notUniqueEmail="notUniqueAddEmail" :invaildEmail="invaildAddEmail"
+          @addUser="createUser" />
+      </div>
+    </div>
+    <!-- can add -->
+    <div class="containerV2" v-if="addedUser === true">
+      <div class="card alertEdit">
+        <div class="card-body" style="margin-top: 10px;">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+          <p class="card-text" style="margin-top: 10px;"><b>Added</b> User Successfully</p>
+          <button type="button" class="btn btn-grad-ok mx-auto" style="width: 100px; margin-top: 5px; height: 33px;"
+            v-on:click="addedUser = false, addUserPop = false" @clike="reload()">OK</button>
+        </div>
+      </div>
+    </div>
+
     <div class="mt-5">
       <div class="row mx-auto row-cols-4" style="padding-left: 90px;padding-right: 90px;">
         <div class="col-user" v-for="(user, index) in users" :key="index" :value="user">
           <div class="card-body user-body" style="width: 23rem">
             <img src="https://api.iconify.design/icomoon-free/bin.svg?color=%23e74694" class="delete-icon"
               v-on:click="(showIndex = index), (checkDel = true)" />
-
-            <img src="../assets/cat.png" class="profile" v-on:click="(showIndex = index), (UserDetail = true)" />
-            <h5 class="username">{{ user.name }}</h5>
-            <p>{{ user.email }}</p>
-            <p style="color: #646464; padding-bottom: 20px">{{ user.role }}</p>
+            <div v-on:click="(showIndex = index), (UserDetail = true)" style="cursor: pointer;">
+              <img src="../assets/cat.png" class="profile" />
+              <h5 class="username">{{ user.name }}</h5>
+              <p>{{ user.email }}</p>
+              <p style="color: #646464; padding-bottom: 20px">{{ user.role }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -168,10 +279,10 @@ function formateTime(date) {
                 <img src="../assets/cat.png" style="height: 200px" />
                 <h5 class="username">{{ user.name }}</h5>
                 <p>{{ user.email }}</p>
-                <p style="color: #646464;">{{ user.role }}</p>
-                <p style="color: #646464; font-size: 15px; margin-bottom: -5px;">Created on
+                <p style="font-weight: bold; color: black;">{{ user.role }}</p>
+                <p style="color: #888888; font-size: 15px; margin-bottom: -5px;">Created on
                   {{ moment(user.createdOn).format('D MMM YYYY') }} {{ formateTime(user.createdOn) }} </p>
-                <p style="color: #646464; font-size: 15px;">Updated on {{ moment(user.updatedOn).format('D MMM YYYY') }}
+                <p style="color: #888888; font-size: 15px;">Updated on {{ moment(user.updatedOn).format('D MMM YYYY') }}
                   {{ formateTime(user.updatedOn) }}</p>
               </div>
               <button class="btn-grad" style="border-radius: 0px 0px 20px 20px;"
@@ -205,39 +316,54 @@ function formateTime(date) {
         </div>
       </div>
     </div>
+
+    <!-- edit -->
     <div>
       <div class="container" v-if="editUserPop == true">
         <ul>
           <li v-for="(user, index) in users" :key="index" :value="user">
             <div v-if="showIndex === index">
-              <editUser 
-                :userList="users" 
-                :currentUser="editingUser"
-                :errorName="errorName"
-                :errorEmail="errorEmail"
-                :errorRole="errorRole"
-                :notUniqueName="notUniqueName"
-                :notUniqueEmail="notUniqueEmail"
-                :invaildEmail="invaildEmail"
-                @cancelEdit="cancelEdit"
-                @editUser="modifyUser"
-              />  
+              <editUser :userList="users" :currentUser="editingUser" :errorName="errorName" :errorEmail="errorEmail"
+                :errorRole="errorRole" :notUniqueName="notUniqueName" :notUniqueEmail="notUniqueEmail"
+                :invaildEmail="invaildEmail" @cancelEdit="cancelEdit" @editUser="modifyUser" />
             </div>
-        
-                  
-
-           
           </li>
         </ul>
+      </div>
+    </div>
+
+    <!-- can edit -->
+    <div class="containerV2" v-if="editedUser === true">
+      <div class="card alertEdit">
+        <div class="card-body" style="margin-top: 10px;">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+          <p class="card-text" style="margin-top: 10px;"><b>Edited</b> User Successfully</p>
+          <button type="button" class="btn btn-grad-ok mx-auto" style="width: 100px; margin-top: 5px; height: 33px;"
+            v-on:click="editedUser = false, editUserPop = false" @clike="reload()">OK</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style>
-.edit-user-card{
+.edit-user-card {
   border-radius: 20px;
 }
+
+.alertEdit {
+  width: 28rem;
+  color: white;
+  justify-content: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  text-align: center;
+  color: black;
+}
+
 .deleted {
   width: 28rem;
   height: 15.5rem;
@@ -270,7 +396,7 @@ function formateTime(date) {
   padding-bottom: 15px;
   color: white;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  border-radius: 5px;
+  border-radius: 10px;
   text-align: center;
   position: fixed;
   top: 50%;
@@ -367,6 +493,42 @@ function formateTime(date) {
 .username {
   color: #e74694;
   font-weight: bold;
+}
+
+.btn-grad-ok {
+  background-image: linear-gradient(to right, #1D976C 0%, #93F9B9 51%, #1D976C 100%);
+  margin: 10px;
+  justify-content: center;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+}
+
+.btn-grad-ok:hover {
+  background-position: right center;
+  /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+}
+
+.containerV2 {
+  position: fixed;
+  min-width: 100%;
+  max-height: 100%;
+  overflow-x: hidden;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0);
+  background-repeat: repeat-x;
 }
 
 .btn-grad {

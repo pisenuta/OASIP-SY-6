@@ -1,15 +1,7 @@
 <script setup>
-import { computed } from 'vue'
-defineEmits(['editUser','cancelEdit'])
-const props = defineProps({
-    userList:{
-      type: Array,
-      require: true
-  },
-    currentUser: {
-        type: Object,
-        default: {}
-    },
+import { ref } from 'vue'
+defineEmits(['addUser','cancelAdd'])
+defineProps({
     errorName: {
         type: Boolean,
         default: false
@@ -30,46 +22,35 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    editUserPop: {
-        type: Boolean,
-        default: false
-    },
-    showIndex:{
-        type: Number,
-        default: null
-    },
     errorRole:{
         type: Boolean,
         default: false
     },
-     edited:{
+     added:{
         type: Boolean,
         default: false
     }
 })
 
-const newUser = computed(() => {
-    return {
-        userId: props.currentUser.userId,
-        name: props.currentUser.name,
-        email: props.currentUser.email,
-        role: props.currentUser.role
-    }
+const newUser = ref({
+    name: "",
+    email: "",
+    role: ""
 })
 </script>
  
 <template>
-    <div class="card-body edit-user-popup">
-        <div class="card edit-user-card" style="width: 38rem; height: 25rem;">
+    <div class="card-body add-user-popup">
+        <div class="card add-user-card" style="width: 38rem;">
             <div class="card-title title-detail">
                 <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
-                  EDIT USER
+                  ADD USER
                 </div>
-                <button class="close-detail" @click="$emit('cancelEdit')">
+                <button class="close-detail" @click="$emit('cancelAdd')">
                   &times;
                 </button>
               </div>
-            <div class="card-body">
+            <div class="card-body" style="margin-bottom: 10px;">
                 <div style="text-align: center; margin-top: 10px;">
                     <p class="label-clinic">Name :</p>
                     <input class="form-control clinic-form mb-3" maxlength="100" v-model="newUser.name"
@@ -78,7 +59,7 @@ const newUser = computed(() => {
                     <p class="error-clinic" v-if="notUniqueName === true">Name must unique.</p>
                     <p class="label-clinic">Email :</p>
                     <input class="form-control clinic-form mb-3" maxlength="50" v-model="newUser.email"
-                        :class="{ 'border border-danger': errorEmail || notUniqueEmail || invaildEmail }">
+                        :class="{ 'border border-danger': errorEmail || notUniqueEmail || invaildEmail}">
                     <p class="error-clinic" v-if="errorEmail === true">Please enter Email.</p>
                     <p class="error-clinic" v-if="notUniqueEmail === true && errorEmail === false">Email must unique.</p>
                     <p class="error-clinic" v-if="invaildEmail === true && errorEmail === false">Invaild Email.</p>
@@ -90,20 +71,20 @@ const newUser = computed(() => {
                         <option value="lecturer">Lecturer</option>
                         <option value="student">Student</option>
                     </select>
-                    <p class="error-clinic" v-if="errorRole === true">Please select your role.</p>
+                    <p class="error-clinic" style="margin-top:5px;" v-if="errorRole === true">Please select your role.</p>
                 </div>
             </div>
-            <button type="button" class="save-btn-grad" @click="$emit('editUser', newUser)">Save</button>
+            <button type="button" class="save-btn-grad" @click="$emit('addUser', newUser)">Save</button>
         </div>
     </div>
 </template>
  
 <style>
-.edit-user-card {
+.add-user-card {
     border-radius: 20px;
 }
 
-.edit-user-popup {
+.add-user-popup {
     position: fixed;
     top: 50%;
     left: 50%;

@@ -118,9 +118,11 @@ const modifyUser = async (user) => {
         email: modifyUser.email.trim(),
         role: modifyUser.role
       } : user)
+    getUser();
     editedUser.value = true
     editUserPop.value = false
     editingUser.value = {}
+
     console.log('edited successfully');
   } else {
     console.log('can not edit');
@@ -202,6 +204,7 @@ const createUser = async (user) => {
   if (res.status == 201 || res.status == 200) {
     const addedEvent = await res.json()
     users.value.push(addedEvent)
+    getUser();
     addedUser.value = true
     console.log('added successfully');
   } else if (res.status == 400) {
@@ -276,7 +279,7 @@ const reload = () => {
                 </button>
               </div>
               <div class="card-body" v-if="showIndex === index" style="text-align: center; padding: 0;">
-                <img src="../assets/cat.png" style="height: 200px" />
+                <img src="../assets/cat.png" class="profile" style="height: 200px; cursor: default;" />
                 <h5 class="username">{{ user.name }}</h5>
                 <p>{{ user.email }}</p>
                 <p style="font-weight: bold; color: black;">{{ user.role }}</p>
@@ -406,7 +409,7 @@ const reload = () => {
 
 .delete-icon {
   cursor: pointer;
-  height: 20px;
+  height: 30px;
   margin-top: 20px;
   margin-left: 80%;
   transition: all 0.2s ease-in-out;

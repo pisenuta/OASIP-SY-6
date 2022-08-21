@@ -23,52 +23,52 @@ const notUnique = ref(false)
 const wrongDuration = ref(false)
 const editedPop = ref(false)
 const modifyClinic = async (clinic) => {
-    if(clinic.eventCategoryName == null || clinic.eventCategoryName == ''){
+    if (clinic.eventCategoryName == null || clinic.eventCategoryName == '') {
         errorClinicName.value = true
     } else {
         errorClinicName.value = false
     }
-    if(categories.value.find((c) => clinic.eventCategoryName === c.eventCategoryName) && clinic.eventCategoryName !== editingClinic.value.eventCategoryName){
+    if (categories.value.find((c) => clinic.eventCategoryName === c.eventCategoryName) && clinic.eventCategoryName !== editingClinic.value.eventCategoryName) {
         notUnique.value = true
     } else {
         notUnique.value = false
     }
-    if(clinic.eventDuration == null || clinic.eventDuration == '' || clinic.eventDuration == 0){
+    if (clinic.eventDuration == null || clinic.eventDuration == '' || clinic.eventDuration == 0) {
         errorDuration.value = true
     } else {
         errorDuration.value = false
     }
 
-    if(clinic.eventDuration < 0 || clinic.eventDuration > 480){
+    if (clinic.eventDuration < 0 || clinic.eventDuration > 480) {
         wrongDuration.value = true
     } else {
         wrongDuration.value = false
     }
 
-    if(errorClinicName.value == true || errorDuration.value == true || wrongDuration.value == true || notUnique.value == true){
-        return 
+    if (errorClinicName.value == true || errorDuration.value == true || wrongDuration.value == true || notUnique.value == true) {
+        return
     }
 
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories/${clinic.id}`,{
-      method: 'PUT',
-      headers:{
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        eventCategoryName: clinic.eventCategoryName,
-        eventCategoryDescription:clinic.eventCategoryDescription,
-        eventDuration:clinic.eventDuration
-      })
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories/${clinic.id}`, {
+        method: 'PUT',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            eventCategoryName: clinic.eventCategoryName,
+            eventCategoryDescription: clinic.eventCategoryDescription,
+            eventDuration: clinic.eventDuration
+        })
     })
-    if(res.status === 200){
+    if (res.status === 200) {
         const modifyClinic = await res.json()
-        categories.value = categories.value.map((clinic) => 
-        clinic.id === modifyClinic.id ? {
-            ...clinic,
-            eventCategoryName: modifyClinic.eventCategoryName,
-            eventCategoryDescription:modifyClinic.eventCategoryDescription,
-            eventDuration:modifyClinic.eventDuration
-            }: clinic)
+        categories.value = categories.value.map((clinic) =>
+            clinic.id === modifyClinic.id ? {
+                ...clinic,
+                eventCategoryName: modifyClinic.eventCategoryName.trim(),
+                eventCategoryDescription: modifyClinic.eventCategoryDescription.trim(),
+                eventDuration: modifyClinic.eventDuration
+            } : clinic)
         editedPop.value = true
         notUnique.value = false
         editingClinic.value = {}
@@ -77,15 +77,15 @@ const modifyClinic = async (clinic) => {
         console.log('can not edit');
     }
 }
-    
+
 
 const editingClinic = ref({})
-const toEditingMode = (editClinic) =>{
+const toEditingMode = (editClinic) => {
     editingClinic.value = editClinic
     console.log(editingClinic.value)
 }
 
-const cancelPop = () =>{
+const cancelPop = () => {
     editClinicPop.value = false
     errorClinicName.value = false
     errorDuration.value = false
@@ -104,7 +104,7 @@ const cancelPop = () =>{
                     <div class="card-body clinic-body">
                         <img src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
                             v-on:click="showIndex = index, editClinicPop = true" @click="toEditingMode(category)">
-                        <h5 class="clinic-title">{{ category.eventCategoryName }}</h5>
+                        <h5 class="clinic-title" style="padding-top:20px;">{{ category.eventCategoryName }}</h5>
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>
                         <div
                             v-if="category.eventCategoryDescription === null || category.eventCategoryDescription === ''">
@@ -117,41 +117,41 @@ const cancelPop = () =>{
         </div>
         <div>
             <div class="container" v-if="editClinicPop == true">
-            <ul>
-                <li v-for="(category, index) in categories" :key="index" :value="category">
-                    <div class="card-body clinic-popup">
-                        <div class="card" style="width: 38rem;" v-if="showIndex === index">
-                            <div class="card-title">
-                                <div class="card-header header"
-                                    style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 20px;">
-                                    Edit Clinic
+                <ul>
+                    <li v-for="(category, index) in categories" :key="index" :value="category">
+                        <div class="card-body clinic-popup">
+                            <div class="card" style="width: 38rem;" v-if="showIndex === index">
+                                <div class="card-title">
+                                    <div class="card-header header"
+                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 20px;">
+                                        Edit Clinic
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-body edit-clinic">
-                                <div style="text-align: center;">
-                                    <editClinic
-                                        :currentClinic="editingClinic"
-                                        :errorClinicName="errorClinicName"
-                                        :errorDuration="errorDuration"
-                                        :wrongDuration="wrongDuration"
-                                        :notUnique="notUnique"
-                                        @updateClinic="modifyClinic"/>  
-                                    <button type="button" class="btn btn-secondary" @click="cancelPop">Cancel</button>
+                                <div class="card-body edit-clinic">
+                                    <div style="text-align: center;">
+                                        <editClinic :currentClinic="editingClinic" :errorClinicName="errorClinicName"
+                                            :errorDuration="errorDuration" :wrongDuration="wrongDuration"
+                                            :notUnique="notUnique" @updateClinic="modifyClinic" />
+                                        <button type="button" class="btn btn-secondary cancelClinicBtn"
+                                            @click="cancelPop">Cancel</button>
+                                    </div>
+
                                 </div>
-                                
                             </div>
                         </div>
-                    </div>
-                </li>
-            </ul>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="container" v-if="editedPop === true">
             <div class="card" id="center-popup" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">
-                    <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+                    <img
+                        src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                     <p class="card-text" style="margin-top: 10px;">Edit Clinic Successfully</p>
-                    <router-link to="/clinic"><button type="button" class="btn btn-success" v-on:click="editClinicPop = false , editedPop = false" style="width: 100px; margin-top: 5px;">OK</button></router-link>
+                    <router-link to="/clinic"><button type="button" class="btn btn-success"
+                            v-on:click="editClinicPop = false, editedPop = false"
+                            style="width: 100px; margin-top: 5px;">OK</button></router-link>
                 </div>
             </div>
         </div>
@@ -164,13 +164,29 @@ const cancelPop = () =>{
 ul {
     list-style-type: none;
 }
-.clinic-popup{
+
+.cancelClinicBtn {
+    background-image: linear-gradient(to right, #485563 0%, #29323c 51%, #485563 100%);
+    transition: 0.5s;
+    background-size: 200% auto;
+
+}
+
+.cancelClinicBtn:hover {
+    background-position: right center;
+    /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
+}
+
+.clinic-popup {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 10px;
 }
+
 .header {
     padding: 10px 15px;
     text-align: center;
@@ -201,7 +217,15 @@ ul {
     cursor: pointer;
     float: right;
     height: 20px;
+    margin-right: 10px;
+    margin-top: 10px;
+    transition: all 0.2s ease-in-out;
 }
+
+.edit-icon:hover {
+    transform: scale(1.5);
+}
+
 
 .body {
     font-family: 'Inter', 'Noto Sans Thai';

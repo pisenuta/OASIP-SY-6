@@ -48,7 +48,7 @@ const newClinic = computed(() => {
     <p class="label-clinic">Description :</p>
     <textarea class="form-control clinic-form mb-4" rows="3" maxlength="500"
         v-model="newClinic.eventCategoryDescription"></textarea>
-    <button type="button" class="btn btn-success" style="margin-right: 40px;"
+    <button type="button" class="btn btn-success saveClinic" style="margin-right: 40px;"
         @click="$emit('updateClinic', newClinic)">Save</button>
 </template>
  
@@ -65,4 +65,18 @@ const newClinic = computed(() => {
     margin-left: 15.5%;
 }
 
+.saveClinic{
+    background-image: linear-gradient(to right, #1D976C 0%, #93F9B9 51%, #1D976C 100%);
+    transition: 0.5s;
+    background-size: 200% auto;
+    border-color: #fff;
+}
+
+.saveClinic:hover {
+    background-position: right center;
+    /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
+    border-color: #fff;
+}
 </style>

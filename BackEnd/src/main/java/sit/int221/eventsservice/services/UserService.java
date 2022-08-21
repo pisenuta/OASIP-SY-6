@@ -39,14 +39,17 @@ public class UserService {
 
     public User save(UserDTO newUser) throws CheckUniqueUserExceptionHandler {
         List<UserDTO> userList = getAllUser();
-
+        newUser.getName().trim();
+        newUser.getEmail().trim();
         for(int i = 0; i < userList.size(); i++){
-            if (newUser.getName().equals(userList.get(i).getName())){
+            if (newUser.getName().trim().equals(userList.get(i).getName())){
                 throw new CheckUniqueUserExceptionHandler("User name must be unique.");
-            } else if (newUser.getEmail().equals(userList.get(i).getEmail())){
+            } else if (newUser.getEmail().trim().equals(userList.get(i).getEmail())){
                 throw new CheckUniqueUserExceptionHandler("User email must be unique.");
             }
         }
+        newUser.setName(newUser.getName().trim());
+        newUser.setEmail(newUser.getEmail().trim());
         User user = modelMapper.map(newUser, User.class);
         return repository.saveAndFlush(user);
     }

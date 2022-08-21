@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.HandleError;
 
@@ -23,7 +25,7 @@ public class ApplicationExceptionHandler extends Exception{
         HandleError errors = new HandleError();
         Map<String, String> errorMap = new HashMap<>();
         errors.setStatus(400);
-        errors.setPath("/api/events");
+        errors.setPath("");
         errors.setMessage("Bad Request");
         errors.setError("Validation failed");
         ex.getBindingResult().getFieldErrors().forEach(error -> {

@@ -67,9 +67,9 @@ public class UserController {
                 throw new CheckUniqueUserExceptionHandler("User email must be unique.");
             }
         }
-            User user = repository.findById(Id).orElseThrow(
-                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
-            );
+            User user = repository.findById(Id).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            Id + " does not exist !!!"));
 
         modelMapper.map(updateUser, user);
         repository.saveAndFlush(user);

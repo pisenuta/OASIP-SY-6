@@ -39,8 +39,6 @@ public class UserService {
 
     public User save(UserDTO newUser) throws CheckUniqueUserExceptionHandler {
         List<UserDTO> userList = getAllUser();
-        newUser.getName().trim();
-        newUser.getEmail().trim();
         for(int i = 0; i < userList.size(); i++){
             if (newUser.getName().trim().equals(userList.get(i).getName())){
                 throw new CheckUniqueUserExceptionHandler("User name must be unique.");

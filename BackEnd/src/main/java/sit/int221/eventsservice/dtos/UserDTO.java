@@ -1,6 +1,7 @@
 package sit.int221.eventsservice.dtos;
 
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 import sit.int221.eventsservice.entities.Role;
 
 import javax.validation.constraints.Email;

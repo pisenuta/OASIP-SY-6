@@ -1,6 +1,6 @@
--<script setup>
+-<script setup> 
 import { ref, onBeforeMount } from 'vue'
-import editClinic from '../components/EditClinic.vue'
+import editClinic from '../components/EditClinic.vue' 
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories` , {

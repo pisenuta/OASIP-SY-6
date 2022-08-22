@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-defineEmits(['addUser','cancelAdd'])
+defineEmits(['addUser', 'cancelAdd'])
 defineProps({
     errorName: {
         type: Boolean,
@@ -22,11 +22,11 @@ defineProps({
         type: Boolean,
         default: false
     },
-    errorRole:{
+    errorRole: {
         type: Boolean,
         default: false
     },
-     added:{
+    added: {
         type: Boolean,
         default: false
     }
@@ -44,24 +44,38 @@ const newUser = ref({
         <div class="card add-user-card" style="width: 38rem;">
             <div class="card-title title-detail">
                 <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
-                  ADD USER
+                    ADD USER
                 </div>
                 <button class="close-detail" @click="$emit('cancelAdd')">
-                  &times;
+                    &times;
                 </button>
-              </div>
+            </div>
             <div class="card-body" style="margin-bottom: 10px;">
                 <div style="text-align: center; margin-top: 10px;">
-                    <p class="label-clinic">Name :</p>
+                    <div>
+                        <p class="label-clinic">Name :
+                            <a class="maxtext" :class="{ 'maxinput': newUser.name.length == 100 }">
+                                <span v-text="newUser.name.length"></span>/100
+                            </a>
+                        </p>
+                    </div>
                     <input class="form-control clinic-form mb-3" maxlength="100" v-model="newUser.name"
                         :class="{ 'border border-danger': errorName || notUniqueName }">
                     <p class="error-clinic" v-if="errorName === true">Please enter Name.</p>
                     <p class="error-clinic" v-if="notUniqueName === true">Name must unique.</p>
-                    <p class="label-clinic">Email :</p>
+
+                    <div>
+                        <p class="label-clinic">Email :
+                            <a class="maxtext" :class="{ 'maxinput': newUser.email.length == 50 }">
+                                <span v-text="newUser.email.length"></span>/50
+                            </a>
+                        </p>
+                    </div>
                     <input class="form-control clinic-form mb-3" maxlength="50" v-model="newUser.email"
-                        :class="{ 'border border-danger': errorEmail || notUniqueEmail || invaildEmail}">
+                        :class="{ 'border border-danger': errorEmail || notUniqueEmail || invaildEmail }">
                     <p class="error-clinic" v-if="errorEmail === true">Please enter Email.</p>
-                    <p class="error-clinic" v-if="notUniqueEmail === true && errorEmail === false">Email must unique.</p>
+                    <p class="error-clinic" v-if="notUniqueEmail === true && errorEmail === false">Email must unique.
+                    </p>
                     <p class="error-clinic" v-if="invaildEmail === true && errorEmail === false">Invaild Email.</p>
                     <p class="label-clinic">Role :</p>
                     <select class="form-select style-form" style="width: 25rem; margin-top: -10px"
@@ -71,7 +85,8 @@ const newUser = ref({
                         <option value="lecturer">Lecturer</option>
                         <option value="student">Student</option>
                     </select>
-                    <p class="error-clinic" style="margin-top:5px;" v-if="errorRole === true">Please select your role.</p>
+                    <p class="error-clinic" style="margin-top:5px;" v-if="errorRole === true">Please select your role.
+                    </p>
                 </div>
             </div>
             <button type="button" class="save-btn-grad" @click="$emit('addUser', newUser)">Save</button>
@@ -123,5 +138,18 @@ const newUser = ref({
     font-size: 14px;
     margin-top: -10px;
     margin-left: 15.5%;
+}
+
+.maxtext {
+    font-size: 13px;
+    text-decoration: none;
+    color: #888888;
+    pointer-events: none;
+    text-align: right;
+    justify-content: right;
+}
+
+.maxinput {
+    color: red;
 }
 </style>

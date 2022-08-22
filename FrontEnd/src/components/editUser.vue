@@ -1,11 +1,11 @@
 <script setup>
 import { computed } from 'vue'
-defineEmits(['editUser','cancelEdit'])
+defineEmits(['editUser', 'cancelEdit'])
 const props = defineProps({
-    userList:{
-      type: Array,
-      require: true
-  },
+    userList: {
+        type: Array,
+        require: true
+    },
     currentUser: {
         type: Object,
         default: {}
@@ -34,15 +34,15 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
-    showIndex:{
+    showIndex: {
         type: Number,
         default: null
     },
-    errorRole:{
+    errorRole: {
         type: Boolean,
         default: false
     },
-     edited:{
+    edited: {
         type: Boolean,
         default: false
     }
@@ -56,6 +56,8 @@ const newUser = computed(() => {
         role: props.currentUser.role
     }
 })
+
+
 </script>
  
 <template>
@@ -63,24 +65,31 @@ const newUser = computed(() => {
         <div class="card edit-user-card" style="width: 38rem; height: 25rem;">
             <div class="card-title title-detail">
                 <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
-                  EDIT USER
+                    EDIT USER
                 </div>
                 <button class="close-detail" @click="$emit('cancelEdit')">
-                  &times;
+                    &times;
                 </button>
-              </div>
-            <div class="card-body">
+            </div>
+            <div class="card-body" style="margin-bottom: 10px;">
                 <div style="text-align: center; margin-top: 10px;">
-                    <p class="label-clinic">Name :</p>
+
+                    <p class="label-clinic">Name : </p>
+
                     <input class="form-control clinic-form mb-3" maxlength="100" v-model="newUser.name"
                         :class="{ 'border border-danger': errorName || notUniqueName }">
                     <p class="error-clinic" v-if="errorName === true">Please enter Name.</p>
                     <p class="error-clinic" v-if="notUniqueName === true">Name must unique.</p>
-                    <p class="label-clinic">Email :</p>
+
+                    <p class="label-clinic">Email :
+
+                    </p>
+
                     <input class="form-control clinic-form mb-3" maxlength="50" v-model="newUser.email"
                         :class="{ 'border border-danger': errorEmail || notUniqueEmail || invaildEmail }">
                     <p class="error-clinic" v-if="errorEmail === true">Please enter Email.</p>
-                    <p class="error-clinic" v-if="notUniqueEmail === true && errorEmail === false">Email must unique.</p>
+                    <p class="error-clinic" v-if="notUniqueEmail === true && errorEmail === false">Email must unique.
+                    </p>
                     <p class="error-clinic" v-if="invaildEmail === true && errorEmail === false">Invaild Email.</p>
                     <p class="label-clinic">Role :</p>
                     <select class="form-select style-form" style="width: 25rem; margin-top: -10px"

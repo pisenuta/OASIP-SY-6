@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUser() {
-        return this.listMapper.mapList(this.repository.findAll(Sort.by("name").descending()), UserDTO.class, this.modelMapper);
+        return this.listMapper.mapList(this.repository.findAll(Sort.by("name").ascending()), UserDTO.class, this.modelMapper);
     }
 
     public UserDTO getUserById(Integer id) {

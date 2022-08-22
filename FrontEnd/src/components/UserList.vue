@@ -6,6 +6,12 @@ import addUser from '../components/addUser.vue';
 
 const users = ref([]);
 
+const noUser = () => {
+  if (users.value.length == 0) {
+    return "No Users"
+  }
+}
+
 const getUser = async () => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
   // const res = await fetch(`http://localhost:8080/api/users`, {
@@ -97,8 +103,8 @@ const modifyUser = async (user) => {
     return
   }
 
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`,{
-  // const res = await fetch(`http://localhost:8080/api/users/${user.userId}`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
+    // const res = await fetch(`http://localhost:8080/api/users/${user.userId}`, {
     method: 'PUT',
     headers: {
       'content-type': 'application/json'
@@ -192,7 +198,7 @@ const createUser = async (user) => {
   }
 
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
-  // const res = await fetch(`http://localhost:8080/api/users/`, {
+    // const res = await fetch(`http://localhost:8080/api/users/`, {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({
@@ -222,10 +228,8 @@ const reload = () => {
     <h3 class="mx-auto mt-5" style="font-size: 40px; font-weight: bolder">
       User
     </h3>
-    <div v-if="users.value === 0">
-      <p style="color: #646464">No User</p>
-    </div>
     <button class="btn-grad mx-auto" v-on:click="addUserPop = true">Add User</button>
+    <p style="color: #646464" class="noUser mx-auto">{{ noUser() }}</p>
 
     <!-- add -->
     <div v-if="addUserPop == true">
@@ -350,6 +354,14 @@ const reload = () => {
 </template>
 
 <style>
+.noUser {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 .edit-user-card {
   border-radius: 20px;
 }

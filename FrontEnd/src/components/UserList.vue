@@ -70,12 +70,12 @@ const modifyUser = async (user) => {
   } else {
     errorName.value = false
   }
-  if (users.value.find((u) => user.name === u.name) && user.name !== editingUser.value.name) {
+  if (users.value.find((u) => user.name.trim() === u.name.trim()) && user.name !== editingUser.value.name) {
     notUniqueName.value = true
   } else {
     notUniqueName.value = false
   }
-  if (users.value.find((u) => user.email === u.email) && user.email !== editingUser.value.email) {
+  if (users.value.find((u) => user.email.trim() === u.email.trim()) && user.email !== editingUser.value.email) {
     notUniqueEmail.value = true
   } else {
     notUniqueEmail.value = false
@@ -104,7 +104,7 @@ const modifyUser = async (user) => {
   }
 
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
-    // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
+  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
     method: 'PUT',
     headers: {
       'content-type': 'application/json'
@@ -164,12 +164,12 @@ const createUser = async (user) => {
   } else {
     errorAddName.value = false
   }
-  if (users.value.find((u) => user.name === u.name) && user.name !== editingUser.value.name) {
+  if (users.value.find((u) => user.name.trim() === u.name.trim()) && user.name !== editingUser.value.name) {
     notUniqueAddName.value = true
   } else {
     notUniqueAddName.value = false
   }
-  if (users.value.find((u) => user.email === u.email) && user.email !== editingUser.value.email) {
+  if (users.value.find((u) => user.email.trim() === u.email.trim()) && user.email !== editingUser.value.email) {
     notUniqueAddEmail.value = true
   } else {
     notUniqueAddEmail.value = false
@@ -245,8 +245,9 @@ const reload = () => {
         <div class="card-body" style="margin-top: 10px;">
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
           <p class="card-text" style="margin-top: 10px;"><b>Added</b> User Successfully</p>
-          <button type="button" class="btn btn-success btn-grad-ok mx-auto" style="width: 100px; margin-top: 5px; height: 33px;"
-            v-on:click="addedUser = false, addUserPop = false" @clike="reload()">OK</button>
+          <button type="button" class="btn btn-success btn-grad-ok mx-auto"
+            style="width: 100px; margin-top: 5px; height: 33px;" v-on:click="addedUser = false, addUserPop = false"
+            @clike="reload()">OK</button>
         </div>
       </div>
     </div>
@@ -521,6 +522,24 @@ const reload = () => {
   text-align: center;
   font-size: 18px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  animation: animate 0.4s ease-in-out;
+}
+
+@keyframes animate {
+  0% {
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    transform: scale(0.1);
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    opacity: 1;
+    transition: all 0.2s ease-in-out;
+    transform: scale(1);
+    transform: translate(-50%, -50%);
+
+  }
 }
 
 #popup-head {

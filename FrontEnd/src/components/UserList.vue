@@ -13,8 +13,8 @@ const noUser = () => {
 }
 
 const getUser = async () => {
-  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
   });
   if (res.status === 200) {
@@ -23,8 +23,8 @@ const getUser = async () => {
 };
 
 const removeUser = async (removeUserId) => {
-  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`, { method: 'DELETE' })
-  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${removeUserId}`, { method: 'DELETE' })
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`, { method: 'DELETE' })
+  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${removeUserId}`, { method: 'DELETE' })
   if (res.status === 200) {
     users.value = users.value.filter((user) => user.userId !== removeUserId)
     console.log('deleted successfully')
@@ -103,8 +103,8 @@ const modifyUser = async (user) => {
     return
   }
 
-  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
-    const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
+    // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
     method: 'PUT',
     headers: {
       'content-type': 'application/json'
@@ -197,8 +197,8 @@ const createUser = async (user) => {
     return
   }
 
-  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
-    const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
+    // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({

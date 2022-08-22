@@ -13,8 +13,8 @@ const noUser = () => {
 }
 
 const getUser = async () => {
+  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users` , {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
-  // const res = await fetch(`http://localhost:8080/api/users`, {
     method: "GET",
   });
   if (res.status === 200) {
@@ -258,10 +258,18 @@ const reload = () => {
             <img src="https://api.iconify.design/icomoon-free/bin.svg?color=%23e74694" class="delete-icon"
               v-on:click="(showIndex = index), (checkDel = true)" />
             <div v-on:click="(showIndex = index), (UserDetail = true)" style="cursor: pointer;">
-              <img src="../assets/cat.png" class="profile" />
-              <h5 class="username">{{ user.name }}</h5>
-              <p>{{ user.email }}</p>
-              <p style="color: #646464; padding-bottom: 20px">{{ user.role }}</p>
+              <div class="tooltip-pop">
+                <div class="info">
+                  <img src="../assets/cat.png" class="profile" />
+                  <h5 class="username">{{ user.name }}</h5>
+                  <p>{{ user.email }}</p>
+                  <p style="color: #646464; padding-bottom: 20px">{{ user.role }}</p>
+                </div>
+                <div class="content">
+                  <p style="margin: 0px">click for more details</p>
+                </div>
+              </div>
+              
             </div>
           </div>
         </div>
@@ -364,6 +372,35 @@ const reload = () => {
 
 .edit-user-card {
   border-radius: 20px;
+}
+
+.tooltip-pop{
+  position: relative;
+}
+
+.content{
+  position: absolute;
+  color: #888888;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: -5%;
+  width: 170px;
+  font-size: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.5s;
+}
+
+.info:hover + .content{
+  visibility: visible;
+  opacity: 1;
 }
 
 .alertEdit {

@@ -1,6 +1,6 @@
 -<script setup>
 import { ref, onBeforeMount } from 'vue'
-import editClinic from '../components/editClinic.vue'
+import editClinic from '../components/EditClinic.vue'
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories` , {
@@ -132,7 +132,7 @@ const cancelPop = () => {
                                         <editClinic :currentClinic="editingClinic" :errorClinicName="errorClinicName"
                                             :errorDuration="errorDuration" :wrongDuration="wrongDuration"
                                             :notUnique="notUnique" @updateClinic="modifyClinic" />
-                                        <button type="button" class="btn btn-secondary cancelClinicBtn"
+                                        <button type="button" class="btn btn-secondary"
                                             @click="cancelPop">Cancel</button>
                                     </div>
 
@@ -163,20 +163,6 @@ const cancelPop = () => {
 
 ul {
     list-style-type: none;
-}
-
-.cancelClinicBtn {
-    background-image: linear-gradient(to right, #485563 0%, #29323c 51%, #485563 100%);
-    transition: 0.5s;
-    background-size: 200% auto;
-
-}
-
-.cancelClinicBtn:hover {
-    background-position: right center;
-    /* change the direction of the change here */
-    color: #fff;
-    text-decoration: none;
 }
 
 .clinic-popup {

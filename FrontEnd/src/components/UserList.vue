@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 import moment from 'moment';
-import editUser from '../components/editUser.vue';
-import addUser from '../components/addUser.vue';
+import editUser from '../components/EditUser.vue';
+import addUser from '../components/AddUser.vue';
 
 const users = ref([]);
 
@@ -13,8 +13,8 @@ const noUser = () => {
 }
 
 const getUser = async () => {
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users` , {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
   });
   if (res.status === 200) {
@@ -23,8 +23,8 @@ const getUser = async () => {
 };
 
 const removeUser = async (removeUserId) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`, { method: 'DELETE' })
-  // const res = await fetch(`http://localhost:8080/api/users/${removeUserId}`, { method: 'DELETE' })
+  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`, { method: 'DELETE' })
+  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${removeUserId}`, { method: 'DELETE' })
   if (res.status === 200) {
     users.value = users.value.filter((user) => user.userId !== removeUserId)
     console.log('deleted successfully')
@@ -103,8 +103,8 @@ const modifyUser = async (user) => {
     return
   }
 
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
-    // const res = await fetch(`http://localhost:8080/api/users/${user.userId}`, {
+  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
+    const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
     method: 'PUT',
     headers: {
       'content-type': 'application/json'
@@ -197,8 +197,8 @@ const createUser = async (user) => {
     return
   }
 
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
-    // const res = await fetch(`http://localhost:8080/api/users/`, {
+  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
+    const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({
@@ -232,8 +232,8 @@ const reload = () => {
     <p style="color: #646464" class="noUser mx-auto">{{ noUser() }}</p>
 
     <!-- add -->
-    <div v-if="addUserPop == true">
-      <div class="container">
+    <div>
+      <div class="container" v-if="addUserPop == true">
         <addUser @cancelAdd="cancelAdd" :errorName="errorAddName" :errorEmail="errorAddEmail" :errorRole="errorAddRole"
           :notUniqueName="notUniqueAddName" :notUniqueEmail="notUniqueAddEmail" :invaildEmail="invaildAddEmail"
           @addUser="createUser" />
@@ -245,12 +245,13 @@ const reload = () => {
         <div class="card-body" style="margin-top: 10px;">
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
           <p class="card-text" style="margin-top: 10px;"><b>Added</b> User Successfully</p>
-          <button type="button" class="btn btn-grad-ok mx-auto" style="width: 100px; margin-top: 5px; height: 33px;"
+          <button type="button" class="btn btn-success btn-grad-ok mx-auto" style="width: 100px; margin-top: 5px; height: 33px;"
             v-on:click="addedUser = false, addUserPop = false" @clike="reload()">OK</button>
         </div>
       </div>
     </div>
 
+    <!-- list -->
     <div class="mt-5">
       <div class="row mx-auto row-cols-4" style="padding-left: 90px;padding-right: 90px;">
         <div class="col-user" v-for="(user, index) in users" :key="index" :value="user">
@@ -258,18 +259,13 @@ const reload = () => {
             <img src="https://api.iconify.design/icomoon-free/bin.svg?color=%23e74694" class="delete-icon"
               v-on:click="(showIndex = index), (checkDel = true)" />
             <div v-on:click="(showIndex = index), (UserDetail = true)" style="cursor: pointer;">
-              <div class="tooltip-pop">
-                <div class="info">
-                  <img src="../assets/cat.png" class="profile" />
-                  <h5 class="username">{{ user.name }}</h5>
-                  <p>{{ user.email }}</p>
-                  <p style="color: #646464; padding-bottom: 20px">{{ user.role }}</p>
-                </div>
-                <div class="content">
-                  <p style="margin: 0px">click for more details</p>
-                </div>
+              <div title="click for more details" class="hovertext" data-hover="click for more details">
+                <img src="../assets/cat.png" class="profile" />
+                <h5 class="username">{{ user.name.slice(0, 27) }} <a v-if="user.name.length > 30">...</a></h5>
+                <p>{{ user.email }}</p>
+                <p style="color: #646464; padding-bottom: 20px">{{ user.role }}</p>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -290,7 +286,7 @@ const reload = () => {
                   &times;
                 </button>
               </div>
-              <div class="card-body" v-if="showIndex === index" style="text-align: center; padding: 0;">
+              <div class="card-body" v-if="showIndex === index" style="text-align: center; ">
                 <img src="../assets/cat.png" class="profile" style="height: 200px; cursor: default;" />
                 <h5 class="username">{{ user.name }}</h5>
                 <p>{{ user.email }}</p>
@@ -308,10 +304,10 @@ const reload = () => {
           <!-- delete -->
           <div class="card alertDel" v-if="checkDel == true && showIndex === index">
             <div class="card-body">
-              <img src="https://api.iconify.design/akar-icons/circle-alert.svg?color=white&width=75&height=75">
-              <p class="card-text" style="margin-top: 20px;"><b>Do you want to remove <b>{{ user.name }}</b> ?</b></p>
-              <button type="button" class="btn btn-warning" style="padding: 5px 20px 5px 20px;"
-                @click=removeUser(user.userId) v-on:click="deleted = true, checkDel == false">OK</button>
+              <img src="https://api.iconify.design/akar-icons/circle-alert.svg?color=%23bb2d3b" style="width:75px">
+              <p class="card-text" style="margin-top: 20px;">Do you want to remove <b>{{ user.name }}</b> ?</p>
+              <button type="button" class="btn btn-warning delUserBtn" style="padding: 5px 20px 5px 20px;"
+                @click=removeUser(user.userId) v-on:click="deleted = true, checkDel == false">Remove</button>
               <button type="button" class="btn btn-secondary" style="margin-left: 30px;"
                 v-on:click="checkDel = false, showIndex = null">Cancel</button>
             </div>
@@ -325,7 +321,7 @@ const reload = () => {
       <div class="card deleted" id="deleted">
         <div class="card-body" style="margin-top: 10px;">
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=white&width=90&height=90">
-          <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> Event Successfully</p>
+          <p class="card-text" style="margin-top: 10px;"><b>Removed</b> User Successfully</p>
           <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
             v-on:click="deleted = false, checkDel = false, showIndex = null">OK</button>
         </div>
@@ -370,37 +366,52 @@ const reload = () => {
   transform: translate(-50%, -50%);
 }
 
+.delUserBtn {
+  background-image: linear-gradient(to right, #D31027 0%, #EA384D 51%, #D31027 100%);
+  color: white;
+  transition: 0.5s;
+  border-color: transparent;
+  background-size: 200% auto;
+}
+
+.delUserBtn:hover {
+  background-position: right center;
+  /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+  border-color: transparent;
+}
+
 .edit-user-card {
   border-radius: 20px;
 }
 
-.tooltip-pop{
-  position: relative;
-}
-
-.content{
-  position: absolute;
+.hovertext:before {
+  content: attr(data-hover);
+  visibility: hidden;
+  opacity: 0;
   color: #888888;
-  justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  top: -5%;
   width: 170px;
   font-size: 15px;
+  text-align: center;
+  border-radius: 5px;
   padding-left: 10px;
   padding-right: 10px;
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  visibility: hidden;
-  opacity: 0;
-  transition: 0.5s;
+  transition: opacity 0.5s ease-in-out;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 10%;
+  margin-bottom: 10px;
 }
 
-.info:hover + .content{
-  visibility: visible;
+.hovertext:hover:before {
   opacity: 1;
+  visibility: visible;
 }
 
 .alertEdit {
@@ -442,11 +453,11 @@ const reload = () => {
 }
 
 .alertDel {
-  background-color: #bb2d3b;
+  background-color: #fff;
   width: 28rem;
   padding-top: 20px;
   padding-bottom: 15px;
-  color: white;
+  color: black;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   text-align: center;
@@ -549,16 +560,10 @@ const reload = () => {
 
 .btn-grad-ok {
   background-image: linear-gradient(to right, #1D976C 0%, #93F9B9 51%, #1D976C 100%);
-  margin: 10px;
-  justify-content: center;
-  text-align: center;
-  text-transform: uppercase;
-  transition: 0.5s;
-  background-size: 200% auto;
   color: white;
-  box-shadow: 0 0 20px #eee;
-  border-radius: 10px;
-  display: block;
+  transition: 0.5s;
+  border-color: transparent;
+  background-size: 200% auto;
 }
 
 .btn-grad-ok:hover {
@@ -566,6 +571,7 @@ const reload = () => {
   /* change the direction of the change here */
   color: #fff;
   text-decoration: none;
+  border-color: transparent;
 }
 
 .containerV2 {

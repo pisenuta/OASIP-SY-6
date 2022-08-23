@@ -13,8 +13,8 @@ const noUser = () => {
 }
 
 const getUser = async () => {
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
   });
   if (res.status === 200) {
@@ -24,8 +24,8 @@ const getUser = async () => {
 };
 
 const removeUser = async (removeUserId) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`, { method: 'DELETE' })
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${removeUserId}`, { method: 'DELETE' })
+  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`, { method: 'DELETE' })
+  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${removeUserId}`, { method: 'DELETE' })
   if (res.status === 200) {
     users.value = users.value.filter((user) => user.userId !== removeUserId)
     console.log('deleted successfully')
@@ -108,8 +108,8 @@ const modifyUser = async (user) => {
     remainSame.value = true
     return
   }
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
-    // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
+    const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
       method: 'PUT',
       headers: {
         'content-type': 'application/json'
@@ -204,8 +204,8 @@ const createUser = async (user) => {
     return
   }
 
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
-    // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
+    const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({
@@ -233,8 +233,12 @@ const createUser = async (user) => {
       User
     </h3>
     <button class="btn-grad mx-auto" v-on:click="addUserPop = true">Add User</button>
-    <p style="color: #646464" class="noUser mx-auto">{{ noUser() }}</p>
-
+    <div class="noUser mx-auto">
+      <h5 style="color: #646464">
+        {{ noUser() }}
+      </h5>  
+    </div>
+    
     <!-- add -->
     <div>
       <div class="container" v-if="addUserPop == true">
@@ -325,9 +329,9 @@ const createUser = async (user) => {
     <div class="container" v-if="deleted === true">
       <div class="card deleted" id="deleted">
         <div class="card-body" style="margin-top: 10px;">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=white&width=90&height=90">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 90px">
           <p class="card-text" style="margin-top: 10px;"><b>Removed</b> User Successfully</p>
-          <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
+          <button type="button" class="btn btn-light btn-grad-ok" style="width: 100px; margin-top: 5px;"
             v-on:click="deleted = false, checkDel = false, showIndex = null">OK</button>
         </div>
       </div>
@@ -441,18 +445,21 @@ const createUser = async (user) => {
   border-radius: 10px;
   text-align: center;
   color: black;
+  animation: animate 0.3s ease-in-out;
+
 }
 
 .deleted {
   width: 28rem;
   height: 15.5rem;
-  background-color: #198754;
-  color: white;
+  background-color: #fff;
+  color: #198754;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   text-align: center;
+  border-radius: 20px;
 }
 
 .profile {
@@ -481,6 +488,7 @@ const createUser = async (user) => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  animation: animate 0.3s ease-in-out;
 }
 
 .delete-icon {
@@ -564,6 +572,7 @@ const createUser = async (user) => {
 
 .adduser-pop {
   margin-left: 20px;
+  
 }
 
 .popup-form {

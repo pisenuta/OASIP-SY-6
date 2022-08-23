@@ -104,6 +104,24 @@ const newUser = ref({
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    animation: animate 0.3s ease-in-out;
+}
+
+@keyframes animate {
+  0% {
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
+    transform: scale(0.1);
+    transform: translate(-50%, -50%);
+  }
+
+  100% {
+    opacity: 1;
+    transition: all 0.2s ease-in-out;
+    transform: scale(1);
+    transform: translate(-50%, -50%);
+
+  }
 }
 
 .save-btn-grad {

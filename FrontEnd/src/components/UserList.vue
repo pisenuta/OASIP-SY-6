@@ -19,6 +19,7 @@ const getUser = async () => {
   });
   if (res.status === 200) {
     users.value = await res.json();
+    users.value.sort();
   }
 };
 
@@ -49,6 +50,7 @@ const errorName = ref(false);
 const errorEmail = ref(false);
 const errorRole = ref(false);
 const invaildEmail = ref(false);
+const remainSame = ref(false);
 const editingUser = ref({})
 const toEditingMode = (editUser) => {
   editingUser.value = editUser
@@ -65,74 +67,79 @@ const cancelEdit = () => {
 }
 
 const modifyUser = async (user) => {
-  if (user.name == null || user.name == '') {
-    errorName.value = true
-  } else {
-    errorName.value = false
-  }
-  if (users.value.find((u) => user.name.trim() === u.name.trim()) && user.name !== editingUser.value.name) {
-    notUniqueName.value = true
-  } else {
-    notUniqueName.value = false
-  }
-  if (users.value.find((u) => user.email.trim() === u.email.trim()) && user.email !== editingUser.value.email) {
-    notUniqueEmail.value = true
-  } else {
-    notUniqueEmail.value = false
-  }
-  if (user.email == null || user.email == '') {
-    errorEmail.value = true
-  } else {
-    errorEmail.value = false
-  }
-  if (user.role == null || user.role == '') {
-    errorRole.value = true
-  } else {
-    errorRole.value = false
-  }
-  var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (user.name == null || user.name == '') {
+      errorName.value = true
+    } else {
+      errorName.value = false
+    }
+    if (users.value.find((u) => user.name.trim() === u.name.trim()) && user.name !== editingUser.value.name) {
+      notUniqueName.value = true
+    } else {
+      notUniqueName.value = false
+    }
+    if (users.value.find((u) => user.email.trim() === u.email.trim()) && user.email !== editingUser.value.email) {
+      notUniqueEmail.value = true
+    } else {
+      notUniqueEmail.value = false
+    }
+    if (user.email == null || user.email == '') {
+      errorEmail.value = true
+    } else {
+      errorEmail.value = false
+    }
+    if (user.role == null || user.role == '') {
+      errorRole.value = true
+    } else {
+      errorRole.value = false
+    }
+    var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  if (user.email.match(emailValidate)) {
-    invaildEmail.value = false
-  } else {
-    invaildEmail.value = true
-  }
+    if (user.email.match(emailValidate)) {
+      invaildEmail.value = false
+    } else {
+      invaildEmail.value = true
+    }
 
-  if (errorName.value == true || notUniqueName.value == true || notUniqueEmail.value == true || errorEmail.value == true
-    || errorRole.value == true || invaildEmail.value == true) {
+    if (errorName.value == true || notUniqueName.value == true || notUniqueEmail.value == true || errorEmail.value == true
+      || errorRole.value == true || invaildEmail.value == true) {
+      return
+    }
+          if (user.name == editingUser.value.name && user.email == editingUser.value.email && user.role == editingUser.value.role) {
+    remainSame.value = true
     return
   }
-
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
-    method: 'PUT',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      name: user.name,
-      email: user.email,
-      role: user.role
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
+    // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: user.name,
+        email: user.email,
+        role: user.role
+      })
     })
-  })
-  if (res.status === 200) {
-    const modifyUser = await res.json()
-    users.value = users.value.map((user) =>
-      user.userId === modifyUser.userId ? {
-        ...user,
-        name: modifyUser.name.trim(),
-        email: modifyUser.email.trim(),
-        role: modifyUser.role
-      } : user)
-    getUser();
-    editedUser.value = true
-    editUserPop.value = false
-    editingUser.value = {}
+    if (res.status === 200) {
+      const modifyUser = await res.json()
+      users.value = users.value.map((user) =>
+        user.userId === modifyUser.userId ? {
+          ...user,
+          name: modifyUser.name.trim(),
+          email: modifyUser.email.trim(),
+          role: modifyUser.role
+        } : user)
+      getUser();
+      editedUser.value = true
+      editUserPop.value = false
+      remainSame.value = false
+      editingUser.value = {}
 
-    console.log('edited successfully');
-  } else {
-    console.log('can not edit');
-  }
+      console.log('edited successfully');
+    } else {
+      console.log('can not edit');
+    }
+    
 }
 
 function formateTime(date) {
@@ -218,9 +225,6 @@ const createUser = async (user) => {
   }
 }
 
-const reload = () => {
-  location.reload();
-}
 </script>
 
 <template>
@@ -247,7 +251,7 @@ const reload = () => {
           <p class="card-text" style="margin-top: 10px;"><b>Added</b> User Successfully</p>
           <button type="button" class="btn btn-success btn-grad-ok mx-auto"
             style="width: 100px; margin-top: 5px; height: 33px;" v-on:click="addedUser = false, addUserPop = false"
-            @clike="reload()">OK</button>
+            >OK</button>
         </div>
       </div>
     </div>
@@ -255,11 +259,11 @@ const reload = () => {
     <!-- list -->
     <div class="mt-5">
       <div class="row mx-auto row-cols-4" style="padding-left: 90px;padding-right: 90px;">
-        <div class="col-user" v-for="(user, index) in users" :key="index" :value="user">
+        <div class="col-user" v-for="(user) in users" :key="user.userId" :value="user">
           <div class="card-body user-body" style="width: 23rem">
             <img src="https://api.iconify.design/icomoon-free/bin.svg?color=%23e74694" class="delete-icon"
-              v-on:click="(showIndex = index), (checkDel = true)" />
-            <div v-on:click="(showIndex = index), (UserDetail = true)" style="cursor: pointer;">
+              v-on:click="(showIndex = user.userId), (checkDel = true)" />
+            <div v-on:click="(showIndex = user.userId), (UserDetail = true)" style="cursor: pointer;">
               <div title="click for more details" class="hovertext" data-hover="click for more details">
                 <img src="../assets/cat.png" class="profile" />
                 <h5 class="username">{{ user.name.slice(0, 27) }} <a v-if="user.name.length > 30">...</a></h5>
@@ -276,18 +280,18 @@ const reload = () => {
     <!-- detail -->
     <div class="container" v-if="UserDetail == true || checkDel == true">
       <ul>
-        <li v-for="(user, index) in users" :key="index">
+        <li v-for="(user) in users" :key="user.userId">
           <div class="card-body" v-if="UserDetail == true">
-            <div class="card popUserDetail" style="width: 38rem;" v-if="showIndex === index">
+            <div class="card popUserDetail" style="width: 38rem;" v-if="showIndex === user.userId">
               <div class="card-title title-detail">
                 <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
-                  USER #{{ index + 1 }}
+                 USER DETAIL
                 </div>
                 <button class="close-detail" v-on:click="(showIndex = null), (UserDetail = false)">
                   &times;
                 </button>
               </div>
-              <div class="card-body" v-if="showIndex === index" style="text-align: center; ">
+              <div class="card-body" v-if="showIndex === user.userId" style="text-align: center; ">
                 <img src="../assets/cat.png" class="profile" style="height: 200px; cursor: default;" />
                 <h5 class="username">{{ user.name }}</h5>
                 <p>{{ user.email }}</p>
@@ -298,12 +302,12 @@ const reload = () => {
                   {{ formateTime(user.updatedOn) }}</p>
               </div>
               <button class="btn-grad" style="border-radius: 0px 0px 20px 20px;"
-                v-on:click="showIndex = index, editUserPop = true" @click="toEditingMode(user)">Edit User</button>
+                v-on:click="showIndex = user.userId, editUserPop = true" @click="toEditingMode(user)">Edit User</button>
             </div>
           </div>
 
           <!-- delete -->
-          <div class="card alertDel" v-if="checkDel == true && showIndex === index">
+          <div class="card alertDel" v-if="checkDel == true && showIndex === user.userId">
             <div class="card-body">
               <img src="https://api.iconify.design/akar-icons/circle-alert.svg?color=%23bb2d3b" style="width:75px">
               <p class="card-text" style="margin-top: 20px;">Do you want to remove <b>{{ user.name }}</b> ?</p>
@@ -333,8 +337,8 @@ const reload = () => {
     <div>
       <div class="container" v-if="editUserPop == true">
         <ul>
-          <li v-for="(user, index) in users" :key="index" :value="user">
-            <div v-if="showIndex === index">
+          <li v-for="(user) in users" :key="user.userId" :value="user">
+            <div v-if="showIndex === user.userId">
               <editUser :userList="users" :currentUser="editingUser" :errorName="errorName" :errorEmail="errorEmail"
                 :errorRole="errorRole" :notUniqueName="notUniqueName" :notUniqueEmail="notUniqueEmail"
                 :invaildEmail="invaildEmail" @cancelEdit="cancelEdit" @editUser="modifyUser" />
@@ -343,7 +347,18 @@ const reload = () => {
         </ul>
       </div>
     </div>
-
+        <!--edit data is same-->
+    <div class="containerV2" v-if="remainSame === true">
+      <div class="card alertEdit">
+        <div class="card-body" style="margin-top: 10px;">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+          <p class="card-text" style="margin-top: 10px;">User's data is remain the same</p>
+          <button type="button" class="btn btn-success btn-grad-ok mx-auto"
+            style="width: 100px; margin-top: 5px; height: 33px;" v-on:click="remainSame = false, editUserPop = false"
+            >OK</button>
+        </div>
+      </div>
+    </div>
     <!-- can edit -->
     <div class="containerV2" v-if="editedUser === true">
       <div class="card alertEdit">

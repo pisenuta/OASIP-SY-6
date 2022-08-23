@@ -61,11 +61,23 @@ public class ApplicationExceptionHandler extends Exception {
     @ExceptionHandler(CheckUniqueUserExceptionHandler.class)
     public HandleCheckUnique handleCheckUniqueUser(CheckUniqueUserExceptionHandler cu, ServletWebRequest request) {
         HandleCheckUnique errors = new HandleCheckUnique();
-        String mser = cu.getMessage().toString();
+        String mser = cu.getMessage();
         errors.setStatus(500);
         errors.setPath(request.getRequest().getRequestURI());
         errors.setMessage("Internal Server Error");
         errors.setError(mser);
         return errors;
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public HandleCheckUnique handleNotEnum(HttpMessageNotReadableException ex, ServletWebRequest request) {
+        HandleCheckUnique errors = new HandleCheckUnique();
+        errors.setStatus(400);
+        errors.setPath("/api/users");
+        errors.setMessage("Bad Request");
+        errors.setError("Role is wrong.");
+        return errors;
+    }
+
 }

@@ -75,5 +75,4 @@ public class UserController {
         repository.saveAndFlush(user);
         return ResponseEntity.status(200).body(user);
     }
-
 }

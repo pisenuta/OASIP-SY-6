@@ -2,7 +2,7 @@ package sit.int221.eventsservice.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sit.int221.eventsservice.dtos.CategoryDTO;
+import sit.int221.eventsservice.dtos.Category.CategoryDTO;
 import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.repositories.CategoryRepository;
 import sit.int221.eventsservice.services.CategoryService;

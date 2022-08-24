@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
-import sit.int221.eventsservice.dtos.EventDTO;
+import sit.int221.eventsservice.dtos.Event.EventDTO;
 import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.repositories.EventRepository;

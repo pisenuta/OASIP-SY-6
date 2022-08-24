@@ -1,9 +1,10 @@
-package sit.int221.eventsservice.dtos;
+package sit.int221.eventsservice.dtos.Event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import sit.int221.eventsservice.dtos.Category.CategoryDTO;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

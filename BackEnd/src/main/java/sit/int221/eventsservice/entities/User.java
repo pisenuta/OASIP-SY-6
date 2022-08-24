@@ -1,9 +1,6 @@
 package sit.int221.eventsservice.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -28,17 +25,18 @@ public class User {
     @Column(name = "email", nullable = false, length = 50)
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
-    private Role role;
+    @Column(name = "password", nullable = false, length = 14)
+    private String password;
 
-    @Column(name = "createdOn", nullable = false , insertable = false , updatable = false)
+    @Column(name = "role", nullable = false)
+    private String role;
+
+    @Column(name = "createdOn", nullable = false, updatable = false, insertable = false)
     private Instant createdOn;
 
-    @Column(name = "updatedOn", nullable = false , insertable = false , updatable = false)
+    @Column(name = "updatedOn", nullable = false, updatable = false, insertable = false)
     private Instant updatedOn;
 
     @OneToMany(mappedBy = "user")
     private Set<Event> events = new LinkedHashSet<>();
-
 }

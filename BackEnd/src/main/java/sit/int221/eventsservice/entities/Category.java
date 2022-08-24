@@ -36,7 +36,6 @@ public class Category {
 //    @UniqueElements(message = "Clinic name must be unique.")
     private String eventCategoryName;
 
-    @Lob
     @Column(
             name = "eventCategoryDescription"
     )

@@ -4,10 +4,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.CheckUniqueUserExceptionHandler;
-import sit.int221.eventsservice.dtos.UserDTO;
+import sit.int221.eventsservice.dtos.User.UserCreateDTO;
+import sit.int221.eventsservice.dtos.User.UserDTO;
+import sit.int221.eventsservice.dtos.User.UserLoginDTO;
 import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.UserRepository;
 
@@ -18,8 +21,12 @@ public class UserService {
     private final UserRepository repository;
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private ListMapper listMapper;
+
+    @Autowired
+    private Argon2PasswordEncoder argon2PasswordEncoder;
 
     @Autowired
     public UserService(UserRepository repository) {
@@ -48,7 +55,21 @@ public class UserService {
         }
         newUser.setName(newUser.getName().trim());
         newUser.setEmail(newUser.getEmail().trim());
+        newUser.setPassword(argon2PasswordEncoder.encode(newUser.getPassword()));
         User user = modelMapper.map(newUser, User.class);
         return repository.saveAndFlush(user);
+    }
+
+    public UserLoginDTO Login (UserLoginDTO user){
+        if(repository.existsByEmail(user.getEmail())){
+            User userdb = repository.findByEmail(user.getEmail());
+            if(argon2PasswordEncoder.matches(user.getPassword(), userdb.getPassword())){
+                throw new ResponseStatusException(HttpStatus.OK, "successes");
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "not success");
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user dose not exist");
+        }
     }
 }

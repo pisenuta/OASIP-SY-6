@@ -1,4 +1,4 @@
-package sit.int221.eventsservice.dtos;
+package sit.int221.eventsservice.dtos.Category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

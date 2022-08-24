@@ -4,18 +4,19 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.CheckUniqueUserExceptionHandler;
-import sit.int221.eventsservice.dtos.UserDTO;
-import sit.int221.eventsservice.dtos.UserEditDTO;
+import sit.int221.eventsservice.dtos.User.UserCreateDTO;
+import sit.int221.eventsservice.dtos.User.UserDTO;
+import sit.int221.eventsservice.dtos.User.UserEditDTO;
 import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.UserRepository;
 import sit.int221.eventsservice.services.UserService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Past;
 import java.util.List;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -29,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private Argon2PasswordEncoder argon2PasswordEncoder;
 
     @GetMapping({""})
     public List<UserDTO> getUsers() {
@@ -59,6 +63,8 @@ public class UserController {
 
         updateUser.setName(updateUser.getName().trim());
         updateUser.setEmail(updateUser.getEmail().trim());
+        updateUser.setPassword(argon2PasswordEncoder.encode(updateUser.getPassword()));
+        System.out.println(updateUser.getPassword());
 
         for(int i = 0; i < userList.size(); i++) {
             if(updateUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != Id){

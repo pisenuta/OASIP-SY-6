@@ -3,7 +3,7 @@
   <component name="JpaBuddyIdeaProjectConfig">
     <option name="defaultUnitInitialized" value="true" />
     <option name="reverseEngineeringLastDbConnectionId" value="8307a2cb-87a6-40ff-bab5-3b997d31db64" />
-    <option name="reLastEntityCreationPackage" value="BackEnd/src/main/java/sit/int221/eventsservice/entities" />
+    <option name="reLastEntityCreationPackage" value="BackEnd/src/main/java/sit/int221/eventsservice/services" />
     <option name="newEntityIdStrategy" />
   </component>
 </project>

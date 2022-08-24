@@ -67,79 +67,79 @@ const cancelEdit = () => {
 }
 
 const modifyUser = async (user) => {
-    if (user.name == null || user.name == '') {
-      errorName.value = true
-    } else {
-      errorName.value = false
-    }
-    if (users.value.find((u) => user.name.trim() === u.name.trim()) && user.name !== editingUser.value.name) {
-      notUniqueName.value = true
-    } else {
-      notUniqueName.value = false
-    }
-    if (users.value.find((u) => user.email.trim() === u.email.trim()) && user.email !== editingUser.value.email) {
-      notUniqueEmail.value = true
-    } else {
-      notUniqueEmail.value = false
-    }
-    if (user.email == null || user.email == '') {
-      errorEmail.value = true
-    } else {
-      errorEmail.value = false
-    }
-    if (user.role == null || user.role == '') {
-      errorRole.value = true
-    } else {
-      errorRole.value = false
-    }
-    var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (user.name == null || user.name == '') {
+    errorName.value = true
+  } else {
+    errorName.value = false
+  }
+  if (users.value.find((u) => user.name.trim() === u.name.trim()) && user.name !== editingUser.value.name) {
+    notUniqueName.value = true
+  } else {
+    notUniqueName.value = false
+  }
+  if (users.value.find((u) => user.email.trim() === u.email.trim()) && user.email !== editingUser.value.email) {
+    notUniqueEmail.value = true
+  } else {
+    notUniqueEmail.value = false
+  }
+  if (user.email == null || user.email == '') {
+    errorEmail.value = true
+  } else {
+    errorEmail.value = false
+  }
+  if (user.role == null || user.role == '') {
+    errorRole.value = true
+  } else {
+    errorRole.value = false
+  }
+  var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if (user.email.match(emailValidate)) {
-      invaildEmail.value = false
-    } else {
-      invaildEmail.value = true
-    }
+  if (user.email.match(emailValidate)) {
+    invaildEmail.value = false
+  } else {
+    invaildEmail.value = true
+  }
 
-    if (errorName.value == true || notUniqueName.value == true || notUniqueEmail.value == true || errorEmail.value == true
-      || errorRole.value == true || invaildEmail.value == true) {
-      return
-    }
-          if (user.name == editingUser.value.name && user.email == editingUser.value.email && user.role == editingUser.value.role) {
+  if (errorName.value == true || notUniqueName.value == true || notUniqueEmail.value == true || errorEmail.value == true
+    || errorRole.value == true || invaildEmail.value == true) {
+    return
+  }
+  if (user.name == editingUser.value.name && user.email == editingUser.value.email && user.role == editingUser.value.role) {
     remainSame.value = true
     return
   }
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
-    const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
-      method: 'PUT',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: user.name,
-        email: user.email,
-        role: user.role
-      })
+  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
+  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
+    method: 'PUT',
+    headers: {
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: user.name,
+      email: user.email,
+      role: user.role
     })
-    if (res.status === 200) {
-      const modifyUser = await res.json()
-      users.value = users.value.map((user) =>
-        user.userId === modifyUser.userId ? {
-          ...user,
-          name: modifyUser.name.trim(),
-          email: modifyUser.email.trim(),
-          role: modifyUser.role
-        } : user)
-      getUser();
-      editedUser.value = true
-      editUserPop.value = false
-      remainSame.value = false
-      editingUser.value = {}
+  })
+  if (res.status === 200) {
+    const modifyUser = await res.json()
+    users.value = users.value.map((user) =>
+      user.userId === modifyUser.userId ? {
+        ...user,
+        name: modifyUser.name.trim(),
+        email: modifyUser.email.trim(),
+        role: modifyUser.role
+      } : user)
+    getUser();
+    editedUser.value = true
+    editUserPop.value = false
+    remainSame.value = false
+    editingUser.value = {}
 
-      console.log('edited successfully');
-    } else {
-      console.log('can not edit');
-    }
-    
+    console.log('edited successfully');
+  } else {
+    console.log('can not edit');
+  }
+
 }
 
 function formateTime(date) {
@@ -154,7 +154,11 @@ const notUniqueAddEmail = ref(false);
 const errorAddName = ref(false);
 const errorAddEmail = ref(false);
 const errorAddRole = ref(false);
+const errorAddPass = ref(false);
 const invaildAddEmail = ref(false);
+const notMatch = ref(false)
+const errorConfirm = ref(false)
+const passLess = ref(false)
 const cancelAdd = () => {
   addUserPop.value = false
   notUniqueAddName.value = false
@@ -163,6 +167,10 @@ const cancelAdd = () => {
   errorAddRole.value = false
   errorAddEmail.value = false
   invaildAddEmail.value = false
+  errorAddPass.value = false
+  notMatch.value = false
+  errorConfirm.value = false
+  passLess.value = false
 }
 
 const createUser = async (user) => {
@@ -171,6 +179,27 @@ const createUser = async (user) => {
   } else {
     errorAddName.value = false
   }
+  
+  if(user.password.length < 8){
+    passLess.value = true
+  } else {
+    passLess.value = false
+  }
+  if ((user.password == null || user.password == '') && (user.confirmPassword == null || user.confirmPassword == '')) {
+    errorAddPass.value = true
+    errorConfirm.value = true
+  } else if ((user.password !== null || user.password !== '') && (user.confirmPassword == null || user.confirmPassword == '')) {
+    errorAddPass.value = false
+    errorConfirm.value = true
+  } else if ((user.password !== null || user.password !== '') && (user.confirmPassword !== null || user.confirmPassword !== '')) {
+    if (user.confirmPassword === user.password) {
+      notMatch.value = false
+      errorConfirm.value = false
+    } else {
+      notMatch.value = true
+    }
+  }
+
   if (users.value.find((u) => user.name.trim() === u.name.trim()) && user.name !== editingUser.value.name) {
     notUniqueAddName.value = true
   } else {
@@ -200,17 +229,18 @@ const createUser = async (user) => {
   }
 
   if (errorAddName.value == true || notUniqueAddName.value == true || notUniqueAddEmail.value == true || errorAddEmail.value == true
-    || errorAddRole.value == true || invaildAddEmail.value == true) {
+    || errorAddRole.value == true || invaildAddEmail.value == true || errorAddPass.value == true || notMatch.value == true || passLess.value == true) {
     return
   }
 
   // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
-    const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({
       name: user.name.trim(),
       email: user.email.trim(),
+      password: user.password.trim(),
       role: user.role,
     })
   })
@@ -236,15 +266,15 @@ const createUser = async (user) => {
     <div class="noUser mx-auto">
       <h5 style="color: #646464">
         {{ noUser() }}
-      </h5>  
+      </h5>
     </div>
-    
+
     <!-- add -->
     <div>
       <div class="container" v-if="addUserPop == true">
         <addUser @cancelAdd="cancelAdd" :errorName="errorAddName" :errorEmail="errorAddEmail" :errorRole="errorAddRole"
           :notUniqueName="notUniqueAddName" :notUniqueEmail="notUniqueAddEmail" :invaildEmail="invaildAddEmail"
-          @addUser="createUser" />
+          :errorPass="errorAddPass" :notMatch="notMatch" :errorConfirm="errorConfirm" :passLess="passLess" @addUser="createUser" />
       </div>
     </div>
     <!-- can add -->
@@ -254,8 +284,8 @@ const createUser = async (user) => {
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
           <p class="card-text" style="margin-top: 10px;"><b>Added</b> User Successfully</p>
           <button type="button" class="btn btn-success btn-grad-ok mx-auto"
-            style="width: 100px; margin-top: 5px; height: 33px;" v-on:click="addedUser = false, addUserPop = false"
-            >OK</button>
+            style="width: 100px; margin-top: 5px; height: 33px;"
+            v-on:click="addedUser = false, addUserPop = false">OK</button>
         </div>
       </div>
     </div>
@@ -289,7 +319,7 @@ const createUser = async (user) => {
             <div class="card popUserDetail" style="width: 38rem;" v-if="showIndex === user.userId">
               <div class="card-title title-detail">
                 <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
-                 USER DETAIL
+                  USER DETAIL
                 </div>
                 <button class="close-detail" v-on:click="(showIndex = null), (UserDetail = false)">
                   &times;
@@ -351,15 +381,15 @@ const createUser = async (user) => {
         </ul>
       </div>
     </div>
-        <!--edit data is same-->
+    <!--edit data is same-->
     <div class="containerV2" v-if="remainSame === true">
       <div class="card alertEdit">
         <div class="card-body" style="margin-top: 10px;">
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
           <p class="card-text" style="margin-top: 10px;">User's data is remain the same</p>
           <button type="button" class="btn btn-success btn-grad-ok mx-auto"
-            style="width: 100px; margin-top: 5px; height: 33px;" v-on:click="remainSame = false, editUserPop = false"
-            >OK</button>
+            style="width: 100px; margin-top: 5px; height: 33px;"
+            v-on:click="remainSame = false, editUserPop = false">OK</button>
         </div>
       </div>
     </div>
@@ -572,7 +602,7 @@ const createUser = async (user) => {
 
 .adduser-pop {
   margin-left: 20px;
-  
+
 }
 
 .popup-form {

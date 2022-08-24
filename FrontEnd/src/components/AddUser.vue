@@ -26,6 +26,22 @@ defineProps({
         type: Boolean,
         default: false
     },
+    errorPass: {
+        type: Boolean,
+        default: false
+    },
+    notMatch: {
+        type: Boolean,
+        default: false
+    },
+    errorConfirm: {
+        type: Boolean,
+        default: false
+    },
+    passLess:{
+        type: Boolean,
+        default: false
+    },
     added: {
         type: Boolean,
         default: false
@@ -35,6 +51,8 @@ defineProps({
 const newUser = ref({
     name: "",
     email: "",
+    password:"",
+    confirmPassword: "",
     role: ""
 })
 </script>
@@ -54,9 +72,9 @@ const newUser = ref({
                 <div style="text-align: center; margin-top: 10px;">
                     <div>
                         <p class="label-clinic">Name :
-                            <a class="maxtext" :class="{ 'maxinput': newUser.name.length == 100 }">
+                            <p class="maxtext" :class="{ 'maxinput': newUser.name.length == 100 }">
                                 <span v-text="newUser.name.length"></span>/100
-                            </a>
+                            </p>
                         </p>
                     </div>
                     <input class="form-control clinic-form mb-3" maxlength="100" v-model="newUser.name"
@@ -66,9 +84,9 @@ const newUser = ref({
 
                     <div>
                         <p class="label-clinic">Email :
-                            <a class="maxtext" :class="{ 'maxinput': newUser.email.length == 50 }">
+                            <p class="maxtext" :class="{ 'maxinput': newUser.email.length == 50 }">
                                 <span v-text="newUser.email.length"></span>/50
-                            </a>
+                            </p>
                         </p>
                     </div>
                     <input class="form-control clinic-form mb-3" maxlength="50" v-model="newUser.email"
@@ -77,6 +95,34 @@ const newUser = ref({
                     <p class="error-clinic" v-if="notUniqueEmail === true && errorEmail === false">Email must unique.
                     </p>
                     <p class="error-clinic" v-if="invaildEmail === true && errorEmail === false">Invaild Email.</p>
+                    
+                    <div>
+                        <p class="label-clinic">Password :
+                            <p class="maxtext" :class="{ 'maxinput': newUser.password.length == 14 }">
+                                <span v-text="newUser.password.length"></span>/14
+                            </p>
+                        </p>
+                        
+                    </div>
+                    <input class="form-control clinic-form mb-3" minlength="8" maxlength="14" v-model="newUser.password"
+                        type="password"
+                        :class="{ 'border border-danger': errorPass || passLess}">
+                    <p class="error-clinic" v-if="errorPass === true">Please enter Password.</p>
+                    <p class="error-clinic" v-if="passLess === true && errorPass === false">Password must be between 8 and 14 characters.</p>
+
+                    <div>
+                        <p class="label-clinic">Confirm Password :
+                            <p class="maxtext" :class="{ 'maxinput': newUser.confirmPassword.length == 14 }">
+                                <span v-text="newUser.confirmPassword.length"></span>/14
+                            </p>
+                        </p>                  
+                    </div>
+                    <input class="form-control clinic-form mb-3" maxlength="14" v-model="newUser.confirmPassword"
+                        type="password"
+                        :class="{ 'border border-danger': errorConfirm || notMatch}">
+                    <p class="error-clinic" v-if="errorConfirm === true && notMatch === false">Please confirm Password.</p>
+                    <p class="error-clinic" v-if="notMatch === true">Password not match.</p>
+
                     <p class="label-clinic">Role :</p>
                     <select class="form-select style-form" style="width: 25rem; margin-top: -10px"
                         :class="{ 'border border-danger': errorRole }" v-model="newUser.role">
@@ -158,13 +204,24 @@ const newUser = ref({
     margin-left: 15.5%;
 }
 
-.maxtext {
+/* .maxtext {
     font-size: 13px;
     text-decoration: none;
     color: #888888;
     pointer-events: none;
     text-align: right;
     justify-content: right;
+} */
+.maxtext {
+    font-size: 13px;
+    text-decoration: none;
+    color: #888888;
+    pointer-events: none;
+    text-align: right;
+    margin:0;
+    margin-top: -4%;
+    margin-right: 100px;
+    padding-bottom: 10px;
 }
 
 .maxinput {

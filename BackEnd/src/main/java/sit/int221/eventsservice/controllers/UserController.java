@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping({"/{Id}"})
-    public UserDTO getUserByI(@PathVariable Integer Id , WebRequest request) {
+    public UserDTO getUserById(@PathVariable Integer Id , WebRequest request) {
         return this.userService.getUserById(Id);
     }
 

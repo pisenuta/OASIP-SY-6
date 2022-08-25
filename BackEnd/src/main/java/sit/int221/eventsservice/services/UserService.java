@@ -6,7 +6,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
+import sit.int221.eventsservice.advice.ApplicationExceptionHandler;
 import sit.int221.eventsservice.advice.CheckUniqueUserExceptionHandler;
 import sit.int221.eventsservice.dtos.User.UserCreateDTO;
 import sit.int221.eventsservice.dtos.User.UserDTO;
@@ -27,6 +29,7 @@ public class UserService {
 
     @Autowired
     private Argon2PasswordEncoder argon2PasswordEncoder;
+    private ServletWebRequest ServletWebRequest;
 
     @Autowired
     public UserService(UserRepository repository) {

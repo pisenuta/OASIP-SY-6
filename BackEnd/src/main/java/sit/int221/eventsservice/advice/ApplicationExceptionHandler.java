@@ -3,6 +3,7 @@ package sit.int221.eventsservice.advice;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ApplicationExceptionHandler extends Exception {
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public HandleError handleInvalidArgument(MethodArgumentNotValidException ex, ServletWebRequest request) {
@@ -78,6 +80,17 @@ public class ApplicationExceptionHandler extends Exception {
         errors.setMessage("Bad Request");
         errors.setError("Role is wrong.");
         return errors;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public static ResponseEntity<Object> handleException(HttpStatus httpStatus, String message , ServletWebRequest request) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("TIMESTAMP", Instant.now().toString());
+        errorMap.put("STATUS", httpStatus.value() + "");
+        errorMap.put("PATH", request.getRequest().getRequestURI());
+        errorMap.put("MESSAGE", message);
+        errorMap.put("ERROR", httpStatus.getReasonPhrase());
+        return new ResponseEntity<>(errorMap, httpStatus);
     }
 
 }

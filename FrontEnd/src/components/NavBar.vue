@@ -8,8 +8,10 @@
         <div class="container-fluid">
             <a class="navbar-brand ms-3">
                 <router-link to="/"><div class="logo"><h1>&lt;PP/&gt;</h1><p>TEAM</p></div></router-link>
-            </a>  
+            </a>
+          
             <div class="d-flex">
+                <router-link to="/login" class="nav-link login "><span class="hover-underline-animation">Login</span></router-link>
                 <router-link to="/user" class="nav-link"><span class="hover-underline-animation">User</span></router-link>
                 <router-link to="/clinic" class="nav-link"><span class="hover-underline-animation">Clinic</span></router-link>
                 <router-link to="/add-event" class="nav-link" style="margin-right: 7px;"><span class="hover-underline-animation">Add Event</span></router-link>
@@ -29,12 +31,12 @@ nav{
     color:#e74694;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
-
 .nav-link{
     color:#e74694;
     font-size: 18px;
     border-radius: 10px;
 }
+
 .hover-underline-animation {
   display: inline-block;
   position: relative;

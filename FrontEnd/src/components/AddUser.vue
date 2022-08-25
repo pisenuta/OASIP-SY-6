@@ -55,6 +55,7 @@ const newUser = ref({
     confirmPassword: "",
     role: ""
 })
+
 </script>
  
 <template>

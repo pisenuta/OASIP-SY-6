@@ -5,6 +5,7 @@ import AddEvent from '../components/AddEvent.vue'
 import AboutUs from '../components/AboutUs.vue'
 import Clinic from '../components/Clinic.vue'
 import UserList from '../components/UserList.vue'
+import Login from '../components/Login.vue'
 
 const routes = [
     { path: '/', component: HomePage },
@@ -12,7 +13,8 @@ const routes = [
     { path: '/user', component: UserList },
     { path: '/add-event', component: AddEvent },
     { path: '/about-us', component: AboutUs },
-    { path: '/clinic', component: Clinic }
+    { path: '/clinic', component: Clinic },
+    { path: '/login', component: Login }
 ]
 
 const history = createWebHashHistory('/sy6/');

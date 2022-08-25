@@ -117,7 +117,8 @@ const modifyUser = async (user) => {
     body: JSON.stringify({
       name: user.name,
       email: user.email,
-      role: user.role
+      role: user.role,
+      password: user.password
     })
   })
   if (res.status === 200) {
@@ -127,14 +128,14 @@ const modifyUser = async (user) => {
         ...user,
         name: modifyUser.name.trim(),
         email: modifyUser.email.trim(),
-        role: modifyUser.role
+        role: modifyUser.role,
+        password: modifyUser.password
       } : user)
     getUser();
     editedUser.value = true
     editUserPop.value = false
     remainSame.value = false
     editingUser.value = {}
-
     console.log('edited successfully');
   } else {
     console.log('can not edit');
@@ -240,7 +241,7 @@ const createUser = async (user) => {
     body: JSON.stringify({
       name: user.name.trim(),
       email: user.email.trim(),
-      password: user.password.trim(),
+      password: user.password,
       role: user.role,
     })
   })

@@ -53,7 +53,8 @@ const newUser = computed(() => {
         userId: props.currentUser.userId,
         name: props.currentUser.name,
         email: props.currentUser.email,
-        role: props.currentUser.role
+        role: props.currentUser.role,
+        password: props.currentUser.password,
     }
 })
 
@@ -62,7 +63,7 @@ const newUser = computed(() => {
  
 <template>
     <div class="card-body edit-user-popup">
-        <div class="card edit-user-card" style="width: 38rem; height: 25rem;">
+        <div class="card edit-user-card" style="width: 38rem;">
             <div class="card-title title-detail">
                 <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
                     EDIT USER

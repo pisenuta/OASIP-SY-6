@@ -3,8 +3,8 @@ import { ref, onBeforeMount } from "vue";
 
 const users = ref([]);
 const getUser = async () => {
-  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
   })
   if (res.status === 200) {
@@ -57,8 +57,8 @@ const matchPassword = async (user) => {
   if (plzEmail.value == true || noEmail.value == true || noPass.value == true || passlessthen8.value == true) {
     return
   }
-  const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}match` , {
+  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}match` , {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({

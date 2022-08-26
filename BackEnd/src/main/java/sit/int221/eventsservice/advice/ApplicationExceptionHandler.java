@@ -61,7 +61,7 @@ public class ApplicationExceptionHandler extends Exception {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CheckUniqueUserExceptionHandler.class)
-    public HandleCheckUnique handleCheckUniqueUser(CheckUniqueUserExceptionHandler cu, ServletWebRequest request) {
+    public HandleCheckUnique handleCheckUniqueUser(CheckUniqueUserExceptionHandler cu, ServletWebRequest request ) {
         HandleCheckUnique errors = new HandleCheckUnique();
         String mser = cu.getMessage();
         errors.setStatus(500);
@@ -82,15 +82,26 @@ public class ApplicationExceptionHandler extends Exception {
         return errors;
     }
 
-    @ExceptionHandler(Exception.class)
-    public static ResponseEntity<Object> handleException(HttpStatus httpStatus, String message , ServletWebRequest request) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("TIMESTAMP", Instant.now().toString());
-        errorMap.put("STATUS", httpStatus.value() + "");
-        errorMap.put("PATH", request.getRequest().getRequestURI());
-        errorMap.put("MESSAGE", message);
-        errorMap.put("ERROR", httpStatus.getReasonPhrase());
-        return new ResponseEntity<>(errorMap, httpStatus);
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(MatchUserExceptionHandler.class)
+    public ResponseEntity MatchUserExceptionHandler(MatchUserExceptionHandler cu, ServletWebRequest request ,HttpStatus httpStatus, String message) {
+        HandleCheckUnique errors = new HandleCheckUnique();
+        String mser = cu.getMessage();
+        errors.setStatus(httpStatus.value());
+        errors.setPath(request.getRequest().getRequestURI());
+        errors.setMessage(message);
+        errors.setError(mser);
+        return (ResponseEntity) ResponseEntity.status(httpStatus.value()).body(errors);
+    }
+
+    public static ResponseEntity<Object> uniqueHandleException(HttpStatus httpStatus, String message) {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("timestamp", Instant.now());
+        errorMap.put("status", httpStatus.value());
+        errorMap.put("message", message);
+        errorMap.put("path", "/api/match");
+        errorMap.put("error", httpStatus.getReasonPhrase());
+        return new ResponseEntity<Object>(errorMap, httpStatus);
     }
 
 }

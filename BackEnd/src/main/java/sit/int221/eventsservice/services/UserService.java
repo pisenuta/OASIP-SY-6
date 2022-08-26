@@ -10,6 +10,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.ApplicationExceptionHandler;
 import sit.int221.eventsservice.advice.CheckUniqueUserExceptionHandler;
+import sit.int221.eventsservice.advice.MatchUserExceptionHandler;
 import sit.int221.eventsservice.dtos.User.UserCreateDTO;
 import sit.int221.eventsservice.dtos.User.UserDTO;
 import sit.int221.eventsservice.dtos.User.UserLoginDTO;
@@ -29,6 +30,7 @@ public class UserService {
 
     @Autowired
     private Argon2PasswordEncoder argon2PasswordEncoder;
+
     private ServletWebRequest ServletWebRequest;
 
     @Autowired
@@ -50,7 +52,10 @@ public class UserService {
     public User save(UserDTO newUser) throws CheckUniqueUserExceptionHandler {
         List<UserDTO> userList = getAllUser();
         for(int i = 0; i < userList.size(); i++){
-            if (newUser.getName().trim().equals(userList.get(i).getName())){
+            if(newUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != newUser.getUserId()
+                    && newUser.getEmail().trim().equals(userList.get(i).getEmail()) && userList.get(i).getUserId() != newUser.getUserId()){
+                throw new CheckUniqueUserExceptionHandler("User and Email already exist");
+            } else if (newUser.getName().trim().equals(userList.get(i).getName())){
                 throw new CheckUniqueUserExceptionHandler("User name must be unique.");
             } else if (newUser.getEmail().trim().equals(userList.get(i).getEmail())){
                 throw new CheckUniqueUserExceptionHandler("User email must be unique.");
@@ -63,16 +68,16 @@ public class UserService {
         return repository.saveAndFlush(user);
     }
 
-    public UserLoginDTO Login (UserLoginDTO user){
-        if(repository.existsByEmail(user.getEmail())){
+    public Object Login (UserLoginDTO user) throws MatchUserExceptionHandler {
+        if (repository.existsByEmail(user.getEmail())) {
             User userdb = repository.findByEmail(user.getEmail());
-            if(argon2PasswordEncoder.matches(user.getPassword(), userdb.getPassword())){
-                throw new ResponseStatusException(HttpStatus.OK, "successes");
+            if (argon2PasswordEncoder.matches(user.getPassword(), userdb.getPassword())) {
+                return ApplicationExceptionHandler.uniqueHandleException(HttpStatus.OK, "Password Matched");
             } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "not success");
+                return ApplicationExceptionHandler.uniqueHandleException(HttpStatus.UNAUTHORIZED, "Password NOT Matched");
             }
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user dose not exist");
+            return ApplicationExceptionHandler.uniqueHandleException(HttpStatus.NOT_FOUND, "A user with the specified email DOES NOT exist");
         }
     }
 }

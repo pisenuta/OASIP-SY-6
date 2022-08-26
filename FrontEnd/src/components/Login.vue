@@ -48,13 +48,8 @@ const matchPassword = async (user) => {
   } else {
     noPass.value = false
   }
-  if(users.value.find((u) => user.email === u.email)){
-    noEmail.value = false
-  } else {
-    noEmail.value = true
-  }
-  
-  if (plzEmail.value == true || noEmail.value == true || noPass.value == true || passlessthen8.value == true) {
+
+  if (plzEmail.value == true ||  noPass.value == true || passlessthen8.value == true) {
     return
   }
   // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
@@ -100,7 +95,7 @@ const matchPassword = async (user) => {
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 90px">
           <p class="card-text" style="margin-top: 10px;">Password <b>Matched</b></p>
           <button type="button" class="btn btn-light btn-grad-ok" style="width: 100px; margin-top: 5px;"
-          v-on:click="match = false" @click="clear()">OK</button>
+          v-on:click="match = false , noEmail = false" @click="clear()">OK</button>
         </div>
       </div>
     </div>
@@ -112,7 +107,7 @@ const matchPassword = async (user) => {
           <img src="https://api.iconify.design/akar-icons/circle-x.svg?color=%23ea384d" style="width: 90px">
           <p class="card-text" style="margin-top: 10px; color: #D31027;">Password <b>Not Matched</b></p>
           <button type="button" class="btn btn-light btn-no-match" style="width: 100px; margin-top: 5px;"
-          v-on:click="noMatch = false">OK</button>
+          v-on:click="noMatch = false , noEmail = false">OK</button>
         </div>
       </div>
     </div>

@@ -30,38 +30,44 @@ const match = ref(false)
 const noMatch = ref(false)
 const noEmail = ref(false)
 const noPass = ref(false)
+const passlessthen8 = ref(false)
 const plzEmail = ref(false)
-const matchPassword = (user) => {
-  if (user.email === null || user.email === ""){
+const matchPassword = async (user) => {
+  if(user.email === null || user.email === ""){
     plzEmail.value = true
   } else {
     plzEmail.value = false
-    if (users.value.find((u) => user.email === u.email)) {
-    if(users.value.find((u) => user.password === u.password)){
-      match.value = true
-      noEmail.value = false
-      noPass.value = false
-      console.log('1');
-    } else if (user.password === null || user.password === ""){
-      noPass.value = true
-      console.log('2');
-
-    }
-
-    else {
-      noMatch.value = true
-      noEmail.value = false
-      noPass.value = false
-      console.log('3');
-
-    }
+  }
+  if(user.password.length < 8){
+    passlessthen8.value = true
   } else {
-    noEmail.value = true
-      console.log('4');
+    passlessthen8.value = false
+  }
+  if(user.password === null || user.password === ""){
+    noPass.value = true
+  } else {
+    noPass.value = false
+  }
 
+  if (plzEmail.value == true || noEmail.value == true || noPass.value == true || passlessthen8.value == true) {
+    return
   }
+  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}match` , {
+    method: 'POST',
+    headers: { 'content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: user.email.trim(),
+      password: user.password
+    })
+  })
+  if (res.status == 200) {
+    match.value = true
+  } else if (res.status == 401) {
+    noMatch.value = true
+  } else if (res.status == 404){
+    noEmail.value = true
   }
-  
 }
 </script>
  
@@ -76,6 +82,7 @@ const matchPassword = (user) => {
       <input class="form-control clinic-form mb-3" maxlength="14" type="password" style="margin-top:10px;"
         placeholder="Password" v-model="userLogin.password" :class="{ 'border border-danger': noPass }">
         <p class="error-login" v-if="noPass === true">Please enter password !</p>
+        <p class="error-login" v-if="passlessthen8 === true && noPass === false">Password must be between 8 and 14 character !</p>
       <button type="button" class="btn btn-secondary btn-login mx-auto"
         @click="matchPassword(userLogin)">Login</button>
     </div>
@@ -99,7 +106,7 @@ const matchPassword = (user) => {
           <img src="https://api.iconify.design/akar-icons/circle-x.svg?color=%23ea384d" style="width: 90px">
           <p class="card-text" style="margin-top: 10px; color: #D31027;">Password <b>Not Matched</b></p>
           <button type="button" class="btn btn-light btn-no-match" style="width: 100px; margin-top: 5px;"
-          v-on:click="noMatch = false" @click="clear()">OK</button>
+          v-on:click="noMatch = false">OK</button>
         </div>
       </div>
     </div>

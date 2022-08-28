@@ -9,7 +9,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class HandleCheckUnique {
+public class HandleValidationErrors {
     private Date timestamp = new Date();
     private Integer status;
     private String message;

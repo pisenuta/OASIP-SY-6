@@ -5,7 +5,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -50,8 +49,8 @@ public class ApplicationExceptionHandler extends Exception {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public HandleCheckUnique handleCheckUnique(DataIntegrityViolationException de, ServletWebRequest request) {
-        HandleCheckUnique errors = new HandleCheckUnique();
+    public HandleValidationErrors handleCheckUnique(DataIntegrityViolationException de, ServletWebRequest request) {
+        HandleValidationErrors errors = new HandleValidationErrors();
         errors.setStatus(500);
         errors.setPath("/api/eventcategory/"+ request.getRequest().getRequestURI());
         errors.setMessage("Internal Server Error");
@@ -61,8 +60,8 @@ public class ApplicationExceptionHandler extends Exception {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CheckUniqueUserExceptionHandler.class)
-    public HandleCheckUnique handleCheckUniqueUser(CheckUniqueUserExceptionHandler cu, ServletWebRequest request) {
-        HandleCheckUnique errors = new HandleCheckUnique();
+    public HandleValidationErrors handleCheckUniqueUser(CheckUniqueUserExceptionHandler cu, ServletWebRequest request ) {
+        HandleValidationErrors errors = new HandleValidationErrors();
         String mser = cu.getMessage();
         errors.setStatus(500);
         errors.setPath(request.getRequest().getRequestURI());
@@ -73,8 +72,8 @@ public class ApplicationExceptionHandler extends Exception {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public HandleCheckUnique handleNotEnum(HttpMessageNotReadableException ex, ServletWebRequest request) {
-        HandleCheckUnique errors = new HandleCheckUnique();
+    public HandleValidationErrors handleNotEnum(HttpMessageNotReadableException ex, ServletWebRequest request) {
+        HandleValidationErrors errors = new HandleValidationErrors();
         errors.setStatus(400);
         errors.setPath("/api/users");
         errors.setMessage("Bad Request");
@@ -82,15 +81,26 @@ public class ApplicationExceptionHandler extends Exception {
         return errors;
     }
 
-    @ExceptionHandler(Exception.class)
-    public static ResponseEntity<Object> handleException(HttpStatus httpStatus, String message , ServletWebRequest request) {
-        Map<String, String> errorMap = new HashMap<>();
-        errorMap.put("TIMESTAMP", Instant.now().toString());
-        errorMap.put("STATUS", httpStatus.value() + "");
-        errorMap.put("PATH", request.getRequest().getRequestURI());
-        errorMap.put("MESSAGE", message);
-        errorMap.put("ERROR", httpStatus.getReasonPhrase());
-        return new ResponseEntity<>(errorMap, httpStatus);
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(MatchUserExceptionHandler.class)
+    public ResponseEntity MatchUserExceptionHandler(MatchUserExceptionHandler cu, ServletWebRequest request ,HttpStatus httpStatus, String message) {
+        HandleValidationErrors errors = new HandleValidationErrors();
+        String mser = cu.getMessage();
+        errors.setStatus(httpStatus.value());
+        errors.setPath(request.getRequest().getRequestURI());
+        errors.setMessage(message);
+        errors.setError(mser);
+        return (ResponseEntity) ResponseEntity.status(httpStatus.value()).body(errors);
+    }
+
+    public static ResponseEntity<Object> uniqueHandleException(HttpStatus httpStatus, String message) {
+        Map<String, Object> errorMap = new HashMap<>();
+        errorMap.put("timestamp", Instant.now());
+        errorMap.put("status", httpStatus.value());
+        errorMap.put("message", message);
+        errorMap.put("path", "/api/match");
+        errorMap.put("error", httpStatus.getReasonPhrase());
+        return new ResponseEntity<Object>(errorMap, httpStatus);
     }
 
 }

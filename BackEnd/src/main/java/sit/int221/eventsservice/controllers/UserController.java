@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping({""})
-    public User create(@Valid @RequestBody UserDTO newUser) throws CheckUniqueUserExceptionHandler {
+    public User create(@Valid @RequestBody UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
         return userService.save(newUser);
     }
 
@@ -67,7 +67,10 @@ public class UserController {
         System.out.println(updateUser.getPassword());
 
         for(int i = 0; i < userList.size(); i++) {
-            if(updateUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != Id){
+            if(updateUser.getName().trim().equals(userList.get(i).getName()) && updateUser.getEmail().trim().equals(userList.get(i).getEmail())
+                    && userList.get(i).getUserId() != Id && userList.get(i).getUserId() != Id) {
+                throw new CheckUniqueUserExceptionHandler("User and Email already exist");
+            }else if(updateUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != Id){
                 throw new CheckUniqueUserExceptionHandler("User name must be unique.");
             } else if(updateUser.getEmail().trim().equals(userList.get(i).getEmail()) && userList.get(i).getUserId() != Id){
                 throw new CheckUniqueUserExceptionHandler("User email must be unique.");

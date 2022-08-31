@@ -14,6 +14,7 @@ const noUser = () => {
 
 const getUser = async () => {
   // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+  // const res = await fetch(`http://localhost:8080/api/users/`, {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
   });
@@ -108,6 +109,8 @@ const modifyUser = async (user) => {
     remainSame.value = true
     return
   }
+  // const res = await fetch(`http://localhost:8080/api/users/${user.userId}`, {
+
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
   // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
     method: 'PUT',

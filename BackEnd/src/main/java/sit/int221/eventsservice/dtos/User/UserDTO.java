@@ -1,6 +1,7 @@
 package sit.int221.eventsservice.dtos.User;
 
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.validator.constraints.UniqueElements;
 import sit.int221.eventsservice.entities.Role;
 
@@ -23,9 +24,6 @@ public class UserDTO {
     @Size(max = 45, message = "Email must less or equal then 45.")
     @Email(message = "Invalid email address.")
     private String email;
-    @NotBlank(message = "Password shouldn't be null or empty.")
-    @Size(min = 8, max = 14, message = "Password must be between 8 and 14.")
-    private String password;
     private Role role;
     private Instant createdOn;
     private Instant updatedOn;

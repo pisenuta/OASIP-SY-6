@@ -32,53 +32,36 @@ const match = ref(false)
 const noMatch = ref(false)
 const noEmail = ref(false)
 const noPass = ref(false)
-const passlessthen8 = ref(false)
-const wrongEmail = ref(false)
 const plzEmail = ref(false)
 const matchPassword = async (user) => {
   if(user.email === null || user.email === ""){
     plzEmail.value = true
   } else {
     plzEmail.value = false
-  }
-  var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (users.value.find((u) => user.email === u.email)) {
+    if(users.value.find((u) => user.password === u.password)){
+      match.value = true
+      noEmail.value = false
+      noPass.value = false
+      console.log('1');
+    } else if (user.password === null || user.password === ""){
+      noPass.value = true
+      console.log('2');
 
-  if (user.email.match(emailValidate)) {
-    wrongEmail.value = false
-  } else {
-    wrongEmail.value = true
-  }
-  if(user.password.length < 8){
-    passlessthen8.value = true
-  } else {
-    passlessthen8.value = false
-  }
-  if(user.password === null || user.password === ""){
-    noPass.value = true
-  } else {
-    noPass.value = false
-  }
-  if (plzEmail.value == true ||  noPass.value == true || passlessthen8.value == true || wrongEmail.value == true) {
-    return
-  }
+    }
 
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}match` , {
-    method: 'POST',
-    headers: { 'content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: user.email,
-      password: user.password
-    })
-  })
-  if (res.status == 200) {
-    match.value = true
-  } else if (res.status == 401) {
-    noMatch.value = true
-    noEmail.value = false
-  } else if (res.status == 404){
+    else {
+      noMatch.value = true
+      noEmail.value = false
+      noPass.value = false
+      console.log('3');
+
+    }
+  } else {
     noEmail.value = true
   }
+  }
+  
 }
 </script>
  
@@ -96,8 +79,6 @@ const matchPassword = async (user) => {
       style="margin-top:10px;"
         placeholder="Password" v-model="userLogin.password" :class="{ 'border border-danger': noPass || noMatch }">
         <p class="error-login" v-if="noPass === true">Please enter password !</p>
-        <p class="error-login" v-if="noMatch === true">Password Incorrect !</p>
-        <p class="error-login" v-if="passlessthen8 === true && noPass === false">Password must be between 8 and 14 character !</p>
       <button type="button" class="btn btn-secondary btn-login mx-auto"
         @click="matchPassword(userLogin)">Login</button>
     </div>
@@ -105,10 +86,10 @@ const matchPassword = async (user) => {
     <!-- match -->
     <div class="container" v-if="match === true">
       <div class="card deleted card-login" >
-        <div class="card-body">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw">
-          <p class="card-text" style="margin-top: 10px;margin-bottom: 1vw">Login <b>Successful</b></p>
-          <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw;"
+        <div class="card-body" style="margin-top: 10px;">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 90px">
+          <p class="card-text" style="margin-top: 10px;">Password <b>Matched</b></p>
+          <button type="button" class="btn btn-light btn-grad-ok" style="width: 100px; margin-top: 5px;"
           v-on:click="match = false" @click="clear()">OK</button>
         </div>
       </div>
@@ -121,7 +102,7 @@ const matchPassword = async (user) => {
           <img src="https://api.iconify.design/akar-icons/circle-x.svg?color=%23ea384d" style="width: 90px">
           <p class="card-text" style="margin-top: 10px; color: #D31027;">Password <b>Not Matched</b></p>
           <button type="button" class="btn btn-light btn-no-match" style="width: 100px; margin-top: 5px;"
-          v-on:click="noMatch = false" @click="clear()">OK</button>
+          v-on:click="noMatch = false , noEmail = false">OK</button>
         </div>
       </div>
     </div> -->

@@ -4,6 +4,8 @@ import editClinic from '../components/EditClinic.vue'
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories` , {
+//   const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/categories`, {
+
         method: "GET",
     });
     if (res.status === 200) {
@@ -97,8 +99,8 @@ const cancelPop = () => {
  
 <template>
     <div class="body">
-        <h3 class="mt-5" style="font-size: 40px;font-weight: bold;">Clinic</h3>
-        <div class="containerClinic mt-5">
+        <h3 style="font-size: 2.1vw;font-weight: bold;margin-top: 2.5vw;">Clinic</h3>
+        <div class="containerClinic" style="margin-top: 2vw;">
             <div class="row mx-auto">
                 <div class="col-4 col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
                     <div class="card-body clinic-body">
@@ -108,9 +110,9 @@ const cancelPop = () => {
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>
                         <div
                             v-if="category.eventCategoryDescription === null || category.eventCategoryDescription === ''">
-                            <p style="color: #8a8a8a;">No Description.</p>
+                            <p style="color: #8a8a8a;font-size: 0.9vw;">No Description.</p>
                         </div>
-                        <p class="card-text">{{ category.eventCategoryDescription }}</p>
+                        <p class="card-text clinic-des">{{ category.eventCategoryDescription }}</p>
                     </div>
                 </div>
             </div>
@@ -179,7 +181,8 @@ ul {
 }
 
 .clinic-form {
-    width: 25rem;
+    width: 20.5vw;
+    height: 2vw;
     margin-top: -10px;
     margin-right: auto;
     margin-left: auto;
@@ -202,7 +205,7 @@ ul {
 .edit-icon {
     cursor: pointer;
     float: right;
-    height: 20px;
+    height: 1.1vw;
     margin-right: 10px;
     margin-top: 10px;
     transition: all 0.2s ease-in-out;
@@ -218,21 +221,29 @@ ul {
 }
 
 .clinic-title {
+    font-size: 1vw;
     margin-top: 7px;
     text-align: center;
+}
+
+.clinic-des{
+    font-size: 0.9vw;
+    margin-left: 0.5vw;
+    margin-right: 0.5vw;
 }
 
 .duration-text {
     background-color: #e74694;
     border-radius: 10px;
+    font-size: 1vw;
 }
 
 .clinic-body {
     background-color: #212529;
     border-radius: 10px;
-    height: 12rem;
+    height: 11vw;
     margin-bottom: 30px;
-    width: 35rem;
+    width: 30vw;
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
@@ -246,7 +257,6 @@ ul {
 .clinic-body p {
     color: white;
     text-align: center;
-    margin-top: 13px;
 }
 
 .col-clinic {

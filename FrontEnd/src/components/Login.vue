@@ -24,44 +24,61 @@ const userLogin = ref({
 const clear = () =>{
   userLogin.value.email = ""
   userLogin.value.password = ""
+  noMatch.value = false
+  noEmail.value = false
 }
 
 const match = ref(false)
 const noMatch = ref(false)
 const noEmail = ref(false)
 const noPass = ref(false)
+const passlessthen8 = ref(false)
+const wrongEmail = ref(false)
 const plzEmail = ref(false)
-const matchPassword = (user) => {
-  if (user.email === null || user.email === ""){
+const matchPassword = async (user) => {
+  if(user.email === null || user.email === ""){
     plzEmail.value = true
   } else {
     plzEmail.value = false
-    if (users.value.find((u) => user.email === u.email)) {
-    if(users.value.find((u) => user.password === u.password)){
-      match.value = true
-      noEmail.value = false
-      noPass.value = false
-      console.log('1');
-    } else if (user.password === null || user.password === ""){
-      noPass.value = true
-      console.log('2');
+  }
+  var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    }
-
-    else {
-      noMatch.value = true
-      noEmail.value = false
-      noPass.value = false
-      console.log('3');
-
-    }
+  if (user.email.match(emailValidate)) {
+    wrongEmail.value = false
   } else {
-    noEmail.value = true
-      console.log('4');
+    wrongEmail.value = true
+  }
+  if(user.password.length < 8){
+    passlessthen8.value = true
+  } else {
+    passlessthen8.value = false
+  }
+  if(user.password === null || user.password === ""){
+    noPass.value = true
+  } else {
+    noPass.value = false
+  }
+  if (plzEmail.value == true ||  noPass.value == true || passlessthen8.value == true || wrongEmail.value == true) {
+    return
+  }
 
+  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}match` , {
+    method: 'POST',
+    headers: { 'content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: user.email,
+      password: user.password
+    })
+  })
+  if (res.status == 200) {
+    match.value = true
+  } else if (res.status == 401) {
+    noMatch.value = true
+    noEmail.value = false
+  } else if (res.status == 404){
+    noEmail.value = true
   }
-  }
-  
 }
 </script>
  
@@ -69,13 +86,18 @@ const matchPassword = (user) => {
   <div class="body">
     <div class="login-center">
       <h1 class="login-head mx-auto">LOGIN</h1>
-      <input class="form-control clinic-form mb-3 input-email" maxlength="50" v-model="userLogin.email" placeholder="Email"
-       :class="{ 'border border-danger': noEmail || plzEmail }">
-      <p class="error-login" v-if="noEmail === true && plzEmail === false">Email does not exist !</p>
+      <input class="form-control clinic-form login-input" maxlength="50" v-model="userLogin.email" placeholder="Email"
+       :class="{ 'border border-danger': noEmail || plzEmail || wrongEmail}"
+       style="margin-bottom: 1vw; font-size: 0.85vw; ">
+      <p class="error-login" v-if="noEmail === true && plzEmail === false && wrongEmail === false">Email does not exist !</p>
       <p class="error-login" v-if="plzEmail === true">Please enter email !</p>
-      <input class="form-control clinic-form mb-3" maxlength="14" type="password" style="margin-top:10px;"
-        placeholder="Password" v-model="userLogin.password" :class="{ 'border border-danger': noPass }">
+      <p class="error-login" v-if="wrongEmail === true && plzEmail === false">Invaild Email !</p>
+      <input class="form-control clinic-form mb-3 login-input" maxlength="14" type="password" 
+      style="margin-top:10px;"
+        placeholder="Password" v-model="userLogin.password" :class="{ 'border border-danger': noPass || noMatch }">
         <p class="error-login" v-if="noPass === true">Please enter password !</p>
+        <p class="error-login" v-if="noMatch === true">Password Incorrect !</p>
+        <p class="error-login" v-if="passlessthen8 === true && noPass === false">Password must be between 8 and 14 character !</p>
       <button type="button" class="btn btn-secondary btn-login mx-auto"
         @click="matchPassword(userLogin)">Login</button>
     </div>
@@ -83,17 +105,17 @@ const matchPassword = (user) => {
     <!-- match -->
     <div class="container" v-if="match === true">
       <div class="card deleted card-login" >
-        <div class="card-body" style="margin-top: 10px;">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 90px">
-          <p class="card-text" style="margin-top: 10px;">Password <b>Matched</b></p>
-          <button type="button" class="btn btn-light btn-grad-ok" style="width: 100px; margin-top: 5px;"
+        <div class="card-body">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw">
+          <p class="card-text" style="margin-top: 10px;margin-bottom: 1vw">Login <b>Successful</b></p>
+          <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw;"
           v-on:click="match = false" @click="clear()">OK</button>
         </div>
       </div>
     </div>
 
     <!-- not match -->
-    <div class="container" v-if="noMatch === true">
+    <!-- <div class="container" v-if="noMatch === true">
       <div class="card deleted card-login">
         <div class="card-body" style="margin-top: 10px;">
           <img src="https://api.iconify.design/akar-icons/circle-x.svg?color=%23ea384d" style="width: 90px">
@@ -102,13 +124,18 @@ const matchPassword = (user) => {
           v-on:click="noMatch = false" @click="clear()">OK</button>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
  
 <style>
 .card-login{
   animation: animate 0.4s ease-in-out;
+}
+.login-input{
+  border: 1px solid #ced4da;
+  padding-left: 0.5vw;
+  font-size: 0.85vw;
 }
 @keyframes animate {
   0% {
@@ -134,7 +161,7 @@ const matchPassword = (user) => {
   justify-content: center;
 }
 .error-login{
-  font-size: 15px;
+  font-size: 0.75vw;
   color: #D31027;
   margin: 0px;
 }
@@ -154,7 +181,8 @@ const matchPassword = (user) => {
   border-color: transparent;
 }
 .login-head {
-  margin-bottom: 30px;
+  margin-bottom: 1.5vw;
+  font-size:2.1vw
 }
 
 .btn-login {
@@ -162,8 +190,9 @@ const matchPassword = (user) => {
       #f857a6 0%,
       #ff5858 51%,
       #f857a6 100%);
-  margin-top: 25px;
-  padding: 10px 30px;
+  margin-top: 1vw;
+  padding: 0.5vw 1.5vw;
+  font-size: 0.8vw;
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;

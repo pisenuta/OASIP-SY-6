@@ -9,3 +9,5 @@ Version: Integrated Project II
 |:---:|-------------------|--------------|
 |  1  | ธราเทพ ศิริพิศ  | 63130500055|
 |  2  | ธัญกร แถลงดี    | 63130500056|
+
+> This project is part of INT222 Integrated IT Project II.

@@ -61,7 +61,6 @@ const matchPassword = async (user) => {
   if (plzEmail.value == true ||  noPass.value == true || passlessthen8.value == true || wrongEmail.value == true) {
     return
   }
-//test commit
   // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}match` , {
     method: 'POST',
@@ -81,7 +80,7 @@ const matchPassword = async (user) => {
   }
 }
 </script>
- 
+ //confilct
 <template>
   <div class="body">
     <div class="login-center">

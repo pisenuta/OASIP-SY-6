@@ -142,11 +142,11 @@ const useSortDate = ref(false)
  
 <template>
   <div class="body">
-    <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Schedule</h3>
+    <h3 class="mx-auto" style="font-size: 2.1vw;margin-top: 2.5vw;font-weight: bolder;">Reservation</h3>
     <div v-if="events.length > 8" class="scroll-down"></div>
 
-    <div class="mt-5" style="justify-content: space-around;display: flex;margin-bottom: 40px;">
-      <button type="button" class="btn btn-dark"
+    <div style="justify-content: space-around;display: flex;margin-bottom: 40px;margin-top: 1vw;">
+      <button type="button" class="btn btn-dark sortBtn"
         v-on:click="useSortCategory = true, useSortStatus = false, useSortDate = false">Sort By Category</button>
       <div v-if="useSortCategory == true">
         <form class="form-inline">
@@ -160,7 +160,7 @@ const useSortDate = ref(false)
         </form>
       </div>
 
-      <button type="button" class="btn btn-dark"
+      <button type="button" class="btn btn-dark sortBtn"
         v-on:click="useSortCategory = false, useSortStatus = true, useSortDate = false">Sort By Status</button>
       <div v-if="useSortStatus == true">
         <form class="form-inline">
@@ -173,7 +173,7 @@ const useSortDate = ref(false)
         </form>
       </div>
 
-      <button type="button" class="btn btn-dark"
+      <button type="button" class="btn btn-dark sortBtn"
         v-on:click="useSortCategory = false, useSortStatus = false, useSortDate = true">Sort By Date</button>
       <div v-if="useSortDate == true">
         <form class="form-inline">
@@ -188,7 +188,7 @@ const useSortDate = ref(false)
         v-on:click="useSortCategory = false, useSortStatus = false, useSortDate = false">All</button>
     </div>
 
-    <h5 class="mt-4">{{ schedule() }}</h5>
+    <h5 class="mx-auto Noschedule" >{{ schedule() }}</h5>
     <div v-if="events.length !== 0">
       <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
         @cancelEdit="cancelEdit" />
@@ -204,29 +204,43 @@ const useSortDate = ref(false)
 .body {
   font-family: 'Radio Canada', 'Noto Sans Thai';
 }
-
+.Noschedule{
+  font-size: 1.1vw;
+  color: #646464;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
 .all-btn {
   background-color: #e74694;
   border-color: #e74694;
   color: black;
   padding-left: 20px;
   padding-right: 20px;
+  font-size: 0.9vw;
 }
-
+.sortBtn{
+  font-size: 0.9vw;
+}
 .form-inline {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  height: 1vw;
 }
 
 .filter-btn {
   cursor: pointer;
-  width: 20px;
+  width: 1.3vw;
   margin-left: 15px;
+  
 }
 
 .filter-form {
-  width: 16rem;
+  width: 15vw;
+  font-size: 0.9vw;
 }
 
 h5,
@@ -234,9 +248,6 @@ h3 {
   text-align: center;
 }
 
-h5 {
-  color: #646464;
-}
 
 .scroll-down {
   height: 50px;

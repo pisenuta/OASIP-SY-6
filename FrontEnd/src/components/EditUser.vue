@@ -63,9 +63,9 @@ const newUser = computed(() => {
  
 <template>
     <div class="card-body edit-user-popup">
-        <div class="card edit-user-card" style="width: 38rem;">
+        <div class="card edit-user-card">
             <div class="card-title title-detail">
-                <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
+                <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px;font-size: 0.95vw;">
                     EDIT USER
                 </div>
                 <button class="close-detail" @click="$emit('cancelEdit')">
@@ -93,7 +93,7 @@ const newUser = computed(() => {
                     </p>
                     <p class="error-clinic" v-if="invaildEmail === true && errorEmail === false">Invaild Email.</p>
                     <p class="label-clinic">Role :</p>
-                    <select class="form-select style-form" style="width: 25rem; margin-top: -10px"
+                    <select class="form-select style-form" style="width: 20.5vw;height: 2vw; margin-top: -10px;margin-bottom: 0.5vw;"
                         :class="{ 'border border-danger': errorRole }" v-model="newUser.role">
                         <option disabled selected>Select Role Below</option>
                         <option value="admin">Admin</option>
@@ -111,6 +111,7 @@ const newUser = computed(() => {
 <style>
 .edit-user-card {
     border-radius: 20px;
+    width: 31.6vw;
 }
 
 .edit-user-popup {

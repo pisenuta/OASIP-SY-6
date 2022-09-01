@@ -109,7 +109,7 @@ const added = () => {
  
 <template>
     <div class="body">
-        <h3 class="mx-auto mt-5" style="font-size: 40px;font-weight: bolder;">Add Event</h3>
+        <h3 class="mx-auto" style="font-size: 2.1vw;font-weight: bolder; margin-top: 2.5vw;">Booking</h3>
         <ManageAdd 
         :categoryList="categories" 
         :errorName="errorName" 
@@ -184,6 +184,8 @@ h3 {
 .style-form {
     width: 50%;
     margin: auto;
+    font-size: 0.82vw;
+    padding: auto;
 }
 
 label {

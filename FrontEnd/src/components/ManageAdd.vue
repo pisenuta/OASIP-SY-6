@@ -51,9 +51,9 @@ const newEvent = ref({
 </script>
 <template>
     <div class="body">
-        <div class="form mx-5 mb-4 mt-3">
-            <div class="mb-3">
-                <label for="clinic" class="form-label">Clinic :</label>
+        <div class="form mx-5">
+            <div class="marginForm">
+                <label for="clinic" class="form-label booking-label">Clinic :</label>
                 <select class="form-select style-form" style="width: 50%;"
                     :class="{ 'border border-danger': errorClinic }" v-model="newEvent.eventCategory">
                     <option disabled selected>Select Clinic Below</option>
@@ -64,43 +64,44 @@ const newEvent = ref({
                 <div v-if="errorClinic" class="error">Please select a clinic.</div>
 
             </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">Name :</label>
+            <div class="marginForm">
+                <label for="name" class="form-label booking-label">Name :</label>
                 <input class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
                     :class="{ 'border border-danger': errorName }">
                 <div v-if="errorName" class="error"> Please enter name.</div>
             </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email :</label>
+            <div class="marginForm">
+                <label for="email" class="form-label booking-label">Email :</label>
                 <input class="form-control style-form" id="email" maxlength="45" v-model="newEvent.bookingEmail"
                     :class="{ 'border border-danger': errorEmail || !mailVali }">
                 <div v-if="errorEmail" class="error">Please enter Email.</div>
                 <div v-if="!mailVali && !errorEmail" class="error">Invalid Email.</div>
             </div>
-            <div class="mb-3">
-                <label for="meeting-time">Date - Time :</label><br>
+            <div class="marginForm">
+                <label for="meeting-time" class="booking-label">Date - Time :</label><br>
                 <Datepicker locale="th" :minDate="new Date()" v-model="newEvent.eventStartTime"
-                    :class="{ 'border border-danger': errorTime || errorFuture || overlap }" class="datepicker">
+                    :class="{ 'border border-danger': errorTime || errorFuture || overlap }" class="datepicker"
+                    style="font-size: 0.95vw;">
                 </Datepicker>
                 <div v-if="errorTime" class="error">Please choose start time.</div>
                 <div v-if="errorFuture && !errorTime" class="error">Can not choose past time.</div>
                 <div v-if="overlap" class="error">Time is overlapping !</div>
 
             </div>
-            <div class="mb-3">
-                <label for="meeting-time">Durations (minutes) :</label><br>
+            <div class="marginForm">
+                <label for="meeting-time" class="booking-label">Durations (minutes) :</label><br>
                 <input class="form-control style-form" style="margin-top: 8px;" type="text" disabled readonly
                     :value="newEvent.eventCategory.eventDuration">
             </div>
-            <div class="mb-3">
-                <label for="note" class="form-label">Note :</label>
+            <div class="marginForm">
+                <label for="note" class="form-label booking-label">Note :</label>
                 <textarea class="form-control style-form" rows="3" maxlength="500"
                     v-model="newEvent.eventNotes"></textarea>
             </div>
         </div>
         <div style="text-align: center;">
             <button type="button" class="btn btn-dark mx-auto addEventBtn" @click="$emit('create', newEvent)">
-                Add Event
+                Booking
             </button>
         </div>
 
@@ -111,12 +112,17 @@ const newEvent = ref({
 @import url('https://fonts.googleapis.com/css2?family=Inter&family=Noto+Sans+Thai&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Radio+Canada:wght@600&display=swap');
 
+.marginForm{
+    margin-bottom: 1vw;
+}
 .error {
     color: red;
     font-size: 14px;
     margin-left: 25%;
 }
-
+.booking-label{
+    font-size: 1vw;
+}
 .body {
     font-family: 'Inter';
     font-size: 17px;
@@ -128,6 +134,7 @@ const newEvent = ref({
     background-size: 200% auto;
     box-shadow: 0 0 20px #eee;
     border-color: transparent;
+    font-size: 1vw;
 }
 
 .addEventBtn:hover {
@@ -162,6 +169,8 @@ h3 {
 .style-form {
     width: 50%;
     margin: auto;
+    margin-bottom: 0.1vw;
+    height: 2vw;
 }
 
 label {

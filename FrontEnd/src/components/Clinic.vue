@@ -4,7 +4,7 @@ import editClinic from '../components/EditClinic.vue'
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories` , {
-//   const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/categories`, {
+//   const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/categories`, {
 
         method: "GET",
     });
@@ -122,10 +122,10 @@ const cancelPop = () => {
                 <ul>
                     <li v-for="(category, index) in categories" :key="index" :value="category">
                         <div class="card-body clinic-popup">
-                            <div class="card" style="width: 38rem;" v-if="showIndex === index">
+                            <div class="card" style="width: 140%;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header header"
-                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 20px;">
+                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 1.2vw;">
                                         Edit Clinic
                                     </div>
                                 </div>
@@ -134,7 +134,7 @@ const cancelPop = () => {
                                         <editClinic :currentClinic="editingClinic" :errorClinicName="errorClinicName"
                                             :errorDuration="errorDuration" :wrongDuration="wrongDuration"
                                             :notUnique="notUnique" @updateClinic="modifyClinic" />
-                                        <button type="button" class="btn btn-secondary"
+                                        <button type="button" class="btn btn-secondary" style="font-size: 0.95vw;"
                                             @click="cancelPop">Cancel</button>
                                     </div>
 
@@ -172,7 +172,7 @@ ul {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 10px;
+    border-radius: 1vw;
 }
 
 .header {
@@ -183,9 +183,9 @@ ul {
 .clinic-form {
     width: 20.5vw;
     height: 2vw;
-    margin-top: -10px;
     margin-right: auto;
     margin-left: auto;
+    font-size: 0.9vw;
 }
 
 .close-popclinic {

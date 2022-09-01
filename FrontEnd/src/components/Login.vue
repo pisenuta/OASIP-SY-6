@@ -62,7 +62,7 @@ const matchPassword = async (user) => {
     return
   }
 
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
+  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}match` , {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },

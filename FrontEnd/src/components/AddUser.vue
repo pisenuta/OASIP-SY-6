@@ -72,7 +72,7 @@ const newUser = ref({
             <div class="card-body">
                 <div style="text-align: center; margin-top: 10px;">
                     <div>
-                        <p class="label-clinic">Name :
+                        <p class="label-clinic label-add">Name :
                             <p class="maxtext" :class="{ 'maxinput': newUser.name.length == 100 }">
                                 <span v-text="newUser.name.length"></span>/100
                             </p>
@@ -84,7 +84,7 @@ const newUser = ref({
                     <p class="error-clinic" v-if="notUniqueName === true">Name must unique.</p>
 
                     <div>
-                        <p class="label-clinic">Email :
+                        <p class="label-clinic label-add">Email :
                             <p class="maxtext" :class="{ 'maxinput': newUser.email.length == 50 }">
                                 <span v-text="newUser.email.length"></span>/50
                             </p>
@@ -98,7 +98,7 @@ const newUser = ref({
                     <p class="error-clinic" v-if="invaildEmail === true && errorEmail === false">Invaild Email.</p>
                     
                     <div>
-                        <p class="label-clinic">Password :
+                        <p class="label-clinic label-add">Password :
                             <p class="maxtext" :class="{ 'maxinput': newUser.password.length == 14 }">
                                 <span v-text="newUser.password.length"></span>/14
                             </p>
@@ -112,7 +112,7 @@ const newUser = ref({
                     <p class="error-clinic" v-if="passLess === true && errorPass === false">Password must be between 8 and 14 characters.</p>
 
                     <div>
-                        <p class="label-clinic">Confirm Password :
+                        <p class="label-clinic label-add">Confirm Password :
                             <p class="maxtext" :class="{ 'maxinput': newUser.confirmPassword.length == 14 }">
                                 <span v-text="newUser.confirmPassword.length"></span>/14
                             </p>
@@ -170,7 +170,9 @@ const newUser = ref({
 
   }
 }
-
+.label-add{
+    margin-bottom: 0;
+}
 .save-btn-grad {
     background-image: linear-gradient(to right, #1D976C 0%, #93F9B9 51%, #1D976C 100%);
     font-size: 0.95vw;

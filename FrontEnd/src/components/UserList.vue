@@ -13,7 +13,7 @@ const noUser = () => {
 }
 
 const getUser = async () => {
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
   // const res = await fetch(`http://localhost:8080/api/users/`, {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
@@ -26,7 +26,7 @@ const getUser = async () => {
 
 const removeUser = async (removeUserId) => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`, { method: 'DELETE' })
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${removeUserId}`, { method: 'DELETE' })
+  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users/${removeUserId}`, { method: 'DELETE' })
   if (res.status === 200) {
     users.value = users.value.filter((user) => user.userId !== removeUserId)
     console.log('deleted successfully')
@@ -112,7 +112,7 @@ const modifyUser = async (user) => {
   // const res = await fetch(`http://localhost:8080/api/users/${user.userId}`, {
 
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`, {
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
+  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
     method: 'PUT',
     headers: {
       'content-type': 'application/json'
@@ -238,7 +238,7 @@ const createUser = async (user) => {
   }
 
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({
@@ -268,7 +268,7 @@ const createUser = async (user) => {
     </h3>
     <button class="btn-grad-add mx-auto" v-on:click="addUserPop = true">Add User</button>
     <div class="noUser mx-auto">
-      <h5 style="color: #646464">
+      <h5 style="color: #646464; font-size: 1.1vw;">
         {{ noUser() }}
       </h5>
     </div>
@@ -285,10 +285,10 @@ const createUser = async (user) => {
     <div class="containerV2" v-if="addedUser === true">
       <div class="card alertEdit">
         <div class="card-body" style="margin-top: 10px;">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&" style="width:4.5vw;">
           <p class="card-text" style="margin-top: 10px;"><b>Added</b> User Successfully</p>
           <button type="button" class="btn btn-success btn-grad-ok mx-auto"
-            style="width: 100px; margin-top: 5px; height: 33px;"
+            style="margin-bottom: 1vw;"
             v-on:click="addedUser = false, addUserPop = false">OK</button>
         </div>
       </div>
@@ -347,11 +347,13 @@ const createUser = async (user) => {
           <!-- delete -->
           <div class="card alertDel" v-if="checkDel == true && showIndex === user.userId">
             <div class="card-body">
-              <img src="https://api.iconify.design/akar-icons/circle-alert.svg?color=%23bb2d3b" style="width:75px">
-              <p class="card-text" style="margin-top: 20px;">Do you want to remove <b>{{ user.name }}</b> ?</p>
-              <button type="button" class="btn btn-warning delUserBtn" style="padding: 5px 20px 5px 20px;"
+              <img src="https://api.iconify.design/akar-icons/circle-alert.svg?color=%23bb2d3b" style="width:4.5vw;">
+              <p class="card-text" style="margin-top: 10px;">Do you want to remove <b>{{ user.name }}</b> ?</p>
+              <button type="button" class="btn btn-warning delUserBtn" 
+                style="padding: 0.5vw 1.3vw; margin-bottom: 1vw;"
                 @click=removeUser(user.userId) v-on:click="deleted = true, checkDel == false">Remove</button>
-              <button type="button" class="btn btn-secondary" style="margin-left: 30px;"
+              <button type="button" class="btn btn-secondary" 
+                style="margin-left: 30px; margin-bottom: 1vw; font-size: 0.95vw;"
                 v-on:click="checkDel = false, showIndex = null">Cancel</button>
             </div>
           </div>
@@ -359,13 +361,14 @@ const createUser = async (user) => {
       </ul>
     </div>
 
-    <!-- can dalete -->
+    <!-- can delete -->
     <div class="container" v-if="deleted === true">
       <div class="card deleted" id="deleted">
-        <div class="card-body" style="margin-top: 10px;">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 90px">
+        <div class="card-body">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw">
           <p class="card-text" style="margin-top: 10px;"><b>Removed</b> User Successfully</p>
-          <button type="button" class="btn btn-light btn-grad-ok" style="width: 100px; margin-top: 5px;"
+          <button type="button" class="btn btn-light btn-grad-ok" 
+            style="margin-bottom: 1vw;"
             v-on:click="deleted = false, checkDel = false, showIndex = null">OK</button>
         </div>
       </div>
@@ -389,22 +392,23 @@ const createUser = async (user) => {
     <div class="containerV2" v-if="remainSame === true">
       <div class="card alertEdit">
         <div class="card-body" style="margin-top: 10px;">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&" style="width:4.5vw;">
           <p class="card-text" style="margin-top: 10px;">User's data is remain the same</p>
           <button type="button" class="btn btn-success btn-grad-ok mx-auto"
-            style="width: 100px; margin-top: 5px; height: 33px;"
+            style="margin-bottom: 1vw;"
             v-on:click="remainSame = false, editUserPop = false">OK</button>
         </div>
       </div>
     </div>
-    <!-- can edit -->
+    <!-- can edit-->
     <div class="containerV2" v-if="editedUser === true">
       <div class="card alertEdit">
         <div class="card-body" style="margin-top: 10px;">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&" style="width:4.5vw;">
           <p class="card-text" style="margin-top: 10px;"><b>Edited</b> User Successfully</p>
-          <button type="button" class="btn btn-grad-ok mx-auto" style="width: 100px; margin-top: 5px; height: 33px;"
-            v-on:click="editedUser = false, editUserPop = false" @clike="reload()">OK</button>
+          <button type="button" class="btn btn-grad-ok mx-auto" 
+            style="margin-bottom: 1vw;"
+            v-on:click="editedUser = false, editUserPop = false">OK</button>
         </div>
       </div>
     </div>
@@ -429,6 +433,7 @@ const createUser = async (user) => {
   transition: 0.5s;
   border-color: transparent;
   background-size: 200% auto;
+  font-size: 0.95vw;
 }
 
 .delUserBtn:hover {
@@ -472,14 +477,16 @@ const createUser = async (user) => {
 }
 
 .alertEdit {
-  width: 28rem;
+  width: 23.5%;
+  height: 26.8%;
   color: white;
   justify-content: center;
+  font-size: 0.95vw;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
+  border-radius: 1vw;
   text-align: center;
   color: black;
   animation: animate 0.3s ease-in-out;
@@ -515,12 +522,12 @@ const createUser = async (user) => {
 
 .alertDel {
   background-color: #fff;
-  width: 28rem;
-  padding-top: 20px;
-  padding-bottom: 15px;
+  width: 23.5%;
+  height: 26.8%;
   color: black;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  border-radius: 10px;
+  font-size: 0.95vw;
+  border-radius: 1vw;
   text-align: center;
   position: fixed;
   top: 50%;
@@ -644,9 +651,10 @@ const createUser = async (user) => {
   background-image: linear-gradient(to right, #1D976C 0%, #93F9B9 51%, #1D976C 100%);
   color: white;
   transition: 0.5s;
+  width: 5vw;
   border-color: transparent;
   background-size: 200% auto;
-  font-size: 0.8vw;
+  font-size: 0.95vw;
 }
 
 .btn-grad-ok:hover {

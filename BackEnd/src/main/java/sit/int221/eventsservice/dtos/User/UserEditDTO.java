@@ -24,8 +24,8 @@ public class UserEditDTO {
     @Size(max = 45, message = "Email must less or equal then 45.")
     @Email(message = "Invalid email address.")
     private String email;
-    @NotBlank(message = "Password shouldn't be null or empty.")
+//    @NotBlank(message = "Password shouldn't be null or empty.")
 //    @Size(min = 8, max = 14, message = "Password must be between 8 and 14.")
-    private String password;
+//    private String password;
     private Role role;
 }

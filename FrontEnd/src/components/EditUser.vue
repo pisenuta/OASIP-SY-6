@@ -167,7 +167,7 @@ const newUser = computed(() => {
 .error-clinic {
     color: red;
     text-align: left;
-    font-size: 14px;
+    font-size: 0.75vw;
     margin-top: -10px;
     margin-left: 15.5%;
 }

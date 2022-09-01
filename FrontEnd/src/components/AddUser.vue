@@ -60,16 +60,16 @@ const newUser = ref({
  
 <template>
     <div class="card-body add-user-popup">
-        <div class="card add-user-card" style="width: 38rem;">
+        <div class="card add-user-card" style="width: 31.6vw;">
             <div class="card-title title-detail">
-                <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
+                <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px;font-size: 0.95vw;">
                     ADD USER
                 </div>
-                <button class="close-detail" @click="$emit('cancelAdd')">
+                <button class="close-detail" style="font-size: 2.5vw;" @click="$emit('cancelAdd')">
                     &times;
                 </button>
             </div>
-            <div class="card-body" style="margin-bottom: 10px;">
+            <div class="card-body">
                 <div style="text-align: center; margin-top: 10px;">
                     <div>
                         <p class="label-clinic">Name :
@@ -125,14 +125,14 @@ const newUser = ref({
                     <p class="error-clinic" v-if="notMatch === true">Password not match.</p>
 
                     <p class="label-clinic">Role :</p>
-                    <select class="form-select style-form" style="width: 25rem; margin-top: -10px"
+                    <select class="form-select style-form" style="width: 20.5vw;height: 2vw; margin-top: -10px;margin-bottom: 0.5vw;"
                         :class="{ 'border border-danger': errorRole }" v-model="newUser.role">
                         <option disabled selected>Select Role Below</option>
                         <option value="admin">Admin</option>
                         <option value="lecturer">Lecturer</option>
                         <option value="student">Student</option>
                     </select>
-                    <p class="error-clinic" style="margin-top:5px;" v-if="errorRole === true">Please select your role.
+                    <p class="error-clinic" style="margin-top:5px; margin-bottom: 0;" v-if="errorRole === true">Please select your role.
                     </p>
                 </div>
             </div>
@@ -173,7 +173,7 @@ const newUser = ref({
 
 .save-btn-grad {
     background-image: linear-gradient(to right, #1D976C 0%, #93F9B9 51%, #1D976C 100%);
-    padding: 5px 30px;
+    font-size: 0.95vw;
     text-align: center;
     text-transform: uppercase;
     transition: 0.5s;
@@ -200,28 +200,20 @@ const newUser = ref({
 .error-clinic {
     color: red;
     text-align: left;
-    font-size: 14px;
+    font-size: 0.75vw;
     margin-top: -10px;
-    margin-left: 15.5%;
+    margin-left: 13%;
 }
 
-/* .maxtext {
-    font-size: 13px;
-    text-decoration: none;
-    color: #888888;
-    pointer-events: none;
-    text-align: right;
-    justify-content: right;
-} */
 .maxtext {
-    font-size: 13px;
+    font-size: 0.7vw;
     text-decoration: none;
     color: #888888;
     pointer-events: none;
     text-align: right;
     margin:0;
     margin-top: -4%;
-    margin-right: 100px;
+    margin-right: 20%;
     padding-bottom: 10px;
 }
 

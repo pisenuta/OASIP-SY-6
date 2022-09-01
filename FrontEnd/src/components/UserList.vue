@@ -263,10 +263,10 @@ const createUser = async (user) => {
 
 <template>
   <div class="body">
-    <h3 class="mx-auto mt-5" style="font-size: 40px; font-weight: bolder">
+    <h3 class="mx-auto" style="font-size: 2.1vw; font-weight: bolder; margin-top: 2.5vw;">
       User
     </h3>
-    <button class="btn-grad mx-auto" v-on:click="addUserPop = true">Add User</button>
+    <button class="btn-grad-add mx-auto" v-on:click="addUserPop = true">Add User</button>
     <div class="noUser mx-auto">
       <h5 style="color: #646464">
         {{ noUser() }}
@@ -298,11 +298,11 @@ const createUser = async (user) => {
     <div class="mt-5">
       <div class="row mx-auto row-cols-4" style="padding-left: 90px;padding-right: 90px;">
         <div class="col-user" v-for="(user) in users" :key="user.userId" :value="user">
-          <div class="card-body user-body" style="width: 23rem">
+          <div class="card-body user-body" style="width: 91%">
             <img src="https://api.iconify.design/icomoon-free/bin.svg?color=%23e74694" class="delete-icon"
               v-on:click="(showIndex = user.userId), (checkDel = true)" />
             <div v-on:click="(showIndex = user.userId), (UserDetail = true)" style="cursor: pointer;">
-              <div title="click for more details" class="hovertext" data-hover="click for more details">
+              <div class="hovertext" data-hover="click for more details">
                 <img src="../assets/cat.png" class="profile" />
                 <h5 class="username">{{ user.name.slice(0, 27) }} <a v-if="user.name.length > 30">...</a></h5>
                 <p>{{ user.email }}</p>
@@ -320,9 +320,9 @@ const createUser = async (user) => {
       <ul>
         <li v-for="(user) in users" :key="user.userId">
           <div class="card-body" v-if="UserDetail == true">
-            <div class="card popUserDetail" style="width: 38rem;" v-if="showIndex === user.userId">
+            <div class="card popUserDetail" style="width: 32%;" v-if="showIndex === user.userId">
               <div class="card-title title-detail">
-                <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px">
+                <div class="card-header" style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 0.95vw;">
                   USER DETAIL
                 </div>
                 <button class="close-detail" v-on:click="(showIndex = null), (UserDetail = false)">
@@ -330,13 +330,13 @@ const createUser = async (user) => {
                 </button>
               </div>
               <div class="card-body" v-if="showIndex === user.userId" style="text-align: center; ">
-                <img src="../assets/cat.png" class="profile" style="height: 200px; cursor: default;" />
-                <h5 class="username">{{ user.name }}</h5>
-                <p>{{ user.email }}</p>
-                <p style="font-weight: bold; color: black;">{{ user.role }}</p>
-                <p style="color: #888888; font-size: 15px; margin-bottom: -5px;">Created on
+                <img src="../assets/cat.png" class="profile" style="cursor: default;" />
+                <h5 class="username" style="font-size:1.1vw;">{{ user.name }}</h5>
+                <p style="font-size: 0.95vw;">{{ user.email }}</p>
+                <p style="font-weight: bold; color: black;font-size:0.95vw;">{{ user.role }}</p>
+                <p style="color: #888888; font-size: 0.8vw; margin-bottom: -5px;">Created on
                   {{ moment(user.createdOn).format('D MMM YYYY') }} {{ formateTime(user.createdOn) }} </p>
-                <p style="color: #888888; font-size: 15px;">Updated on {{ moment(user.updatedOn).format('D MMM YYYY') }}
+                <p style="color: #888888; font-size: 0.8vw;">Updated on {{ moment(user.updatedOn).format('D MMM YYYY') }}
                   {{ formateTime(user.updatedOn) }}</p>
               </div>
               <button class="btn-grad" style="border-radius: 0px 0px 20px 20px;"
@@ -412,6 +412,9 @@ const createUser = async (user) => {
 </template>
 
 <style>
+.body{
+  max-width: 1920px;
+}
 .noUser {
   position: absolute;
   top: 50%;
@@ -445,8 +448,8 @@ const createUser = async (user) => {
   visibility: hidden;
   opacity: 0;
   color: #888888;
-  width: 170px;
-  font-size: 15px;
+  width: 45%;
+  font-size: 0.8vw;
   text-align: center;
   border-radius: 5px;
   padding-left: 10px;
@@ -484,8 +487,8 @@ const createUser = async (user) => {
 }
 
 .deleted {
-  width: 28rem;
-  height: 15.5rem;
+  width: 23.5%;
+  height: 26.8%;
   background-color: #fff;
   color: #198754;
   top: 50%;
@@ -493,11 +496,12 @@ const createUser = async (user) => {
   transform: translate(-50%, -50%);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   text-align: center;
-  border-radius: 20px;
+  font-size: 0.95vw;
+  border-radius: 1vw;
 }
 
 .profile {
-  height: 200px;
+  height: 10.5vw;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -527,7 +531,7 @@ const createUser = async (user) => {
 
 .delete-icon {
   cursor: pointer;
-  height: 30px;
+  height: 1.5vw;
   margin-top: 20px;
   margin-left: 80%;
   transition: all 0.2s ease-in-out;
@@ -559,7 +563,7 @@ const createUser = async (user) => {
   border: none;
   outline: none;
   background: none;
-  font-size: 45px;
+  font-size: 2.5vw;
   font-weight: bold;
   margin-top: -2%;
   transition: all 0.2s ease-in-out;
@@ -624,12 +628,13 @@ const createUser = async (user) => {
   margin-right: auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   text-align: center;
-  font-size: 18px;
+  font-size:1vw;
 }
 
-/* .user-body:hover{
-  background-color: #ededed;
-} */
+.user-body h5{
+  font-size:1.1vw;
+}
+
 .username {
   color: #e74694;
   font-weight: bold;
@@ -641,6 +646,7 @@ const createUser = async (user) => {
   transition: 0.5s;
   border-color: transparent;
   background-size: 200% auto;
+  font-size: 0.8vw;
 }
 
 .btn-grad-ok:hover {
@@ -671,8 +677,7 @@ const createUser = async (user) => {
       #f857a6 0%,
       #ff5858 51%,
       #f857a6 100%);
-  margin-top: 20px;
-  padding: 10px 30px;
+  padding: 0.5vw 1vw;
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
@@ -681,10 +686,35 @@ const createUser = async (user) => {
   box-shadow: 0 0 20px #eee;
   border-radius: 10px;
   display: block;
+  font-size: 0.9vw;
   border: 0px;
 }
 
 .btn-grad:hover {
+  background-position: right center;
+  /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+}
+.btn-grad-add{
+  background-image: linear-gradient(to right,
+      #f857a6 0%,
+      #ff5858 51%,
+      #f857a6 100%);
+  margin-top: 1vw;
+  padding: 0.5vw 1.5vw;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+  font-size: 0.9vw;
+  border: 0px;
+}
+.btn-grad-add:hover {
   background-position: right center;
   /* change the direction of the change here */
   color: #fff;

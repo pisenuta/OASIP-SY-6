@@ -56,11 +56,12 @@ const newClinic = computed(() => {
 .label-clinic{
     text-align: left;
     margin-left: 12%;
+    font-size: 0.9vw;
 }
 .error-clinic{
     color: red;
     text-align: left;
-    font-size: 14px;
+    font-size: 0.7vw;
     margin-top: -10px;
     margin-left: 15.5%;
 }

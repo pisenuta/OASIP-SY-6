@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping({""})
-    public User create(@Valid @RequestBody UserDTO newUser) throws CheckUniqueUserExceptionHandler {
+    public User create(@Valid @RequestBody UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
         return userService.save(newUser);
     }
 

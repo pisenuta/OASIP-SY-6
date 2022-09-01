@@ -54,7 +54,7 @@ public class UserService {
         return this.modelMapper.map(user, UserDTO.class);
     }
 
-    public User save(UserDTO newUser) throws CheckUniqueUserExceptionHandler {
+    public User save(UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
         List<UserDTO> userList = getAllUser();
         for(int i = 0; i < userList.size(); i++){
             if(newUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != newUser.getUserId()

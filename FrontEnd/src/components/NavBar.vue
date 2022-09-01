@@ -4,19 +4,46 @@
 </script>
 
 <template>
-    <nav class="navbar sticky-top navbar-light">
+    <nav class="navbar navbar-light navbar-expand-md py-3 sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand ms-3">
-                <router-link to="/"><div class="logo"><h1>&lt;PP/&gt;</h1><p>TEAM</p></div></router-link>
+            <a class="navbar-brand d-flex align-items-center ms-3">
+                <router-link to="/">
+                    <div class="logo">
+                        <h1 style="font-size: 2vw;">&lt;PP/&gt;</h1>
+                        <p style="margin-bottom:0px;font-size: 0.7vw;">TEAM</p>
+                    </div>
+                </router-link>
             </a>
-          
-            <div class="d-flex">
-                <router-link to="/login" class="nav-link login "><span class="hover-underline-animation">Login</span></router-link>
-                <router-link to="/user" class="nav-link"><span class="hover-underline-animation">User</span></router-link>
-                <router-link to="/clinic" class="nav-link"><span class="hover-underline-animation">Clinic</span></router-link>
-                <router-link to="/add-event" class="nav-link" style="margin-right: 7px;"><span class="hover-underline-animation">Add Event</span></router-link>
-                <router-link to="/show-all-events" class="nav-link"><span class="hover-underline-animation">Show All Event</span></router-link>
-                <router-link to="/about-us" class="nav-link"><span class="hover-underline-animation">About Us</span></router-link>
+            <div class="collapse navbar-collapse" id="navcol-3">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/clinic">Clinic</router-link>
+                            <br>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/add-event">Booking</router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/show-all-events">Reservation</router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/user">User</router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/about-us">About Us</router-link>
+                        </a>
+                    </li>
+                </ul>
+                <router-link to="/login" class="nav-link"><button class="btn signin-btn">Sign In</button></router-link>
             </div>
         </div>
     </nav>
@@ -24,41 +51,86 @@
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Radio+Canada:wght@600&display=swap');
-nav{
-    background-color: #212529;
-    height: 95px;
+
+nav {
+    background-color: rgba(33, 37, 41, 1);
+    height: 5vw;
     font-family: 'Radio Canada';
-    color:#e74694;
+    color: #e74694;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
-.nav-link{
-    color:#e74694;
-    font-size: 18px;
+
+.nav-link {
+    color: #e74694;
+    font-size:1vw;
     border-radius: 10px;
 }
 
+.nav-item {
+    margin:1vw;
+}
+
 .hover-underline-animation {
-  display: inline-block;
-  position: relative;
-  color: #e74694;
+    display: inline-block;
+    position: relative;
+    color: #e74694;
+}
+
+.hover-underline-animation:hover a {
+    color: #fff;
 }
 
 .hover-underline-animation:after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  background-color: white;
-  transform-origin: bottom right;
-  transition: transform 0.25s ease-out;
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
 }
 
 .hover-underline-animation:hover:after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.signin-btn {
+    background-image: linear-gradient(to right, #f857a6 0%, #ff5858 51%, #f857a6 100%);
+    text-align: center;
+    padding: 0.5vw 1vw;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    font-size: 0.9vw;
+    border-color: transparent;
+}
+
+.regis-btn {
+    background-image: linear-gradient(to right, #77A1D3 0%, #79CBCA 51%, #77A1D3 100%);
+    text-align: center;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    border-color: transparent;
+}
+
+.regis-btn:hover {
+    background-position: right center;
+    /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
+    border-color: transparent;
+}
+
+.signin-btn:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+    border-color: transparent;
 }
 
 .logo {
@@ -81,6 +153,6 @@ p {
 
 a {
     text-decoration: none;
+    color: #e74694;
 }
-
 </style>

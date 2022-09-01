@@ -43,7 +43,7 @@
                         </a>
                     </li>
                 </ul>
-                <router-link to="/login" class="nav-link"><button class="btn signin-btn">Sign In</button></router-link>
+                <router-link to="/login" class="nav-link nav-btn"><button class="btn signin-btn">Sign In</button></router-link>
             </div>
         </div>
     </nav>
@@ -66,6 +66,9 @@ nav {
     border-radius: 10px;
 }
 
+.nav-btn{
+    color: #fff;
+}
 .nav-item {
     margin:1vw;
 }

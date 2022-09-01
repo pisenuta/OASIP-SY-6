@@ -63,8 +63,6 @@ public class UserController {
 
         updateUser.setName(updateUser.getName().trim());
         updateUser.setEmail(updateUser.getEmail().trim());
-        updateUser.setPassword(argon2PasswordEncoder.encode(updateUser.getPassword()));
-        System.out.println(updateUser.getPassword());
 
         for(int i = 0; i < userList.size(); i++) {
             if(updateUser.getName().trim().equals(userList.get(i).getName()) && updateUser.getEmail().trim().equals(userList.get(i).getEmail())

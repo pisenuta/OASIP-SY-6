@@ -5,6 +5,7 @@ const users = ref([]);
 const getUser = async () => {
   // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+      // const res = await fetch(`http://localhost:8443/api/users/`, {
     method: "GET",
   })
   if (res.status === 200) {
@@ -28,6 +29,7 @@ const clear = () =>{
   noEmail.value = false
 }
 
+const token = ref(undefined)
 const match = ref(false)
 const noMatch = ref(false)
 const noEmail = ref(false)
@@ -63,7 +65,8 @@ const matchPassword = async (user) => {
   }
 
   // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}match` , {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}login` , {
+      // const res = await fetch(`http://localhost:8443/api/login`, {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({
@@ -73,12 +76,20 @@ const matchPassword = async (user) => {
   })
   if (res.status == 200) {
     match.value = true
+    token.value = await res.json()
+    saveLocal()
   } else if (res.status == 401) {
     noMatch.value = true
     noEmail.value = false
   } else if (res.status == 404){
     noEmail.value = true
   }
+}
+
+const saveLocal=()=>{
+  const storageToken = token.value
+  localStorage.setItem('token',storageToken.token)
+  console.log(token.value);
 }
 
 </script>

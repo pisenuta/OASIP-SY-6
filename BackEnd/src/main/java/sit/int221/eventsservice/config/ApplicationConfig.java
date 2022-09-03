@@ -1,4 +1,4 @@
-package sit.int221.eventsservice;
+package sit.int221.eventsservice.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +21,4 @@ public class ApplicationConfig {
         return ListMapper.getInstance();
     }
 
-    @Bean
-    public Argon2PasswordEncoder argon2PasswordEncoder() {
-        return new Argon2PasswordEncoder(16, 29, 2, 16, 2);
-    }
 }

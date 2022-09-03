@@ -5,15 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.*;
+import sit.int221.eventsservice.config.JwtTokenUtil;
 import sit.int221.eventsservice.dtos.User.UserCreateDTO;
 import sit.int221.eventsservice.dtos.User.UserDTO;
 import sit.int221.eventsservice.dtos.User.UserLoginDTO;
 import sit.int221.eventsservice.entities.User;
+import sit.int221.eventsservice.models.JwtResponse;
 import sit.int221.eventsservice.repositories.UserRepository;
 
 import javax.servlet.http.HttpServlet;
@@ -36,7 +43,14 @@ public class UserService {
     @Autowired
     private Argon2PasswordEncoder argon2PasswordEncoder;
 
-    private ServletWebRequest ServletWebRequest;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private JwtUserDetailsService userDetailsService;
 
     @Autowired
     public UserService(UserRepository repository) {
@@ -52,6 +66,16 @@ public class UserService {
             return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
         });
         return this.modelMapper.map(user, UserDTO.class);
+    }
+
+    private void authenticate(String email, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
     }
 
     public User save(UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
@@ -73,7 +97,7 @@ public class UserService {
         return repository.saveAndFlush(user);
     }
 
-    public ResponseEntity Login (UserLoginDTO user, HttpServletResponse httpServletResponse, ServletWebRequest request) {
+    public ResponseEntity Login (UserLoginDTO user, HttpServletResponse httpServletResponse, ServletWebRequest request) throws Exception {
         Map<String,String> errorMap = new HashMap<>();
         String status;
 
@@ -83,6 +107,16 @@ public class UserService {
                 errorMap.put("message", "Password Matched");
                 httpServletResponse.setStatus(HttpServletResponse.SC_OK);
                 status = HttpStatus.OK.toString();
+
+                authenticate(user.getEmail() , user.getPassword());
+                authenticate(user.getEmail(), user.getPassword());
+
+                final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+
+                final String token = jwtTokenUtil.generateToken(userDetails);
+
+                return ResponseEntity.ok(new JwtResponse(token));
+
             } else {
                 errorMap.put("message", "Password NOT Matched");
                 httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

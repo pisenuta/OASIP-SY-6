@@ -14,13 +14,13 @@ import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping({"/api/match"})
-public class MatchController {
+@RequestMapping({"/api/login"})
+public class LoginController {
     @Autowired
     private UserService userService;
 
     @PostMapping("")
-    public ResponseEntity Login(@Valid @RequestBody UserLoginDTO user, HttpServletResponse HttpServletResponse, ServletWebRequest request)  {
+    public ResponseEntity Login(@Valid @RequestBody UserLoginDTO user, HttpServletResponse HttpServletResponse, ServletWebRequest request) throws Exception {
         return userService.Login(user , HttpServletResponse , request);
     }
 }

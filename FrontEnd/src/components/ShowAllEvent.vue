@@ -3,6 +3,7 @@ import { ref, onBeforeMount } from 'vue'
 import EventList from './EventList.vue'
 import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
+const token = localStorage.getItem("token");
 
 const events = ref([])
 const filterEvent = ref()
@@ -59,7 +60,12 @@ const SortByDate = async (selectDate) => {
 }
 
 const removeEvent = async (removeEventId) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${removeEventId}`, { method: 'DELETE' })
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${removeEventId}`, { 
+    method: 'DELETE' ,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
   if (res.status === 200) {
     events.value = events.value.filter((event) => event.id !== removeEventId)
     console.log('deleted successfully')
@@ -82,7 +88,8 @@ const editEvent = async (editEvent) => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${editEvent.id}`, {
     method: 'PUT',
     headers: {
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       eventStartTime: editEvent.eventStartTime,
@@ -104,6 +111,9 @@ const editEvent = async (editEvent) => {
 const getAllEvent = async () => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
     method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
   if (res.status === 200) {
     events.value = await res.json();
@@ -138,6 +148,7 @@ const cancelEdit = () => {
 const useSortCategory = ref(false)
 const useSortStatus = ref(false)
 const useSortDate = ref(false)
+
 </script>
  
 <template>
@@ -193,7 +204,29 @@ const useSortDate = ref(false)
       <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
         @cancelEdit="cancelEdit" />
     </div>
-
+    <!-- plz login -->
+    <div class="Plzlogin"
+      v-if="token === null || token === undefined"
+    >
+      <div class="card alertPlzlogin">
+        <div class="card-body" style="margin-top: 10px">
+          <img
+            src="https://api.iconify.design/clarity/warning-line.svg?color=%23f1d641"
+            style="width: 5.5vw"
+          />
+          <p class="card-text" style="margin-top: 10px">
+            Please login to see reservation
+          </p>
+          <router-link to="/login"><button
+            type="button"
+            class="btn btn-warning btn-plzlogin mx-auto"
+            style="margin-bottom: 1vw"
+          >
+            OK
+          </button></router-link>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
  

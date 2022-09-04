@@ -1,21 +1,5 @@
 <script setup>
-import { ref, onBeforeMount } from "vue";
-
-const users = ref([]);
-const getUser = async () => {
-  // const res = await fetch(`http://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
-      // const res = await fetch(`http://localhost:8443/api/users/`, {
-    method: "GET",
-  })
-  if (res.status === 200) {
-    users.value = await res.json();
-  }
-}
-
-onBeforeMount(async () => {
-  await getUser();
-});
+import { ref } from "vue";
 
 const userLogin = ref({
   email: "",
@@ -117,26 +101,14 @@ const saveLocal=()=>{
     <!-- match -->
     <div class="container" v-if="match === true">
       <div class="card deleted card-login" >
-        <div class="card-body">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw">
+        <div class="card-body body-canLogin" style="">
+          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw;">
           <p class="card-text" style="margin-top: 10px;margin-bottom: 1vw">Login <b>Successful</b></p>
-          <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw;"
+          <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw; height: 2.3vw;"
           v-on:click="match = false" @click="clear()">OK</button>
         </div>
       </div>
     </div>
-
-    <!-- not match -->
-    <!-- <div class="container" v-if="noMatch === true">
-      <div class="card deleted card-login">
-        <div class="card-body" style="margin-top: 10px;">
-          <img src="https://api.iconify.design/akar-icons/circle-x.svg?color=%23ea384d" style="width: 90px">
-          <p class="card-text" style="margin-top: 10px; color: #D31027;">Password <b>Not Matched</b></p>
-          <button type="button" class="btn btn-light btn-no-match" style="width: 100px; margin-top: 5px;"
-          v-on:click="noMatch = false , noEmail = false">OK</button>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
  
@@ -144,6 +116,7 @@ const saveLocal=()=>{
 .card-login{
   animation: animate 0.4s ease-in-out;
 }
+
 .login-input{
   border: 1px solid #ced4da;
   padding-left: 0.5vw;

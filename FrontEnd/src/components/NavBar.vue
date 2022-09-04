@@ -1,14 +1,13 @@
 <script setup>
 
-
 </script>
 
 <template>
     <nav class="navbar navbar-light navbar-expand-md py-3 sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center ms-3">
-                <router-link to="/">
-                    <div class="logo">
+            <a class="navbar-brand d-flex align-items-center ms-3" >
+                <router-link to="/" v-on:clike="page.value == 'home'">
+                    <div class="logo" >
                         <h1 style="font-size: 2vw;">&lt;PP/&gt;</h1>
                         <p style="margin-bottom:0px;font-size: 0.7vw;">TEAM</p>
                     </div>
@@ -24,12 +23,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link hover-underline-animation text-wh">
-                            <router-link to="/add-event">Booking</router-link>
+                            <router-link to="/booking">Booking</router-link>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link hover-underline-animation text-wh">
-                            <router-link to="/show-all-events">Reservation</router-link>
+                            <router-link to="/reservation">Reservation</router-link>
                         </a>
                     </li>
                     <li class="nav-item">

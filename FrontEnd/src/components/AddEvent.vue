@@ -2,30 +2,36 @@
 import { ref, onBeforeMount } from 'vue'
 import moment from 'moment';
 import ManageAdd from './ManageAdd.vue'
+const token = localStorage.getItem("token");
 
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`)
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`,{
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    })
     if (res.status === 200) {
         categories.value = await res.json()
     }
 }
 onBeforeMount(async () => {
     await getEventCategory()
-    await getEvents()
+    // await getEvents()
 })
-const events = ref([])
+// const events = ref([])
 
-const getEvents = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events` ,{
-        method: "GET",
-    });
-    if (res.status === 200) {
-        events.value = await res.json()
-    } else {
-        console.log('can not');
-    }
-}
+// const getEvents = async () => {
+//     const res = await fetch(`${import.meta.env.VITE_BASE_URL}events` ,{
+//         method: "GET",
+//     });
+//     if (res.status === 200) {
+//         events.value = await res.json()
+//     } else {
+//         console.log('can not');
+//     }
+// }
 
 const errorName = ref(false)
 const errorClinic = ref(false)
@@ -78,7 +84,10 @@ const createEvent = async (event) => {
 
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
         method: 'POST',
-        headers: { 'content-Type': 'application/json' },
+        headers: { 
+            'content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
             eventCategory: {
                 id: event.eventCategory.id
@@ -104,7 +113,6 @@ const addAlert = ref(false)
 const added = () => {
     addAlert.value = false
 }
-
 </script>
  
 <template>
@@ -121,6 +129,29 @@ const added = () => {
         :overlap="overlap"
         @create="createEvent" 
         />
+        <!-- plz login -->
+    <div class="Plzlogin"
+      v-if="token === null || token === undefined"
+    >
+      <div class="card alertPlzlogin">
+        <div class="card-body" style="margin-top: 10px">
+          <img
+            src="https://api.iconify.design/clarity/warning-line.svg?color=%23f1d641"
+            style="width: 5.5vw"
+          />
+          <p class="card-text" style="margin-top: 10px">
+            Please login to booking
+          </p>
+          <router-link to="/login"><button
+            type="button"
+            class="btn btn-warning btn-plzlogin mx-auto"
+            style="margin-bottom: 1vw"
+          >
+            OK
+          </button></router-link>
+        </div>
+      </div>
+    </div>
         <div class="container" v-if="addAlert === true">
             <div class="card" id="center-popup" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">

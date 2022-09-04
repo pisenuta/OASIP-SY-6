@@ -1,12 +1,16 @@
--<script setup> 
+-<script setup>
 import { ref, onBeforeMount } from 'vue'
-import editClinic from '../components/EditClinic.vue' 
+import editClinic from '../components/EditClinic.vue'
+const token = localStorage.getItem("token");
+
 const categories = ref([])
 const getEventCategory = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories` , {
-//   const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/categories`, {
-
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`, {
+        //   const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/categories`, {
         method: "GET",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
     });
     if (res.status === 200) {
         categories.value = await res.json()
@@ -54,7 +58,8 @@ const modifyClinic = async (clinic) => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories/${clinic.id}`, {
         method: 'PUT',
         headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
             eventCategoryName: clinic.eventCategoryName,
@@ -100,6 +105,29 @@ const cancelPop = () => {
 <template>
     <div class="body">
         <h3 style="font-size: 2.1vw;font-weight: bold;margin-top: 2.5vw;">Clinic</h3>
+        <!-- plz login -->
+    <div class="Plzlogin"
+      v-if="token === null || token === undefined"
+    >
+      <div class="card alertPlzlogin">
+        <div class="card-body" style="margin-top: 10px">
+          <img
+            src="https://api.iconify.design/clarity/warning-line.svg?color=%23f1d641"
+            style="width: 5.5vw"
+          />
+          <p class="card-text" style="margin-top: 10px">
+            Please login to see clinic
+          </p>
+          <router-link to="/login"><button
+            type="button"
+            class="btn btn-warning btn-plzlogin mx-auto"
+            style="margin-bottom: 1vw"
+          >
+            OK
+          </button></router-link>
+        </div>
+      </div>
+    </div>
         <div class="containerClinic" style="margin-top: 2vw;">
             <div class="row mx-auto">
                 <div class="col-4 col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
@@ -226,7 +254,7 @@ ul {
     text-align: center;
 }
 
-.clinic-des{
+.clinic-des {
     font-size: 0.9vw;
     margin-left: 0.5vw;
     margin-right: 0.5vw;

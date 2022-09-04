@@ -9,9 +9,9 @@ import Login from '../components/Login.vue'
 
 const routes = [
     { path: '/', component: HomePage },
-    { path: '/show-all-events', component: ShowAllEvent },
+    { path: '/reservation', component: ShowAllEvent },
     { path: '/user', component: UserList },
-    { path: '/add-event', component: AddEvent },
+    { path: '/booking', component: AddEvent },
     { path: '/about-us', component: AboutUs },
     { path: '/clinic', component: Clinic },
     { path: '/login', component: Login }

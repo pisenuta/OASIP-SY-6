@@ -9,7 +9,7 @@ import sit.int221.eventsservice.services.CategoryService;
 
 import javax.validation.Valid;
 import java.util.List;
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping({"/api/categories"})
 public class CategoryController {

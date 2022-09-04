@@ -19,7 +19,7 @@ import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.services.EventService;
 
 import javax.validation.Valid;
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping({"/api/events"})
 public class EventController {

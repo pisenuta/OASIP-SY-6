@@ -18,7 +18,7 @@ import sit.int221.eventsservice.services.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping({"/api/users"})
 public class UserController {

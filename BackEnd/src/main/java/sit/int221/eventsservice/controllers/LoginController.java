@@ -12,7 +12,7 @@ import sit.int221.eventsservice.services.UserService;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping({"/api/login"})
 public class LoginController {

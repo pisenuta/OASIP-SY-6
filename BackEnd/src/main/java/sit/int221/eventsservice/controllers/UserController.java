@@ -44,7 +44,8 @@ public class UserController {
         return this.userService.getUserById(Id);
     }
 
-    @PostMapping({""})
+    @PostMapping({"/register"})
+    @ResponseStatus(HttpStatus.CREATED)
     public User create(@Valid @RequestBody UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
         return userService.save(newUser);
     }

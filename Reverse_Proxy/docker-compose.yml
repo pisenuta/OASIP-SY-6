@@ -5,6 +5,7 @@ services:
     container_name: SSL_reverse_proxy
     ports:
       - "80:80"
+      - "443:443"
     networks: 
       - oasip-network
     volumes:

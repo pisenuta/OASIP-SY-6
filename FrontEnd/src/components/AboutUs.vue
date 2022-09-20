@@ -29,9 +29,9 @@
                 </div>
             </div>
         </div>
-        <h3 class="mx-auto mt-5" style="font-size: 2.1vw;font-weight: bolder;">
+        <!-- <h3 class="mx-auto mt-5" style="font-size: 2.1vw;font-weight: bolder;">
         Our Repository : <a href="https://github.com/pisenuta/OASIP-SY-6" target="_blank"><img src="https://api.iconify.design/brandico/github-text.svg?" style="padding-right: 5px; padding-left: 4px; height: 2vw;"/>
-        <img src="https://api.iconify.design/bytesize/github.svg?" style="height: 2vw;"/></a> </h3>
+        <img src="https://api.iconify.design/bytesize/github.svg?" style="height: 2vw;"/></a> </h3> -->
     </div>
 
 </template>

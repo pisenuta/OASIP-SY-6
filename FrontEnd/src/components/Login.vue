@@ -11,6 +11,7 @@ const clear = () =>{
   userLogin.value.password = ""
   noMatch.value = false
   noEmail.value = false
+  window.location.href = "/"
 }
 
 const token = ref(undefined)
@@ -48,7 +49,7 @@ const matchPassword = async (user) => {
     return
   }
 
-  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/match`, {
+  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/login`, {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}login` , {
       // const res = await fetch(`http://localhost:8443/api/login`, {
     method: 'POST',

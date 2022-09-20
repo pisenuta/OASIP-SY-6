@@ -1,7 +1,7 @@
 <script setup>
 const token = localStorage.getItem("token");
 
-const singout = () => {
+const signout = () => {
     localStorage.removeItem("token")
     window.location.href = "/"
 }
@@ -51,7 +51,7 @@ const singout = () => {
                     <router-link to="/login" class="nav-link nav-btn"><button class="btn signin-btn">Sign In</button></router-link>
                 </div>
                 <div v-else-if="token !== null">
-                    <button class="btn signin-btn" @click="singout">Sign Out</button>
+                    <button class="btn signin-btn nav-btn" @click="signout">Sign Out</button>
                 </div>
             </div>
         </div>

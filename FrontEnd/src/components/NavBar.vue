@@ -53,6 +53,9 @@ const signout = () => {
                 <div v-else-if="token !== null">
                     <button class="btn signin-btn nav-btn" @click="signout">Sign Out</button>
                 </div>
+                <div v-if="token === null">
+                    <router-link to="/signup" class="nav-link nav-btn"><button class="btn signup-btn nav-btn">Sign Up</button></router-link>
+                </div>
             </div>
         </div>
     </nav>
@@ -67,6 +70,24 @@ nav {
     font-family: 'Radio Canada';
     color: #e74694;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.signup-btn {
+    background-image: linear-gradient(to right, #FF8008 0%, #FFC837  51%, #FF8008  100%);
+    text-align: center;
+    padding: 0.5vw 1vw;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    font-size: 0.9vw;
+    border-color: transparent;
+}
+
+.signup-btn:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+    border-color: transparent;
 }
 
 .nav-link {

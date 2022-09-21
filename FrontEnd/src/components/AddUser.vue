@@ -124,7 +124,7 @@ const newUser = ref({
                     <p class="error-clinic" v-if="errorConfirm === true && notMatch === false">Please confirm Password.</p>
                     <p class="error-clinic" v-if="notMatch === true">Password not match.</p>
 
-                    <p class="label-clinic">Role :</p>
+                    <p class="label-clinic" style="margin-bottom: 1vw;">Role :</p>
                     <select class="form-select style-form" style="width: 20.5vw;height: 2vw; margin-top: -10px;margin-bottom: 0.5vw;"
                         :class="{ 'border border-danger': errorRole }" v-model="newUser.role">
                         <option disabled selected>Select Role Below</option>

@@ -3,6 +3,7 @@ import { ref, onBeforeMount } from 'vue'
 import moment from 'moment';
 import ManageAdd from './ManageAdd.vue'
 const token = localStorage.getItem("token");
+const refreshToken = localStorage.getItem("refreshToken");
 
 const categories = ref([])
 const getEventCategory = async () => {
@@ -14,8 +15,21 @@ const getEventCategory = async () => {
     })
     if (res.status === 200) {
         categories.value = await res.json()
-    }
+    } 
+    // else if (res.status === 401) {
+    //     getNewAccess()
+    // }
 }
+
+// const getNewAccess = async () => {
+//     const res = await fetch(`http://localhost:8443/api/categories/`, {
+//             method: 'GET',
+//             headers: {
+//                 Authorization: `Bearer ${refreshToken}`,
+//             }
+//         })
+// }
+
 onBeforeMount(async () => {
     await getEventCategory()
     // await getEvents()
@@ -42,49 +56,49 @@ const errorFuture = ref(false)
 const overlap = ref(false)
 
 const createEvent = async (event) => {
-    if(event.bookingName == null || event.bookingName == ''){
+    if (event.bookingName == null || event.bookingName == '') {
         errorName.value = true
     } else {
         errorName.value = false
     }
-    if(event.bookingEmail == null || event.bookingEmail == ''){
+    if (event.bookingEmail == null || event.bookingEmail == '') {
         errorEmail.value = true
     } else {
         errorEmail.value = false
     }
 
-    if(Object.keys(event.eventCategory).length === 0){
+    if (Object.keys(event.eventCategory).length === 0) {
         errorClinic.value = true
     } else {
         errorClinic.value = false
     }
 
-    if(event.eventStartTime === null || event.eventStartTime == ''){
+    if (event.eventStartTime === null || event.eventStartTime == '') {
         errorTime.value = true
     } else {
         errorTime.value = false
     }
-    if(moment(event.eventStartTime).isAfter(moment(new Date()))){
+    if (moment(event.eventStartTime).isAfter(moment(new Date()))) {
         errorFuture.value = false
     } else {
         errorFuture.value = true
     }
-    
+
     var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if(event.bookingEmail.match(emailValidate)){
+    if (event.bookingEmail.match(emailValidate)) {
         mailVali.value = true
     } else {
         mailVali.value = false
         console.log('not validate');
     }
-    if(errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true){
+    if (errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true) {
         return
     }
 
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
         method: 'POST',
-        headers: { 
+        headers: {
             'content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
         },
@@ -104,10 +118,10 @@ const createEvent = async (event) => {
         events.value.push(addedEvent)
         console.log('added successfully');
         addAlert.value = true
-    } else if (res.status == 400){
+    } else if (res.status == 400) {
         overlap.value = true
         console.log('error, can not add');
-    } 
+    }
 }
 const addAlert = ref(false)
 const added = () => {
@@ -118,46 +132,33 @@ const added = () => {
 <template>
     <div class="body">
         <h3 class="mx-auto" style="font-size: 2.1vw;font-weight: bolder; margin-top: 2.5vw;">Booking</h3>
-        <ManageAdd 
-        :categoryList="categories" 
-        :errorName="errorName" 
-        :errorClinic="errorClinic"
-        :errorEmail="errorEmail"
-        :errorTime="errorTime"
-        :mailVali="mailVali"
-        :errorFuture="errorFuture"
-        :overlap="overlap"
-        @create="createEvent" 
-        />
+        <ManageAdd :categoryList="categories" :errorName="errorName" :errorClinic="errorClinic" :errorEmail="errorEmail"
+            :errorTime="errorTime" :mailVali="mailVali" :errorFuture="errorFuture" :overlap="overlap"
+            @create="createEvent" />
         <!-- plz login -->
-    <div class="Plzlogin"
-      v-if="token === null || token === undefined"
-    >
-      <div class="card alertPlzlogin">
-        <div class="card-body" style="margin-top: 10px">
-          <img
-            src="https://api.iconify.design/clarity/warning-line.svg?color=%23f1d641"
-            style="width: 5.5vw"
-          />
-          <p class="card-text" style="margin-top: 10px">
-            Please login to booking
-          </p>
-          <router-link to="/login"><button
-            type="button"
-            class="btn btn-warning btn-plzlogin mx-auto"
-            style="margin-bottom: 1vw"
-          >
-            OK
-          </button></router-link>
+        <div class="Plzlogin" v-if="token === null || token === undefined">
+            <div class="card alertPlzlogin">
+                <div class="card-body" style="margin-top: 10px">
+                    <img src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
+                        style="width: 5.5vw" />
+                    <p class="card-text" style="margin-top: 0.5vw;margin-bottom: 1vw;">
+                        Please login to booking
+                    </p>
+                    <router-link to="/login"><button type="button" class="btn btn-warning btn-plzlogin mx-auto"
+                            style="margin-bottom: 1vw">
+                            OK
+                        </button></router-link>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
         <div class="container" v-if="addAlert === true">
             <div class="card" id="center-popup" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">
-                    <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+                    <img
+                        src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                     <p class="card-text" style="margin-top: 10px;">Added Event Successfully</p>
-                    <router-link to="/show-all-events"><button type="button" class="btn btn-success" @click="added" style="width: 100px; margin-top: 5px;">OK</button></router-link>
+                    <router-link to="/show-all-events"><button type="button" class="btn btn-success" @click="added"
+                            style="width: 100px; margin-top: 5px;">OK</button></router-link>
                 </div>
             </div>
         </div>
@@ -190,7 +191,7 @@ const added = () => {
     transform: translate(-50%, -50%);
     border-radius: 10px;
     text-align: center;
-    font-size: 18px; 
+    font-size: 18px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 

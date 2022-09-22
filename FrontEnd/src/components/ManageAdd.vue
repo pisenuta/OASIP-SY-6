@@ -135,6 +135,7 @@ const newEvent = ref({
     box-shadow: 0 0 20px #eee;
     border-color: transparent;
     font-size: 1vw;
+    color: #fff;
 }
 
 .addEventBtn:hover {

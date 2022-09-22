@@ -5,6 +5,7 @@ import editUser from "../components/EditUser.vue";
 import addUser from "../components/AddUser.vue";
 
 const token = localStorage.getItem("token");
+const refreshToken = localStorage.getItem("refreshToken");
 const users = ref([]);
 
 const noUser = () => {
@@ -15,8 +16,8 @@ const noUser = () => {
 
 const getUser = async () => {
   // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-  // const res = await fetch(`http://localhost:8443/api/users/`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+  const res = await fetch(`http://localhost:8443/api/users/`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -25,6 +26,9 @@ const getUser = async () => {
   if (res.status === 200) {
     users.value = await res.json();
     users.value.sort();
+  } 
+  else if (res.status === 401){
+    
   }
 };
 
@@ -365,10 +369,10 @@ const createUser = async (user) => {
       <div class="card alertPlzlogin">
         <div class="card-body" style="margin-top: 10px">
           <img
-            src="https://api.iconify.design/clarity/warning-line.svg?color=%23f1d641"
+            src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
             style="width: 5.5vw"
           />
-          <p class="card-text" style="margin-top: 10px">
+          <p class="card-text" style="margin-top: 0.5vw;margin-bottom: 1vw;">
             Please login to see user
           </p>
           <router-link to="/login"><button

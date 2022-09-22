@@ -14,7 +14,8 @@ const clear = () =>{
   window.location.href = "/"
 }
 
-const token = ref(undefined)
+const token = ref()
+const refreshToken = ref()
 const match = ref(false)
 const noMatch = ref(false)
 const noEmail = ref(false)
@@ -50,8 +51,8 @@ const matchPassword = async (user) => {
   }
 
   // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/login`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}login` , {
-      // const res = await fetch(`http://localhost:8443/api/login`, {
+    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}login` , {
+      const res = await fetch(`http://localhost:8443/api/login`, {
     method: 'POST',
     headers: { 'content-Type': 'application/json' },
     body: JSON.stringify({
@@ -72,8 +73,8 @@ const matchPassword = async (user) => {
 }
 
 const saveLocal=()=>{
-  const storageToken = token.value
-  localStorage.setItem('token',storageToken.token)
+  localStorage.setItem('token',`${token.value.accessToken}`)
+  localStorage.setItem('refreshToken',`${token.value.refreshToken}`)
   console.log(token.value);
 }
 

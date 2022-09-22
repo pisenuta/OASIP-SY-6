@@ -112,10 +112,10 @@ const cancelPop = () => {
       <div class="card alertPlzlogin">
         <div class="card-body" style="margin-top: 10px">
           <img
-            src="https://api.iconify.design/clarity/warning-line.svg?color=%23f1d641"
+            src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
             style="width: 5.5vw"
           />
-          <p class="card-text" style="margin-top: 10px">
+          <p class="card-text" style="margin-top: 0.5vw;margin-bottom: 1vw;">
             Please login to see clinic
           </p>
           <router-link to="/login"><button

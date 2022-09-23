@@ -4,9 +4,33 @@ import moment from "moment";
 import editUser from "../components/EditUser.vue";
 import addUser from "../components/AddUser.vue";
 
-const token = localStorage.getItem("token");
-const refreshToken = localStorage.getItem("refreshToken");
 const users = ref([]);
+const newAccess = ref()
+let token = localStorage.getItem("token")
+const refreshToken = localStorage.getItem("refreshToken");
+
+const RefreshToken = async () => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}refresh-token`,{
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${refreshToken}`
+      }
+    }
+  );
+  if (res.status === 200) {
+    newAccess.value = await res.json()
+    refresh()
+    getUser()
+  } else if (res.status === 401){
+    localStorage.clear()
+    window.location.href = "/"
+    console.log("plz log out");
+  }
+};
+
+const refresh = () => {
+  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+}
 
 const noUser = () => {
   if (users.value.length == 0) {
@@ -15,20 +39,17 @@ const noUser = () => {
 };
 
 const getUser = async () => {
-  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-  const res = await fetch(`http://localhost:8443/api/users/`, {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   if (res.status === 200) {
     users.value = await res.json();
     users.value.sort();
-  } 
-  else if (res.status === 401){
-    
+  } else if (res.status === 401 && token !== null){
+    RefreshToken();
   }
 };
 
@@ -36,14 +57,15 @@ const removeUser = async (removeUserId) => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`,{ 
     method: "DELETE", 
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
 });
-  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users/${removeUserId}`, { method: 'DELETE' })
   if (res.status === 200) {
     users.value = users.value.filter((user) => user.userId !== removeUserId);
     console.log("deleted successfully");
-  } else console.log("error, can not delete");
+  } else if (res.status === 401 && token !== null){
+    RefreshToken();
+  }
 };
 
 onBeforeMount(async () => {
@@ -138,16 +160,12 @@ const modifyUser = async (user) => {
     remainSame.value = true;
     return;
   }
-  // const res = await fetch(`http://localhost:8080/api/users/${user.userId}`, {
 
-  const res = await fetch(
-    `${import.meta.env.VITE_BASE_URL}users/${user.userId}`,
-    {
-      // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users/${user.userId}`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${user.userId}`,{
       method: "PUT",
       headers: {
         "content-type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({
         name: user.name,
@@ -176,8 +194,8 @@ const modifyUser = async (user) => {
     remainSame.value = false;
     editingUser.value = {};
     console.log("edited successfully");
-  } else {
-    console.log("can not edit");
+  } else if (res.status === 401 && token !== null){
+    RefreshToken();
   }
 };
 
@@ -297,13 +315,11 @@ const createUser = async (user) => {
     return;
   }
 
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users`, {
-    // const res = await fetch(`http://localhost:8443/api/users/`, {
-    // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/register`, {
     method: "POST",
     headers: { 
       "content-Type": "application/json",
-      Authorization: `Bearer ${token}` 
+      Authorization: `Bearer ${localStorage.getItem("token")}` 
     },
     body: JSON.stringify({
       name: user.name.trim(),
@@ -318,8 +334,8 @@ const createUser = async (user) => {
     getUser();
     addedUser.value = true;
     console.log("added successfully");
-  } else if (res.status == 400) {
-    console.log("error, can not add");
+  } else if (res.status === 401 && token !== null){
+    RefreshToken();
   }
 };
 

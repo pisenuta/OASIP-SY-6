@@ -1,19 +1,45 @@
 -<script setup>
 import { ref, onBeforeMount } from 'vue'
 import editClinic from '../components/EditClinic.vue'
-const token = localStorage.getItem("token");
 
+const newAccess = ref()
+let token = localStorage.getItem("token")
+const refreshToken = localStorage.getItem("refreshToken");
+
+const RefreshToken = async () => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}refresh-token`,{
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${refreshToken}`
+      }
+    }
+  );
+  if (res.status === 200) {
+    newAccess.value = await res.json()
+    refresh()
+    getEventCategory()
+  } else if (res.status === 401){
+    localStorage.clear()
+    window.location.href = "/"
+    console.log("plz log out");
+  }
+};
+
+const refresh = () => {
+  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+}
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`, {
-        //   const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/categories`, {
         method: "GET",
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
     });
     if (res.status === 200) {
         categories.value = await res.json()
+    } else if (res.status === 401 && token !== null){
+        RefreshToken()
     }
 }
 onBeforeMount(async () => {
@@ -59,7 +85,7 @@ const modifyClinic = async (clinic) => {
         method: 'PUT',
         headers: {
             'content-type': 'application/json',
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
             eventCategoryName: clinic.eventCategoryName,
@@ -80,11 +106,10 @@ const modifyClinic = async (clinic) => {
         notUnique.value = false
         editingClinic.value = {}
         console.log('edited successfully');
-    } else {
-        console.log('can not edit');
+    } else if (res.status === 401 && token !== null){
+        RefreshToken()
     }
 }
-
 
 const editingClinic = ref({})
 const toEditingMode = (editClinic) => {
@@ -150,7 +175,7 @@ const cancelPop = () => {
                 <ul>
                     <li v-for="(category, index) in categories" :key="index" :value="category">
                         <div class="card-body clinic-popup">
-                            <div class="card" style="width: 140%;" v-if="showIndex === index">
+                            <div class="card" style="width: 35vw;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header header"
                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 1.2vw;">
@@ -162,7 +187,7 @@ const cancelPop = () => {
                                         <editClinic :currentClinic="editingClinic" :errorClinicName="errorClinicName"
                                             :errorDuration="errorDuration" :wrongDuration="wrongDuration"
                                             :notUnique="notUnique" @updateClinic="modifyClinic" />
-                                        <button type="button" class="btn btn-secondary" style="font-size: 0.95vw;"
+                                        <button type="button" class="btn btn-secondary" style="font-size: 0.95vw;margin-top: 0.2vw;margin-bottom: 1.2vw;"
                                             @click="cancelPop">Cancel</button>
                                     </div>
 
@@ -179,7 +204,7 @@ const cancelPop = () => {
                     <img
                         src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                     <p class="card-text" style="margin-top: 10px;">Edit Clinic Successfully</p>
-                    <router-link to="/clinic"><button type="button" class="btn btn-success"
+                    <router-link to="/clinic"><button type="button" class="btn btn-success btn-grad-ok"
                             v-on:click="editClinicPop = false, editedPop = false"
                             style="width: 100px; margin-top: 5px;">OK</button></router-link>
                 </div>

@@ -3,7 +3,34 @@ import { ref, onBeforeMount } from 'vue'
 import EventList from './EventList.vue'
 import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
-const token = localStorage.getItem("token");
+
+const newAccess = ref()
+let token = localStorage.getItem("token")
+const refreshToken = localStorage.getItem("refreshToken");
+
+const RefreshToken = async () => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}refresh-token`,{
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${refreshToken}`
+      }
+    }
+  );
+  if (res.status === 200) {
+    newAccess.value = await res.json()
+    refresh()
+    getAllEvent();
+    getEventCategory();
+  } else if (res.status === 401){
+    localStorage.clear()
+    window.location.href = "/"
+    console.log("plz log out");
+  }
+};
+
+const refresh = () => {
+  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+}
 
 const events = ref([])
 const filterEvent = ref()
@@ -63,7 +90,7 @@ const removeEvent = async (removeEventId) => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${removeEventId}`, { 
     method: 'DELETE' ,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   })
   if (res.status === 200) {
@@ -89,7 +116,7 @@ const editEvent = async (editEvent) => {
     method: 'PUT',
     headers: {
       'content-type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({
       eventStartTime: editEvent.eventStartTime,
@@ -112,13 +139,14 @@ const getAllEvent = async () => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   if (res.status === 200) {
     events.value = await res.json();
     events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
-  } else {
+  } else if (res.status === 401) {
+    RefreshToken();
     console.log('can not');
   }
 }
@@ -135,7 +163,12 @@ const schedule = () => {
 }
 const categories = ref([])
 const getEventCategory = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`)
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
   if (res.status === 200) {
     categories.value = await res.json()
   }

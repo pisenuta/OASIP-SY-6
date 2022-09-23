@@ -124,9 +124,7 @@ const createUser = async (user) => {
     return;
   }
 
-  // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/register`, {
-    const res = await fetch(`http://localhost:8443/api/users/register`, {
-    // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/register`, {
     method: "POST",
     headers: {
       "content-Type": "application/json"
@@ -271,7 +269,6 @@ select{
   font-size: 0.75vw;
   margin-left: 30%;
 }
-
 
 .label-signup {
   font-weight: bold;

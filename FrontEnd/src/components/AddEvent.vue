@@ -2,50 +2,69 @@
 import { ref, onBeforeMount } from 'vue'
 import moment from 'moment';
 import ManageAdd from './ManageAdd.vue'
-const token = localStorage.getItem("token");
+
+const newAccess = ref()
+let token = localStorage.getItem("token")
 const refreshToken = localStorage.getItem("refreshToken");
+
+const RefreshToken = async () => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}refresh-token`,{
+      method: 'get',
+      headers: {
+        Authorization: `Bearer ${refreshToken}`
+      }
+    }
+  );
+  if (res.status === 200) {
+    newAccess.value = await res.json()
+    refresh()
+    getEventCategory()
+  } else if (res.status === 401){
+    localStorage.clear()
+    window.location.href = "/"
+    console.log("plz log out");
+  }
+};
+
+const refresh = () => {
+  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+}
 
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`,{
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
     })
     if (res.status === 200) {
         categories.value = await res.json()
-    } 
-    // else if (res.status === 401) {
-    //     getNewAccess()
-    // }
+    } else if (res.status === 401 && token !== null) {
+        RefreshToken()
+    }
 }
 
-// const getNewAccess = async () => {
-//     const res = await fetch(`http://localhost:8443/api/categories/`, {
-//             method: 'GET',
-//             headers: {
-//                 Authorization: `Bearer ${refreshToken}`,
-//             }
-//         })
-// }
+const users = ref([]);
+const getUser = async () => {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  if (res.status === 200) {
+    users.value = await res.json();
+    users.value.sort();
+  } else if (res.status === 401 && token !== null){
+    RefreshToken();
+  }
+};
 
 onBeforeMount(async () => {
-    await getEventCategory()
-    // await getEvents()
+    await getEventCategory();
+    await getUser()
 })
-// const events = ref([])
-
-// const getEvents = async () => {
-//     const res = await fetch(`${import.meta.env.VITE_BASE_URL}events` ,{
-//         method: "GET",
-//     });
-//     if (res.status === 200) {
-//         events.value = await res.json()
-//     } else {
-//         console.log('can not');
-//     }
-// }
 
 const errorName = ref(false)
 const errorClinic = ref(false)
@@ -56,17 +75,21 @@ const errorFuture = ref(false)
 const overlap = ref(false)
 
 const createEvent = async (event) => {
-    if (event.bookingName == null || event.bookingName == '') {
+    // if (event.bookingName == null || event.bookingName == '') {
+    //     errorName.value = true
+    // } else {
+    //     errorName.value = false
+    // }
+    // if (event.bookingEmail == null || event.bookingEmail == '') {
+    //     errorEmail.value = true
+    // } else {
+    //     errorEmail.value = false
+    // }
+    if (Object.keys(event.user).length === 0){
         errorName.value = true
     } else {
         errorName.value = false
     }
-    if (event.bookingEmail == null || event.bookingEmail == '') {
-        errorEmail.value = true
-    } else {
-        errorEmail.value = false
-    }
-
     if (Object.keys(event.eventCategory).length === 0) {
         errorClinic.value = true
     } else {
@@ -86,13 +109,16 @@ const createEvent = async (event) => {
 
     var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if (event.bookingEmail.match(emailValidate)) {
-        mailVali.value = true
-    } else {
-        mailVali.value = false
-        console.log('not validate');
-    }
-    if (errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true) {
+    // if (event.bookingEmail.match(emailValidate)) {
+    //     mailVali.value = true
+    // } else {
+    //     mailVali.value = false
+    //     console.log('not validate');
+    // }
+    // if (errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true) {
+    //     return
+    // }
+    if (errorName.value == true || errorClinic.value == true || errorTime.value == true || errorFuture.value == true) {
         return
     }
 
@@ -100,14 +126,17 @@ const createEvent = async (event) => {
         method: 'POST',
         headers: {
             'content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
             eventCategory: {
                 id: event.eventCategory.id
             },
-            bookingName: event.bookingName.trim(),
-            bookingEmail: event.bookingEmail.trim(),
+            user: {
+                userId: event.user.userId
+            },
+            bookingName: event.user.name.trim(),
+            bookingEmail: event.user.email.trim(),
             eventStartTime: event.eventStartTime,
             eventDuration: event.eventCategory.eventDuration,
             eventNotes: event.eventNotes.trim()
@@ -132,7 +161,7 @@ const added = () => {
 <template>
     <div class="body">
         <h3 class="mx-auto" style="font-size: 2.1vw;font-weight: bolder; margin-top: 2.5vw;">Booking</h3>
-        <ManageAdd :categoryList="categories" :errorName="errorName" :errorClinic="errorClinic" :errorEmail="errorEmail"
+        <ManageAdd :categoryList="categories" :userList="users" :errorName="errorName" :errorClinic="errorClinic" :errorEmail="errorEmail"
             :errorTime="errorTime" :mailVali="mailVali" :errorFuture="errorFuture" :overlap="overlap"
             @create="createEvent" />
         <!-- plz login -->

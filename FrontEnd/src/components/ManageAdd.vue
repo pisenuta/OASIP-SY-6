@@ -9,6 +9,10 @@ defineProps({
         type: Array,
         require: true
     },
+    userList: {
+        type: Array,
+        require: true
+    },
     errorName: {
         type: Boolean,
         default: false
@@ -40,20 +44,24 @@ defineProps({
 })
 
 const newEvent = ref({
-    bookingName: "",
-    bookingEmail: "",
+    user: {},
     eventCategory: {},
     eventNotes: "",
     eventDuration: "",
     eventStartTime: ""
 })
 
+
 </script>
 <template>
     <div class="body">
         <div class="form mx-5">
             <div class="marginForm">
-                <label for="clinic" class="form-label booking-label">Clinic :</label>
+                <table class="booking-line">
+                    <tr>
+                        <th class="label-signup">Clinic :</th>
+                    </tr>
+                </table>
                 <select class="form-select style-form" style="width: 50%;"
                     :class="{ 'border border-danger': errorClinic }" v-model="newEvent.eventCategory">
                     <option disabled selected>Select Clinic Below</option>
@@ -62,23 +70,54 @@ const newEvent = ref({
                     }}</option>
                 </select>
                 <div v-if="errorClinic" class="error">Please select a clinic.</div>
-
             </div>
+
             <div class="marginForm">
-                <label for="name" class="form-label booking-label">Name :</label>
-                <input class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
-                    :class="{ 'border border-danger': errorName }">
+                <table class="booking-line">
+                    <tr>
+                        <th class="label-signup">Name :</th>
+                        <!-- <th class="maxBooking" :class="{ 'maxinput': newEvent.bookingName.length == 100 }">
+                            <span v-text="newEvent.bookingName.length"></span>/100
+                        </th> -->
+                    </tr>
+                </table>
+
+                <select class="form-select style-form" style="width: 50%;"
+                    :class="{ 'border border-danger': errorName }" v-model="newEvent.user">
+                    <option disabled selected>Select User Below</option>
+                    <option v-for="(user, index) in userList" :key="index" :value="user">{{
+                            user.name
+                    }}</option>
+                </select>
+                <!-- <input class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
+                    :class="{ 'border border-danger': errorName }"> -->
                 <div v-if="errorName" class="error"> Please enter name.</div>
             </div>
+
             <div class="marginForm">
-                <label for="email" class="form-label booking-label">Email :</label>
-                <input class="form-control style-form" id="email" maxlength="45" v-model="newEvent.bookingEmail"
+                <table class="booking-line">
+                    <tr>
+                        <th class="label-signup">Email :</th>
+                        <!-- <th class="maxBooking" :class="{ 'maxinput': newEvent.bookingEmail.length == 50 }">
+                            <span v-text="newEvent.bookingEmail.length"></span>/50
+                        </th> -->
+                    </tr>
+                </table>
+                <input class="form-control style-form" id="email" maxlength="50" :value="newEvent.user.email" disabled readonly
                     :class="{ 'border border-danger': errorEmail || !mailVali }">
+
+                <!-- <input class="form-control style-form" id="email" maxlength="50" v-model="newEvent.bookingEmail"
+                    :class="{ 'border border-danger': errorEmail || !mailVali }"> -->
                 <div v-if="errorEmail" class="error">Please enter Email.</div>
                 <div v-if="!mailVali && !errorEmail" class="error">Invalid Email.</div>
             </div>
+
             <div class="marginForm">
-                <label for="meeting-time" class="booking-label">Date - Time :</label><br>
+                <table class="booking-line">
+                    <tr>
+                        <th class="label-signup">Date - Time :</th>
+                    </tr>
+                </table>
                 <Datepicker locale="th" :minDate="new Date()" v-model="newEvent.eventStartTime"
                     :class="{ 'border border-danger': errorTime || errorFuture || overlap }" class="datepicker"
                     style="font-size: 0.95vw;">
@@ -86,15 +125,27 @@ const newEvent = ref({
                 <div v-if="errorTime" class="error">Please choose start time.</div>
                 <div v-if="errorFuture && !errorTime" class="error">Can not choose past time.</div>
                 <div v-if="overlap" class="error">Time is overlapping !</div>
-
             </div>
+
             <div class="marginForm">
-                <label for="meeting-time" class="booking-label">Durations (minutes) :</label><br>
+                <table class="booking-line">
+                    <tr>
+                        <th class="label-signup">Durations (minutes) :</th>
+                    </tr>
+                </table>
                 <input class="form-control style-form" style="margin-top: 8px;" type="text" disabled readonly
                     :value="newEvent.eventCategory.eventDuration">
             </div>
+
             <div class="marginForm">
-                <label for="note" class="form-label booking-label">Note :</label>
+                <table class="booking-line">
+                    <tr>
+                        <th class="label-signup">Note :</th>
+                        <th class="maxBooking" :class="{ 'maxinput': newEvent.eventNotes.length == 500 }">
+                            <span v-text="newEvent.eventNotes.length"></span>/500
+                        </th>
+                    </tr>
+                </table>
                 <textarea class="form-control style-form" rows="3" maxlength="500"
                     v-model="newEvent.eventNotes"></textarea>
             </div>
@@ -117,11 +168,32 @@ const newEvent = ref({
 }
 .error {
     color: red;
-    font-size: 14px;
+    font-size: 0.75vw;
     margin-left: 25%;
+}
+.dp__input{
+    font-size: 1vw;
+    border-color: transparent;
+    height: 2vw;
+    border: 1px solid #ced4da;
+}
+.dp__input:hover{
+    border-color: #ced4da;
+}
+.maxBooking{
+    width: 36vw;
+    text-align: right;
+    font-size: 0.7vw;
+    color: #888888;
+    font-weight: 100;
+}
+.booking-line{
+    margin-left: 25%;
+    margin-bottom: 0.5vw;
 }
 .booking-label{
     font-size: 1vw;
+    width: 10vw;
 }
 .body {
     font-family: 'Inter';
@@ -172,11 +244,6 @@ h3 {
     margin: auto;
     margin-bottom: 0.1vw;
     height: 2vw;
-}
-
-label {
-    margin-left: 23%;
-    font-weight: bold;
 }
 
 input,

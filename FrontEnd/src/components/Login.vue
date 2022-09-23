@@ -15,7 +15,6 @@ const clear = () =>{
 }
 
 const token = ref()
-const refreshToken = ref()
 const match = ref(false)
 const noMatch = ref(false)
 const noEmail = ref(false)
@@ -75,7 +74,6 @@ const matchPassword = async (user) => {
 const saveLocal=()=>{
   localStorage.setItem('token',`${token.value.accessToken}`)
   localStorage.setItem('refreshToken',`${token.value.refreshToken}`)
-  console.log(token.value);
 }
 
 </script>

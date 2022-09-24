@@ -11,9 +11,6 @@ import NavBar from './components/NavBar.vue'
 </template>
 
 <style>
-::-webkit-scrollbar {
-  display: none;
-}
 
 html {
   scroll-behavior: smooth;

@@ -10,7 +10,7 @@ import SignUp from '../components/SignUp.vue'
 
 const routes = [
     { path: '/', component: HomePage },
-    { path: '/reservation', component: ShowAllEvent },
+    { path: '/appointment', component: ShowAllEvent },
     { path: '/user', component: UserList },
     { path: '/booking', component: AddEvent },
     { path: '/about-us', component: AboutUs },

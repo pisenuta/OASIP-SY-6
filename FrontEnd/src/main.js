@@ -3,6 +3,7 @@ import App from './App.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+
 // createApp(App).mount('#app')
 import router from './router'
 const app = createApp(App)

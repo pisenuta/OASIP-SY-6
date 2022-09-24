@@ -51,7 +51,6 @@ const newEvent = ref({
     eventStartTime: ""
 })
 
-
 </script>
 <template>
     <div class="body">
@@ -81,6 +80,15 @@ const newEvent = ref({
                         </th> -->
                     </tr>
                 </table>
+<!-- 
+                <select class="form-select style-form" id="month" name="month"
+                    style="width: 50%;height: 2vw;"
+                    :class="{ 'border border-danger': errorName }" v-model="newEvent.user">
+                    <option disabled selected>Select User Below</option>
+                    <option v-for="(user, index) in userList" :key="index" :value="user.name">{{
+                            user.name
+                    }}</option>
+                </select> -->
 
                 <select class="form-select style-form" style="width: 50%;"
                     :class="{ 'border border-danger': errorName }" v-model="newEvent.user">
@@ -88,7 +96,8 @@ const newEvent = ref({
                     <option v-for="(user, index) in userList" :key="index" :value="user">{{
                             user.name
                     }}</option>
-                </select>
+                </select> 
+
                 <!-- <input class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
                     :class="{ 'border border-danger': errorName }"> -->
                 <div v-if="errorName" class="error"> Please enter name.</div>
@@ -171,6 +180,7 @@ const newEvent = ref({
     font-size: 0.75vw;
     margin-left: 25%;
 }
+
 .dp__input{
     font-size: 1vw;
     border-color: transparent;

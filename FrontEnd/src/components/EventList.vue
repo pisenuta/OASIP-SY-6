@@ -56,7 +56,19 @@ function formateTime(date) {
 
 <template>
     <div class="body">
-        <table class="table table-hover mx-auto align-middle" id="list-table">
+        <div class="card" v-for="(event, index) in eventList" :key="index" style="margin-top: 1vw;">
+            <div class="card-body" style="box-shadow: 0 2px 2px #00000005, 0 4px 4px #0000000a;">
+                <img src="../assets/calendar.png" class="calendar-img"/>
+                <b style="font-size: 1.1vw;">{{ event.bookingName.slice(0, 40) }} <a v-if="event.bookingName.length > 40">...</a></b>
+                <p style="margin-top: 0.5vw;"><b>Category :</b> {{ event.eventCategory.eventCategoryName }}</p>
+                <p><b>Duration :</b> {{ event.eventDuration }} Minutes</p>
+                <p><b>Date :</b> {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }}  {{ formateTime(event.eventStartTime) }}</p>
+                <button class="btn detail-Btn" v-on:click="showIndex = index , DetailPopUp = true"
+                            style="font-weight: bold;">More ></button>
+            </div>
+        </div>
+
+        <!-- <table class="table table-hover align-middle" id="list-table">
             <thead class="table-dark align-middle">
                 <tr>
                     <th scope="col" class="mx-auto" style="padding-left: 25px;">#</th>
@@ -85,18 +97,17 @@ function formateTime(date) {
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </table> -->
         <div>
             <div class="container" v-if="DetailPopUp == true">
                 <ul>
-                    <li v-for="(event, index) in eventList" :key="index">
+                    <li v-for="(event, index) in eventList" :key="index" >
                         <div class="card-body " v-if="DetailPopUp == true">
                             <div class="card popDetail" style="width: 38rem;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header"
-                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">Event #{{ index
-                                                + 1
-                                        }}</div>
+                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">EVENT DETAIL
+                                    </div>
                                     <button class="close-detail" @click="closeDetail" v-on:click="showIndex = null , DetailPopUp = false">
                                         &times;
                                     </button>
@@ -217,6 +228,11 @@ function formateTime(date) {
 .body {
     font-family: 'Inter', 'Noto Sans Thai';
 }
+
+.calendar-img{
+    float: left;    
+    width: 10vw;
+}
 .error{
     color: red;
     font-size: 13px;
@@ -280,6 +296,7 @@ function formateTime(date) {
     bottom: 0;
     background-color: rgba(0, 0, 0, 0);
     background-repeat: repeat-x;
+    z-index: 2;
 }
 .container {
     position: fixed;
@@ -328,12 +345,21 @@ function formateTime(date) {
     margin-top: 17px;
     margin-bottom: 10px;
 }
+
 .detail-Btn {
-    color: #e74694;
+    text-align: center;
+    color: white; 
     cursor: pointer;
+    transition: 0.5s;
+    background-size: 200% auto;
+    background-image: linear-gradient(to right, #4568DC 0%, #B06AB3  51%, #4568DC  100%);
+    border-radius: 1vw;
+    border-color: transparent;
 }
 .detail-Btn:hover {
-    text-decoration: underline;
+    background-position: right center; /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
 }
 ul {
     list-style-type: none;
@@ -346,7 +372,7 @@ thead {
     color: white;
 }
 #list-table {
-    width: 70%;
+    width: 90%;
     border-radius: 15px 15px 15px 15px;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);

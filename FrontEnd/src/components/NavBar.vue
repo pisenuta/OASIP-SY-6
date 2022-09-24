@@ -33,7 +33,7 @@ const signout = () => {
                     </li>
                     <li class="nav-item">
                         <a class="nav-link hover-underline-animation text-wh">
-                            <router-link to="/reservation">Reservation</router-link>
+                            <router-link to="/appointment">Appointment</router-link>
                         </a>
                     </li>
                     <li class="nav-item">

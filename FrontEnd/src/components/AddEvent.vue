@@ -66,6 +66,7 @@ onBeforeMount(async () => {
     await getUser()
 })
 
+const addAlert = ref(false)
 const errorName = ref(false)
 const errorClinic = ref(false)
 const errorEmail = ref(false)
@@ -143,8 +144,6 @@ const createEvent = async (event) => {
         })
     })
     if (res.status == 201 || res.status == 200) {
-        const addedEvent = await res.json()
-        events.value.push(addedEvent)
         console.log('added successfully');
         addAlert.value = true
     } else if (res.status == 400) {
@@ -152,7 +151,7 @@ const createEvent = async (event) => {
         console.log('error, can not add');
     }
 }
-const addAlert = ref(false)
+
 const added = () => {
     addAlert.value = false
 }
@@ -186,7 +185,7 @@ const added = () => {
                     <img
                         src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                     <p class="card-text" style="margin-top: 10px;">Added Event Successfully</p>
-                    <router-link to="/show-all-events"><button type="button" class="btn btn-success" @click="added"
+                    <router-link to="/appointment"><button type="button" class="btn btn-success btn-grad-ok" v-on:click="addAlert = false"
                             style="width: 100px; margin-top: 5px;">OK</button></router-link>
                 </div>
             </div>

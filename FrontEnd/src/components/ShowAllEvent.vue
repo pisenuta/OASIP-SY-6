@@ -21,6 +21,7 @@ const RefreshToken = async () => {
     refresh()
     getAllEvent();
     getEventCategory();
+
   } else if (res.status === 401){
     localStorage.clear()
     window.location.href = "/"
@@ -38,7 +39,12 @@ const filterStatus = ref()
 const filterDate = ref()
 
 const SortByCategory = async (id) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/clinic?eventCategoryId=${id}`, { method: "GET" })
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/clinic?eventCategoryId=${id}`, { 
+    method: "GET" ,
+    headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  })
   if (res.status === 200) {
     events.value = await res.json();
     events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
@@ -51,7 +57,12 @@ const SortByStatus = async () => {
   let res
   const day = moment().format().slice(0, 19) + 'Z'
   if (filterStatus.value == 'Past') {
-    res = await fetch(`${import.meta.env.VITE_BASE_URL}events/schedule-past?DateTime=${day}`, { method: "GET", })
+    res = await fetch(`${import.meta.env.VITE_BASE_URL}events/schedule-past?DateTime=${day}`, { 
+      method: "GET", 
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+  })
     if (res.status === 200) {
       events.value = await res.json();
       events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
@@ -60,7 +71,12 @@ const SortByStatus = async () => {
     }
   }
   else if (filterStatus.value == 'Upcoming') {
-    res = await fetch(`${import.meta.env.VITE_BASE_URL}events/schedule-comingup?DateTime=${day}`, { method: "GET", })
+    res = await fetch(`${import.meta.env.VITE_BASE_URL}events/schedule-comingup?DateTime=${day}`, { 
+      method: "GET", 
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
     if (res.status === 200) {
       events.value = await res.json();
       //Ascending
@@ -72,17 +88,21 @@ const SortByStatus = async () => {
 }
 
 const SortByDate = async (selectDate) => {
-  let res
   const date = moment(selectDate).format().slice(0, 10)
-  if (filterDate.value !== '') {
-    res = await fetch(`${import.meta.env.VITE_BASE_URL}events/datetime?Date=${date}`, { method: "GET", })
-  }
 
-  if (res.status === 200) {
+  if (filterDate.value !== '') {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/datetime?Date=${date}`, { 
+      method: "GET", 
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      }
+    })
+    if (res.status === 200) {
     events.value = await res.json();
     events.value.sort(function (a, b) { return new Date(a.eventStartTime) - new Date(b.eventStartTime); });
-  } else {
+    } else {
     console.log('can not');
+    }
   }
 }
 
@@ -178,66 +198,81 @@ const cancelEdit = () => {
     location.reload()
   }
 }
-const useSortCategory = ref(false)
-const useSortStatus = ref(false)
-const useSortDate = ref(false)
+const filterNothing = () => {
+  if((filterEvent.value === "" || filterEvent.value === null) && (filterStatus.value === "" || filterStatus.value === null) && (filterDate.value === "" || filterDate.value === null) ) {
+    getAllEvent()
+  }
+}
+const reset = () => {
+  filterEvent.value = ""
+  filterStatus.value = ""
+  filterDate.value = ""
+}
 
 </script>
  
 <template>
   <div class="body">
-    <h3 class="mx-auto" style="font-size: 2.1vw;margin-top: 2.5vw;font-weight: bolder;">Reservation</h3>
-    <div v-if="events.length > 8" class="scroll-down"></div>
+    <h3 class="mx-auto" style="font-size: 2.1vw;margin-top: 2.5vw;margin-bottom: 1.5vw; font-weight: bolder;">Appointment</h3>
+    <!-- <div v-if="events.length > 8" class="scroll-down"></div> -->
 
-    <div style="justify-content: space-around;display: flex;margin-bottom: 40px;margin-top: 1vw;">
-      <button type="button" class="btn btn-dark sortBtn"
-        v-on:click="useSortCategory = true, useSortStatus = false, useSortDate = false">Sort By Category</button>
-      <div v-if="useSortCategory == true">
-        <form class="form-inline">
-          <select class="form-select filter-form" v-model="filterEvent">
-            <option v-for="(category, index) in categories" :key="index" :value="category.id">{{
-                category.eventCategoryName
-            }} </option>
-          </select>
-          <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529"
-            @click="SortByCategory(filterEvent)" class="filter-btn">
-        </form>
+    <div class="container-event">
+      <div class="row" style="justify-content: center;">
+        <div class="col-md-6 col-xl-7" style="flex-basis: auto !important; width: 50vw !important; height:35vw">
+          <div class="card" style="border-color: transparent;">
+            <div class="card-body overflow-auto" style="height:32vw; margin: 1vw;padding-top: 0;">
+              <div v-if="events.length !== 0">
+                <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
+                  @cancelEdit="cancelEdit" />
+              </div>
+              <h5 class="mx-auto Noschedule" >
+                {{ schedule() }}
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-xl-3" style="flex-basis: auto !important; width: 30vw !important;">
+          <div class="card" 
+            style="box-shadow: 0 2px 2px #00000005, 0 4px 4px #0000000a; position: static;">
+            <div class="card-body">
+              <h2 class="card-title" style="text-align: center; font-weight: bold;">Filter</h2>
+              <div style="margin: 1vw;">
+
+              <p class="filter-head">Category </p>
+              <select class="form-select filter-form" v-model="filterEvent"
+                :disabled="filterStatus || filterDate ? '' : disabled ">
+                <option v-for="(category, index) in categories" :key="index" :value="category.id">{{
+                  category.eventCategoryName
+                }} </option>
+              </select>
+                  
+              <p class="filter-head">Status</p>
+              <select class="form-select filter-form" v-model="filterStatus"
+                :disabled="filterEvent || filterDate ? '' : disabled ">
+                <option value="Past">Past</option>
+                <option value="Upcoming">Upcoming</option>
+              </select>
+
+              <p class="filter-head">Date</p>
+              <div style="z-index:1;">
+                <Datepicker :enableTimePicker="false" v-model="filterDate" class="datepicker filter-form"
+                style="width: 25vw;margin-left:0;" 
+                :disabled="filterStatus || filterEvent ? '' : disabled "></Datepicker>
+              </div>
+              
+
+              <button type="button" class="btn btn-danger all-btn" @click="getAllEvent(), reset()">Reset</button>
+              
+              <button class="search-btn" 
+                @click="filterNothing(),SortByDate(filterDate),SortByCategory(filterEvent),SortByStatus(filterStatus)">search</button>
+              </div>
+              </div>
+          </div>
+        </div>
       </div>
+  </div>
 
-      <button type="button" class="btn btn-dark sortBtn"
-        v-on:click="useSortCategory = false, useSortStatus = true, useSortDate = false">Sort By Status</button>
-      <div v-if="useSortStatus == true">
-        <form class="form-inline">
-          <select class="form-select filter-form" style="width: 8rem;" v-model="filterStatus">
-            <option value="Past">Past</option>
-            <option value="Upcoming">Upcoming</option>
-          </select>
-          <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529"
-            @click="SortByStatus(filterStatus)" class="filter-btn">
-        </form>
-      </div>
-
-      <button type="button" class="btn btn-dark sortBtn"
-        v-on:click="useSortCategory = false, useSortStatus = false, useSortDate = true">Sort By Date</button>
-      <div v-if="useSortDate == true">
-        <form class="form-inline">
-          <Datepicker :enableTimePicker="false" v-model="filterDate" class="datepicker"
-            style="width: 12rem; margin-top: 0px;" />
-          <img src="https://api.iconify.design/fa6-solid/magnifying-glass.svg?color=%23212529"
-            @click="SortByDate(filterDate)" class="filter-btn" style="margin-top: -40px;">
-        </form>
-      </div>
-
-      <button type="button" class="btn btn-dark all-btn" @click="getAllEvent()"
-        v-on:click="useSortCategory = false, useSortStatus = false, useSortDate = false">All</button>
-    </div>
-
-    <h5 class="mx-auto Noschedule" >{{ schedule() }}</h5>
-    <div v-if="events.length !== 0">
-      <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
-        @cancelEdit="cancelEdit" />
-    </div>
-    <!-- plz login -->
+    <!-- login -->
     <div class="Plzlogin"
       v-if="token === null || token === undefined"
     >
@@ -270,6 +305,34 @@ const useSortDate = ref(false)
 .body {
   font-family: 'Radio Canada', 'Noto Sans Thai';
 }
+         
+.search-btn {
+  background-image: linear-gradient(to right, #f857a6 0%, #ff5858  51%, #f857a6  100%);
+  padding: 0.7vw 10vw;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;            
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+  border-color: transparent;
+  margin-top: 1vw;
+}
+
+.search-btn:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+  border-color: transparent;
+}
+         
+.filter-head{
+  font-weight: bold;
+  margin-top: 0.5vw;
+}
+
 .Noschedule{
   font-size: 1.1vw;
   color: #646464;
@@ -280,13 +343,23 @@ const useSortDate = ref(false)
   transform: translate(-50%, -50%);
 }
 .all-btn {
-  background-color: #e74694;
-  border-color: #e74694;
-  color: black;
+  background-image: linear-gradient(to right, #D31027 0%, #EA384D  51%, #D31027  100%);
+  border-color: transparent;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
   padding-left: 20px;
   padding-right: 20px;
   font-size: 0.9vw;
+  margin-top: 1vw;
 }
+.all-btn:hover{
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+  border-color: transparent;
+}     
+
 .sortBtn{
   font-size: 0.9vw;
 }
@@ -305,7 +378,7 @@ const useSortDate = ref(false)
 }
 
 .filter-form {
-  width: 15vw;
+  width: 25vw;
   font-size: 0.9vw;
 }
 
@@ -313,8 +386,20 @@ h5,
 h3 {
   text-align: center;
 }
-
-
+::-webkit-scrollbar{
+  width: 0.8vw;
+  margin-right:3vw;
+  height: 1vw;
+}
+::-webkit-scrollbar-track{
+  border-radius: 0.5vw;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.25);
+}
+::-webkit-scrollbar-thumb{
+  border-radius: 0.5vw;
+  background-color: #e74694;
+}
+/* 
 .scroll-down {
   height: 50px;
   width: 30px;
@@ -347,11 +432,11 @@ h3 {
   top: 30%;
   animation-delay: 0.3s;
   /* animation: scroll-down 1s ease-in-out infinite; */
-}
+/*}
 
 @keyframes scroll-down {
   0% {
-    /* top:20%; */
+    /* top:20%; 
     opacity: 0;
   }
 
@@ -367,5 +452,5 @@ h3 {
     top: 90%;
     opacity: 0;
   }
-}
+} */
 </style>

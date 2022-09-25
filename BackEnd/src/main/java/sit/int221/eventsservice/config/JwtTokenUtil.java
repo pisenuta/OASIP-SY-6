@@ -17,8 +17,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    private static final Integer tokenExpiration = 20;
-    private static final Integer refreshTokenExpiration = 60;
+    private static final Integer tokenExpiration = 60 * 30;
+    private static final Integer refreshTokenExpiration = 60 * 60 * 24;
 
     @Value("${jwt.secret}")
     private String secret;

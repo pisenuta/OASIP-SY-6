@@ -4,8 +4,8 @@ import { ref, onBeforeMount } from "vue";
 const users = ref([]);
 const getUser = async () => {
   // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-  const res = await fetch(`http://localhost:8443/api/users/`, {
-    // const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+  // const res = await fetch(`http://localhost:8443/api/users/`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -245,7 +245,7 @@ const createUser = async (user) => {
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw;">
           <p class="card-text" style="margin-top: 10px;margin-bottom: 1vw">Sign Up <b>Successful</b></p>
           <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw; height: 2.3vw;"
-          v-on:click="addUserPop = false" onclick='window.location.href = "/"'>OK</button>
+          v-on:click="addUserPop = false" onclick='window.location.href = "/sy6"'>OK</button>
         </div>
       </div>
     </div>

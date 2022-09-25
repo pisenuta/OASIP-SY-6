@@ -166,9 +166,8 @@ const getAllEvent = async () => {
   if (res.status === 200) {
     events.value = await res.json();
     events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
-  } else if (res.status === 401) {
+  } else if (res.status === 401 && token !== null){
     RefreshToken();
-    console.log('can not');
   }
 }
 
@@ -192,6 +191,8 @@ const getEventCategory = async () => {
   })
   if (res.status === 200) {
     categories.value = await res.json()
+  } else if (res.status === 401 && token !== null){
+    RefreshToken();
   }
 }
 const cancelEdit = () => {

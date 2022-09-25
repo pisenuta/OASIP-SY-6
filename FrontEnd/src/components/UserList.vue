@@ -23,7 +23,7 @@ const RefreshToken = async () => {
     getUser()
   } else if (res.status === 401){
     localStorage.clear()
-    window.location.href = "/"
+    window.location.href = "/sy6"
     console.log("plz log out");
   }
 };

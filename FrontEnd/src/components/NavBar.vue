@@ -3,7 +3,7 @@ const token = localStorage.getItem("token");
 
 const signout = () => {
     localStorage.clear()
-    window.location.href = "/"
+    window.location.href = "/sy6"
 }
 </script>
 

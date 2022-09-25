@@ -11,7 +11,7 @@ const clear = () =>{
   userLogin.value.password = ""
   noMatch.value = false
   noEmail.value = false
-  window.location.href = "/"
+  window.location.href = "/sy6"
 }
 
 const token = ref()

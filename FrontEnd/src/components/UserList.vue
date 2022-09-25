@@ -428,8 +428,8 @@ const createUser = async (user) => {
     <!-- list -->
     <div class="mt-5">
       <div
-        class="row mx-auto row-cols-4"
-        style="padding-left: 90px; padding-right: 90px"
+        class="row mx-auto row-cols-4 overflow-auto"
+        style="padding-left: 90px; padding-right: 90px; height: 32vw; padding-top: 1vw;"
       >
         <div
           class="col-user"
@@ -448,7 +448,18 @@ const createUser = async (user) => {
               style="cursor: pointer"
             >
               <div class="hovertext" data-hover="click for more details">
-                <img src="../assets/cat.png" class="profile" />
+                <div v-if="user.role == 'student'">
+                  <img src="../assets/cat.png" class="profile" />
+                </div>
+
+                <div v-if="user.role == 'lecturer'">
+                  <img src="../assets/bear.png" class="profile" />
+                </div>
+                
+                <div v-if="user.role == 'admin'">
+                  <img src="../assets/cow.png" class="profile" />
+                </div>
+              
                 <h5 class="username">
                   {{ user.name.slice(0, 27) }}
                   <a v-if="user.name.length > 30">...</a>
@@ -498,11 +509,18 @@ const createUser = async (user) => {
                 v-if="showIndex === user.userId"
                 style="text-align: center"
               >
-                <img
-                  src="../assets/cat.png"
-                  class="profile"
-                  style="cursor: default"
-                />
+              <div v-if="user.role == 'student'">
+                  <img src="../assets/cat.png" class="profile" style="cursor: default"/>
+                </div>
+
+                <div v-if="user.role == 'lecturer'">
+                  <img src="../assets/bear.png" class="profile" style="cursor: default"/>
+                </div>
+                
+                <div v-if="user.role == 'admin'">
+                  <img src="../assets/cow.png" class="profile" style="cursor: default"/>
+                </div>
+
                 <h5 class="username" style="font-size: 1.1vw">
                   {{ user.name }}
                 </h5>
@@ -537,7 +555,7 @@ const createUser = async (user) => {
             class="card alertDel"
             v-if="checkDel == true && showIndex === user.userId"
           >
-            <div class="card-body">
+            <div class="card-body" style="margin-top: 0.5vw;">
               <img
                 src="https://api.iconify.design/akar-icons/circle-alert.svg?color=%23bb2d3b"
                 style="width: 4.5vw"

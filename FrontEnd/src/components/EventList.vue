@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
-defineEmits(['delete', 'edit', 'toEditingMode', 'cancelEdit'])
+defineEmits(['delete', 'edit', 'toEditingMode', 'cancelEdit', 'showDetail', 'closeEdited'])
 const props = defineProps({
     eventList: {
         type: Array,
@@ -17,6 +17,10 @@ const props = defineProps({
         default: false
     },    
     errorPast:{
+        type: Boolean,
+        default: false
+    },
+    detail:{
         type: Boolean,
         default: false
     }
@@ -55,7 +59,7 @@ function formateTime(date) {
 </script>
 
 <template>
-    <div class="body">
+    <div class="body" >
         <div class="card" v-for="(event, index) in eventList" :key="index" style="margin-top: 1vw;">
             <div class="card-body" style="box-shadow: 0 2px 2px #00000005, 0 4px 4px #0000000a;">
                 <img src="../assets/calendar.png" class="calendar-img"/>
@@ -63,41 +67,13 @@ function formateTime(date) {
                 <p style="margin-top: 0.5vw;"><b>Category :</b> {{ event.eventCategory.eventCategoryName }}</p>
                 <p><b>Duration :</b> {{ event.eventDuration }} Minutes</p>
                 <p><b>Date :</b> {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }}  {{ formateTime(event.eventStartTime) }}</p>
-                <button class="btn detail-Btn" v-on:click="showIndex = index , DetailPopUp = true"
-                            style="font-weight: bold;">More ></button>
+                <button class="btn detail-Btn" 
+                    v-on:click="showIndex = index , DetailPopUp = true"
+                    @click="$emit('showDetail')"
+                    style="font-weight: bold;">More ></button>
             </div>
         </div>
 
-        <!-- <table class="table table-hover align-middle" id="list-table">
-            <thead class="table-dark align-middle">
-                <tr>
-                    <th scope="col" class="mx-auto" style="padding-left: 25px;">#</th>
-                    <th scope="col" style="letter-spacing: 3px;">DATE</th>
-                    <th scope="col" style="letter-spacing: 3px">TIME</th>
-                    <th scope="col" style="letter-spacing: 3px">CLINIC</th>
-                    <th scope="col" style="letter-spacing: 3px">
-                        DURATION<br />
-                        <span style="font-size: 12px; letter-spacing: 2px; font-weight: lighter;">(MINUTES)</span>
-                    </th>
-                    <th scope="col" style="letter-spacing: 3px">NAME</th>
-                    <th scope="col"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(event, index) in eventList" :key="index">
-                    <td scope="row" style="padding-left: 25px;"><b>{{ index + 1 }}</b></td>
-                    <td>{{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }} </td>
-                    <td>{{ formateTime(event.eventStartTime) }}</td>
-                    <td>{{ event.eventCategory.eventCategoryName }}</td>
-                    <td>{{ event.eventDuration }}</td>
-                    <td style="width: 40%;">{{ event.bookingName }}</td>
-                    <td>
-                        <span class="detail-Btn" v-on:click="showIndex = index , DetailPopUp = true"
-                            style="padding-right: 15px; font-weight: bold;">More</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table> -->
         <div>
             <div class="container" v-if="DetailPopUp == true">
                 <ul>
@@ -108,7 +84,7 @@ function formateTime(date) {
                                     <div class="card-header"
                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px;">EVENT DETAIL
                                     </div>
-                                    <button class="close-detail" @click="closeDetail" v-on:click="showIndex = null , DetailPopUp = false">
+                                    <button class="close-detail" @click="$emit('showDetail')" v-on:click="showIndex = null , DetailPopUp = false">
                                         &times;
                                     </button>
                                 </div>
@@ -130,7 +106,7 @@ function formateTime(date) {
                                         }}
                                     </p>
                                     <!-- Edit -->
-                                    <button class="btn btn-warning detail-btn-each" style="margin-right: 40px;"
+                                    <button class="btn btn-warning edit-event-btn detail-btn-each" style="margin-right: 40px;"
                                         v-on:click="editingMode = true">Edit Appointment</button>
                                     <div class="containerV2" v-if="editingMode === true">
                                         <div class="card popEdit" style="width: 38rem;" >
@@ -159,7 +135,7 @@ function formateTime(date) {
                                                     <p>Note :</p>
                                                     <textarea class="form-control style-form" rows="3" maxlength="500" v-model="editNote"></textarea>
                                                     <div style="margin-top: 30px;">
-                                                        <button type="button" class="btn btn-success"
+                                                        <button type="button" class="btn btn-success confirm-edit-btn"
                                                             style="margin-right: 40px;"
                                                             @click="$emit('edit', editEvent(event), resetEditData())"
                                                             >Submit</button>
@@ -173,19 +149,19 @@ function formateTime(date) {
                                     </div>
 
                                     <!-- Delete -->
-                                    <button class="btn btn-danger detail-btn-each" v-on:click="confirmDelete = true">Cancel
+                                    <button class="btn btn-danger cancel-event-btn detail-btn-each" v-on:click="confirmDelete = true">Cancel
                                         Appointment</button>
                                     <div class="containerV2" v-if="confirmDelete === true || deleted === true">
                                         <div class="card alert" v-if="confirmDelete === true">
                                             <div class="card-body">
                                                 <img
-                                                    src="https://api.iconify.design/akar-icons/circle-alert.svg?color=white&width=75&height=75">
+                                                    src="https://api.iconify.design/akar-icons/circle-alert.svg?color=%23bb2d3b" style="width: 4.5vw">
                                                 <p class="card-text" style="margin-top: 20px;"><b>Are you sure you want
-                                                        to cancel event #{{ index + 1 }} ?</b></p>
-                                                <button type="button" class="btn btn-warning"
+                                                        to cancel event ?</b></p>
+                                                <button type="button" class="btn btn-danger cancel-event-btn"
                                                     style="padding: 5px 20px 5px 20px;"
                                                     @click="$emit('delete', event.id)"
-                                                    v-on:click="showDeleted">OK</button>
+                                                    v-on:click="showDeleted">Sure</button>
                                                 <button type="button" class="btn btn-secondary"
                                                     style="margin-left: 30px;" v-on:click="confirmDelete = false">Cancel</button>
                                             </div>
@@ -198,10 +174,10 @@ function formateTime(date) {
                 </ul>
             </div>
             <div class="containerV2" v-if="deleted === true">
-                <div class="card deleted" id="deleted">
+                <div class="card alertEdit" id="deleted">
                     <div class="card-body" style="margin-top: 10px;">
                         <img
-                            src="https://api.iconify.design/healthicons/yes-outline.svg?color=white&width=90&height=90">
+                            src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                         <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> Event Successfully</p>
                         <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
                             v-on:click="deleted = false">OK</button>
@@ -215,7 +191,8 @@ function formateTime(date) {
                             src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                         <p class="card-text" style="margin-top: 10px;"><b>Edited</b> Event Successfully</p>
                         <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
-                            v-on:click="edited = false, editingMode = false">OK</button>
+                            v-on:click="edited = false, editingMode = false"
+                            @click="$emit('closeEdited')">OK</button>
                     </div>
                 </div>
             </div>
@@ -229,6 +206,18 @@ function formateTime(date) {
     font-family: 'Inter', 'Noto Sans Thai';
 }
 
+.edit-event-btn {
+    background-image: linear-gradient(to right, #ffb347 0%, #ffcc33  51%, #ffb347  100%);
+    border-color: transparent;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+}
+.edit-event-btn:hover{
+  background-position: right center; /* change the direction of the change here */
+  text-decoration: none;
+  border-color: transparent;
+}  
 .calendar-img{
     float: left;    
     width: 10vw;
@@ -239,6 +228,39 @@ function formateTime(date) {
     text-align: left;
     margin-bottom: -8px;
 }
+.cancel-event-btn{
+    background-image: linear-gradient(to right, #D31027 0%, #EA384D  51%, #D31027  100%);
+    border-color: transparent;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+}
+.cancel-event-btn:hover{
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+  border-color: transparent;
+}  
+.confirm-edit-btn{
+    background-image: linear-gradient(
+    to right,
+    #1d976c 0%,
+    #93f9b9 51%,
+    #1d976c 100%
+  );
+  color: white;
+  transition: 0.5s;
+  border-color: transparent;
+  background-size: 200% auto;
+  font-size:0.85vw;
+}
+
+.confirm-edit-btn:hover{
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
+  border-color: transparent;
+}  
 .popEdit{
     position: fixed;
     top: 50%;
@@ -250,9 +272,9 @@ function formateTime(date) {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 .alert {
-    background-color: #bb2d3b;
+    background-color: #fff;
     width: 28rem;
-    color: white;
+    color: black;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

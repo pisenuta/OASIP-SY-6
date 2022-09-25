@@ -114,6 +114,7 @@ const removeEvent = async (removeEventId) => {
     },
   })
   if (res.status === 200) {
+    detail.value = false
     events.value = events.value.filter((event) => event.id !== removeEventId)
     console.log('deleted successfully')
   }
@@ -209,6 +210,18 @@ const reset = () => {
   filterDate.value = ""
 }
 
+const detail = ref(false)
+const showDetail = () => {
+  if(detail.value === false){
+    detail.value = true
+  } else {
+    detail.value = false
+  }
+}
+
+const closeEdited = () => {
+  edited.value = false
+}
 </script>
  
 <template>
@@ -223,7 +236,7 @@ const reset = () => {
             <div class="card-body overflow-auto" style="height:32vw; margin: 1vw;padding-top: 0;">
               <div v-if="events.length !== 0">
                 <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
-                  @cancelEdit="cancelEdit" />
+                  @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @closeEdited="closeEdited"/>
               </div>
               <h5 class="mx-auto Noschedule" >
                 {{ schedule() }}
@@ -254,12 +267,12 @@ const reset = () => {
               </select>
 
               <p class="filter-head">Date</p>
-              <div style="z-index:1;">
+              <div :style="detail ? { visibility: 'hidden'} : {visibility: 'visible'}">
                 <Datepicker :enableTimePicker="false" v-model="filterDate" class="datepicker filter-form"
-                style="width: 25vw;margin-left:0;" 
-                :disabled="filterStatus || filterEvent ? '' : disabled "></Datepicker>
+                  style="width: 25vw;margin-left:0; z-index:-1;" 
+                  :disabled="filterStatus || filterEvent ? '' : disabled "
+                  ></Datepicker>
               </div>
-              
 
               <button type="button" class="btn btn-danger all-btn" @click="getAllEvent(), reset()">Reset</button>
               
@@ -271,7 +284,6 @@ const reset = () => {
         </div>
       </div>
   </div>
-
     <!-- login -->
     <div class="Plzlogin"
       v-if="token === null || token === undefined"
@@ -397,7 +409,7 @@ h3 {
 }
 ::-webkit-scrollbar-thumb{
   border-radius: 0.5vw;
-  background-color: #e74694;
+  background-color: #F857A2;
 }
 /* 
 .scroll-down {

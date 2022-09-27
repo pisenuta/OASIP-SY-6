@@ -9,13 +9,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.*;
-import sit.int221.eventsservice.config.JwtTokenUtil;
 import sit.int221.eventsservice.dtos.User.UserCreateDTO;
 import sit.int221.eventsservice.dtos.User.UserDTO;
 import sit.int221.eventsservice.dtos.User.UserLoginDTO;
@@ -23,17 +25,16 @@ import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.models.JwtResponse;
 import sit.int221.eventsservice.repositories.UserRepository;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
-public class UserService {
-    private final UserRepository repository;
+public class UserService implements UserDetailsService {
+
+    @Autowired
+    private UserRepository repository;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -45,17 +46,6 @@ public class UserService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
-    @Autowired
-    private JwtUserDetailsService userDetailsService;
-
-    @Autowired
-    public UserService(UserRepository repository) {
-        this.repository = repository;
-    }
 
     public List<UserDTO> getAllUser() {
         return this.listMapper.mapList(this.repository.findAll(Sort.by("name").ascending()), UserDTO.class, this.modelMapper);
@@ -97,43 +87,62 @@ public class UserService {
         return repository.saveAndFlush(user);
     }
 
-    public ResponseEntity Login (UserLoginDTO user, HttpServletResponse httpServletResponse, ServletWebRequest request) throws Exception {
-        Map<String,String> errorMap = new HashMap<>();
-        String status;
+//    public ResponseEntity Login (UserLoginDTO user, HttpServletResponse httpServletResponse, ServletWebRequest request) throws Exception {
+//        Map<String,String> errorMap = new HashMap<>();
+//        String status;
+//
+//        if (repository.existsByEmail(user.getEmail())) {
+//            User userdb = repository.findByEmail(user.getEmail());
+//            if (argon2PasswordEncoder.matches(user.getPassword(), userdb.getPassword())) {
+//                errorMap.put("message", "Password Matched");
+//                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+//                status = HttpStatus.OK.toString();
+//
+//                authenticate(user.getEmail() , user.getPassword());
+//                authenticate(user.getEmail(), user.getPassword());
+//
+//                final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+//
+//                final String token = jwtTokenUtil.generateToken(userDetails);
+//                final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
+//
+//                return ResponseEntity.ok(new JwtResponse("Liogin Successfully", token, refreshToken));
+//
+//            } else {
+//                errorMap.put("message", "Password NOT Matched");
+//                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                status = HttpStatus.UNAUTHORIZED.toString();
+//            }
+//        } else {
+//            errorMap.put("message", "A user with the specified email DOES NOT exist");
+//            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+//            status = HttpStatus.NOT_FOUND.toString();
+//        }
+//        HandleValidationErrors errors = new HandleValidationErrors(
+//                Date.from(Instant.now()),
+//                httpServletResponse.getStatus(),
+//                request.getRequest().getRequestURI(),
+//                status,
+//                errorMap.get("message"));
+//        return ResponseEntity.status(httpServletResponse.getStatus()).body(errors);
+//    }
 
-        if (repository.existsByEmail(user.getEmail())) {
-            User userdb = repository.findByEmail(user.getEmail());
-            if (argon2PasswordEncoder.matches(user.getPassword(), userdb.getPassword())) {
-                errorMap.put("message", "Password Matched");
-                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-                status = HttpStatus.OK.toString();
-
-                authenticate(user.getEmail() , user.getPassword());
-                authenticate(user.getEmail(), user.getPassword());
-
-                final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-
-                final String token = jwtTokenUtil.generateToken(userDetails);
-                final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
-
-                return ResponseEntity.ok(new JwtResponse("Liogin Successfully", token, refreshToken));
-
-            } else {
-                errorMap.put("message", "Password NOT Matched");
-                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                status = HttpStatus.UNAUTHORIZED.toString();
-            }
-        } else {
-            errorMap.put("message", "A user with the specified email DOES NOT exist");
-            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            status = HttpStatus.NOT_FOUND.toString();
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = repository.findByEmail(email);
+        if(user == null){
+            System.out.println("Email not found in the database: " + email);
+            throw new UsernameNotFoundException("Email not found in the database: " + email);
+        }else {
+            System.out.println("Email found in the database: " + email);
         }
-        HandleValidationErrors errors = new HandleValidationErrors(
-                Date.from(Instant.now()),
-                httpServletResponse.getStatus(),
-                request.getRequest().getRequestURI(),
-                status,
-                errorMap.get("message"));
-        return ResponseEntity.status(httpServletResponse.getStatus()).body(errors);
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+    }
+
+    public User getUserByEmail(String email) {
+        User userByEmail = repository.findByEmail(email);
+        return modelMapper.map(userByEmail, User.class);
     }
 }

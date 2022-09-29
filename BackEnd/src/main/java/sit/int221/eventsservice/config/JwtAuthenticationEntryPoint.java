@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,32 +15,39 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
-        final Map<String, Object> errors = new LinkedHashMap<>();
-        errors.put("message", "Invalid token");
-        response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        errors.put("timestamp", ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        errors.put("status", response.getStatus());
-        errors.put("error", "UNAUTHORIZED");
-        errors.put("message", request.getAttribute("Errors"));
-        try{
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(response.getOutputStream(), errors);
-        }catch (Exception e){
-            throw new ServletException();
-        }
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        String message;
+        // Check if the request as any exception that we have stored in Request
+        final Exception exception = (Exception) request.getAttribute("exception");
 
-//        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        // If yes then use it to create the response message else use the authException
+        if (exception != null) {
+
+            byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("cause", exception.toString()));
+            response.getOutputStream().write(body);
+        } else {
+            if (authException.getCause() != null) {
+                message = authException.getCause().toString() + " " + authException.getMessage();
+            } else {
+                message = authException.getMessage();
+            }
+
+            byte[] body = new ObjectMapper().writeValueAsBytes(Collections.singletonMap("error", message));
+
+            response.getOutputStream().write(body);
+        }
     }
 }

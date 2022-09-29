@@ -33,7 +33,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         errorMap.put("Forbidden", "Access denied for user: " + auth.getPrincipal());
         errors = new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
-                "Forbidden", "Validation", request.getRequestURI(), errorMap);
+                request.getRequestURI(), "Validation", "Forbidden", errorMap);
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), errors);

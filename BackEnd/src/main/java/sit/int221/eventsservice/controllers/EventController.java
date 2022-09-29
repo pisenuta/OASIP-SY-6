@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import sit.int221.eventsservice.advice.HandleExceptionForbidden;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
 import sit.int221.eventsservice.dtos.Event.EventPutDTO;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
@@ -31,13 +32,13 @@ public class EventController {
     private EventRepository repository;
 
     @GetMapping({"/{Id}"})
-    public EventDTO getEventById(@PathVariable Integer Id) {
+    public EventDTO getEventById(@PathVariable Integer Id) throws HandleExceptionForbidden {
         return this.eventService.getSimpleEventById(Id);
     }
 
     @GetMapping({""})
     public List<EventDTO> getEvents() {
-        return this.eventService.getAllSimpleEvent();
+        return this.eventService.getAllEvent();
     }
 
     @DeleteMapping({"/{Id}"})
@@ -49,7 +50,7 @@ public class EventController {
     }
 
     @PostMapping({""})
-    public Event create(@Valid @RequestBody EventDTO newEvent) throws OverlappedExceptionHandler {
+    public Event create(@Valid @RequestBody EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden {
         return eventService.save(newEvent);
     }
 
@@ -60,7 +61,6 @@ public class EventController {
         List<EventDTO> eventList = getEvents();
         for (int i = 0; i < eventList.size(); i++) {
             if (updateEvent.getEventCategory().getId() == eventList.get(i).getEventCategory().getId()&& eventList.get(i).getId() != Id) { //เช็คเฉพาะ EventCategory เดียวกัน และถ้าอัพเดตตัวเดิมไม่ต้องเช็ค overlapped
-                List errors = new ArrayList();
                 Date eventStartTime = Date.from(eventList.get(i).getEventStartTime());
                 Date eventEndTime = eventService.findEndDate(Date.from(eventList.get(i).getEventStartTime()), eventList.get(i).getEventDuration());
                 if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
@@ -68,7 +68,7 @@ public class EventController {
                         newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
                         newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
                         newEventStartTime.equals(eventStartTime)) {
-                    throw new OverlappedExceptionHandler(errors.toString());
+                    throw new OverlappedExceptionHandler("Time is Overlapped");
                 }
             }
         }

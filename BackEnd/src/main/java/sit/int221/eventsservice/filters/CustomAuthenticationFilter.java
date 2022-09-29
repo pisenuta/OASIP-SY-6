@@ -91,6 +91,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         System.out.println(role);
 
         Map<String, String> tokens = new HashMap<>();
+        tokens.put("message", "Login Successfully");
         tokens.put("email", user.getUsername());
         tokens.put("role", role);
         tokens.put("access_token", access_token);

@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(PUT, "/api/users/**").hasAuthority("admin")
                 .antMatchers("/api/events/", "/api/categories/").hasAnyAuthority("student", "admin", "lecturer")
                 .antMatchers(POST, "/api/users/register/**", "/api/login/**").permitAll()
-                .antMatchers(GET,"/api/refresh-token/**").permitAll()
+                .antMatchers(GET,"/api/refresh-token").permitAll()
                 .anyRequest().authenticated().and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler()).and()

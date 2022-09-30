@@ -54,7 +54,7 @@ public class ApplicationExceptionHandler extends Exception {
     public HandleValidationErrors handleCheckUnique(DataIntegrityViolationException de, ServletWebRequest request) {
         HandleValidationErrors errors = new HandleValidationErrors();
         errors.setStatus(500);
-        errors.setPath("/api/eventcategory/"+ request.getRequest().getRequestURI());
+        errors.setPath(request.getRequest().getRequestURI());
         errors.setMessage("Internal Server Error");
         errors.setError("Clinic name must be unique.");
         return errors;

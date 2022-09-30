@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.CustomAccessDeniedHandler;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
@@ -117,11 +118,12 @@ public class EventService {
                         }
                     }
                 }
+                newEvent.setUserId(userLogin.getUserId());
                 Event e = modelMapper.map(newEvent, Event.class);
                 repository.saveAndFlush(e);
                 return ResponseEntity.status(HttpStatus.OK).body(e).getBody();
             } else {
-                throw new HandleExceptionForbidden("The booking email must be the same as the student's email");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The booking email must be the same as the student's email");
             }
         } else {
             return null;

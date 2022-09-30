@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -41,7 +42,7 @@ public class EventService {
     @Autowired
     private ListMapper listMapper;
 
-    public EventDTO getSimpleEventById(Integer id) throws HandleExceptionForbidden {
+    public EventDTO getEventById(Integer id) throws HandleExceptionForbidden {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
         if (userLogin.getRole().equals(Role.admin)) {
@@ -98,7 +99,9 @@ public class EventService {
                 }
             }
             Event e = modelMapper.map(newEvent, Event.class);
-            return repository.saveAndFlush(e);
+            repository.saveAndFlush(e);
+            return ResponseEntity.status(HttpStatus.OK).body(e).getBody();
+
         } else if (userLogin.getRole().equals(Role.student)) {
             if (Objects.equals(userLogin.getEmail(), newEvent.getBookingEmail())) {
                 for (EventDTO eventDTO : eventList) {
@@ -115,7 +118,8 @@ public class EventService {
                     }
                 }
                 Event e = modelMapper.map(newEvent, Event.class);
-                return repository.saveAndFlush(e);
+                repository.saveAndFlush(e);
+                return ResponseEntity.status(HttpStatus.OK).body(e).getBody();
             } else {
                 throw new HandleExceptionForbidden("The booking email must be the same as the student's email");
             }
@@ -129,22 +133,58 @@ public class EventService {
     }
 
     public List<EventDTO> getEventByCategoryId(Category eventCategoryId) {
-        List<Event> eventByCategory = repository.findAllByEventCategoryOrderByEventCategoryDesc(eventCategoryId);
-        return listMapper.mapList(eventByCategory, EventDTO.class, modelMapper);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+        if (userLogin.getRole().equals(Role.admin)) {
+            List<Event> eventByCategory = repository.findAllByEventCategoryOrderByEventCategoryDesc(eventCategoryId);
+            return listMapper.mapList(eventByCategory, EventDTO.class, modelMapper);
+        } else if(userLogin.getRole().equals(Role.student)){
+            List<Event> eventByCategory = repository.
+                    findAllByBookingEmailAndEventCategoryOrderByEventCategoryDesc(auth.getPrincipal().toString(),eventCategoryId);
+            return listMapper.mapList(eventByCategory, EventDTO.class, modelMapper);
+        }
+        return null;
     }
 
     public List<EventDTO> getPastEvent(Instant instant) {
-        List<Event> pastEvent = repository.findAllByEventStartTimeBeforeOrderByEventStartTimeDesc(instant);
-        return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+        if (userLogin.getRole().equals(Role.admin)) {
+            List<Event> pastEvent = repository.findAllByEventStartTimeBeforeOrderByEventStartTimeDesc(instant);
+            return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        } else if(userLogin.getRole().equals(Role.student)){
+            List<Event> pastEvent =
+                    repository.findAllByBookingEmailAndEventStartTimeBeforeOrderByEventStartTimeDesc(auth.getPrincipal().toString(),instant);
+            return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        }
+        return null;
     }
 
     public List<EventDTO> getUpcomingEvent(Instant instant) {
-        List<Event> pastEvent = repository.findAllByEventStartTimeAfterOrderByEventStartTimeAsc(instant);
-        return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+        if (userLogin.getRole().equals(Role.admin)) {
+            List<Event> pastEvent = repository.findAllByEventStartTimeAfterOrderByEventStartTimeAsc(instant);
+            return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        } else if(userLogin.getRole().equals(Role.student)){
+            List<Event> pastEvent = repository.
+                    findAllByBookingEmailAndEventStartTimeAfterOrderByEventStartTimeAsc(auth.getPrincipal().toString() ,instant);
+            return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        }
+        return null;
     }
 
     public List<EventDTO> getEventByDateTime(String startTime, String endTime) {
-        List<Event> eventByDateTime = repository.findAllByEventStartTimeBetween(Instant.parse(startTime), Instant.parse(endTime));
-        return listMapper.mapList(eventByDateTime, EventDTO.class, modelMapper);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+        if (userLogin.getRole().equals(Role.admin)) {
+            List<Event> eventByDateTime = repository.findAllByEventStartTimeBetween(Instant.parse(startTime), Instant.parse(endTime));
+            return listMapper.mapList(eventByDateTime, EventDTO.class, modelMapper);
+        } else if(userLogin.getRole().equals(Role.student)){
+            List<Event> eventByDateTime = repository.
+                    findAllByBookingEmailAndEventStartTimeBetween(auth.getPrincipal().toString() ,Instant.parse(startTime), Instant.parse(endTime));
+            return listMapper.mapList(eventByDateTime, EventDTO.class, modelMapper);
+        }
+        return null;
     }
 }

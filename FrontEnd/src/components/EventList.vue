@@ -89,7 +89,7 @@ function formateTime(date) {
                                     </button>
                                 </div>
                                 <div class="card-body" v-if="showIndex === index" style="text-align: center;">
-                                    {{ event.bookingName }}<br />
+                                    <b>{{ event.bookingName }}</b><br />
                                     {{ event.bookingEmail }}<br /><br />
                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                     {{ event.eventCategory.eventCategoryName }}<br />
@@ -117,7 +117,7 @@ function formateTime(date) {
                                                         Event #{{ index + 1 }}</div>
                                                 </div>
                                                 <div v-if="showIndex === index">
-                                                    {{ event.bookingName }}<br />
+                                                    <b>{{ event.bookingName }}</b><br />
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
                                                     {{ event.eventCategory.eventCategoryName }}<br />

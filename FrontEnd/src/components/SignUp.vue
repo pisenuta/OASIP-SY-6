@@ -1,25 +1,23 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 
-const users = ref([]);
-const getUser = async () => {
-  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-  // const res = await fetch(`http://localhost:8443/api/users/`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (res.status === 200) {
-    users.value = await res.json();
-    users.value.sort();
-  }
-};
+// const users = ref([]);
+// const getUser = async () => {
+//     const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+//     method: "GET",
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+//   if (res.status === 200) {
+//     users.value = await res.json();
+//     users.value.sort();
+//   }
+// };
 
-onBeforeMount(async () => {
-  await getUser();
-});
+// onBeforeMount(async () => {
+//   await getUser();
+// });
 
 const newUser = ref({
   name: "",
@@ -77,20 +75,20 @@ const createUser = async (user) => {
     }
   }
 
-  if (
-    users.value.find((u) => user.name.trim() === u.name.trim())
-  ) {
-    notUniqueAddName.value = true;
-  } else {
-    notUniqueAddName.value = false;
-  }
-  if (
-    users.value.find((u) => user.email.trim() === u.email.trim())
-  ) {
-    notUniqueAddEmail.value = true;
-  } else {
-    notUniqueAddEmail.value = false;
-  }
+  // if (
+  //   users.value.find((u) => user.name.trim() === u.name.trim())
+  // ) {
+  //   notUniqueAddName.value = true;
+  // } else {
+  //   notUniqueAddName.value = false;
+  // }
+  // if (
+  //   users.value.find((u) => user.email.trim() === u.email.trim())
+  // ) {
+  //   notUniqueAddEmail.value = true;
+  // } else {
+  //   notUniqueAddEmail.value = false;
+  // }
   if (user.email == null || user.email == "") {
     errorAddEmail.value = true;
   } else {
@@ -141,8 +139,9 @@ const createUser = async (user) => {
     users.value.push(addedEvent);
     addUserPop.value = true;
     console.log("added successfully");
-  } else if (res.status == 400) {
-    console.log("error, can not add");
+  } else if (res.status == 500) {
+    console.log(res.error);
+    console.log("NOOO");
   }
 };
 </script>

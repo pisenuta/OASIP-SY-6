@@ -233,8 +233,8 @@ const closeEdited = () => {
     <div class="container-event">
       <div class="row" style="justify-content: center;">
         <div class="col-md-6 col-xl-7" style="flex-basis: auto !important; width: 50vw !important; height:35vw">
-          <div class="card" style="border-color: transparent;">
-            <div class="card-body overflow-auto" style="height:32vw; margin: 1vw;padding-top: 0;">
+          <div class="card" style="border-color: transparent; margin-top:-1vw;">
+            <div class="card-body overflow-auto" style="height:35.5vw; margin: 1vw;padding-top: 0;">
               <div v-if="events.length !== 0">
                 <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
                   @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @closeEdited="closeEdited"/>

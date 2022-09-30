@@ -5,6 +5,8 @@ const signout = () => {
     localStorage.clear()
     window.location.href = "/sy6"
 }
+
+const role = localStorage.getItem('role');
 </script>
 
 <template>
@@ -36,7 +38,7 @@ const signout = () => {
                             <router-link to="/appointment">Appointment</router-link>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="role === 'admin'" class="nav-item">
                         <a class="nav-link hover-underline-animation text-wh">
                             <router-link to="/user">User</router-link>
                         </a>
@@ -51,7 +53,9 @@ const signout = () => {
                     <router-link to="/login" class="nav-link nav-btn"><button class="btn signin-btn">Sign In</button></router-link>
                 </div>
                 <div v-else-if="token !== null">
-                    <button class="btn signin-btn" style="color: white;" @click="signout">Sign Out</button>
+                    <a @click="signout" class="signout">
+                        <img src="https://api.iconify.design/bx/log-out.svg?color=white" style="width:1.2vw;margin-bottom:0.2vw;margin-right:0.2vw;"/>Sign Out
+                    </a>
                 </div>
                 <div v-if="token === null">
                     <router-link to="/signup" class="nav-link nav-btn"><button class="btn signup-btn nav-btn">Sign Up</button></router-link>
@@ -72,6 +76,17 @@ nav {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
+.signout {
+    color: white;
+    transition: all 500ms;
+    margin-right: 0.5vw;
+    cursor: pointer;
+    font-size: 0.9vw;
+}
+
+.signout:hover {
+    font-size: 1vw;
+}
 .signup-btn {
     background-image: linear-gradient(to right, #FF8008 0%, #FFC837  51%, #FF8008  100%);
     text-align: center;

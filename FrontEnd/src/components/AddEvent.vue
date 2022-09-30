@@ -5,14 +5,15 @@ import ManageAdd from './ManageAdd.vue'
 
 const newAccess = ref()
 let token = localStorage.getItem("token")
+const userRole = localStorage.getItem("role")
 const refreshToken = localStorage.getItem("refreshToken");
 
 const RefreshToken = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}refresh-token`,{
-      method: 'get',
-      headers: {
-        Authorization: `Bearer ${refreshToken}`
-      }
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}refresh-token`,{
+        method: 'get',
+        headers: {
+            Authorization: `Bearer ${refreshToken}`
+        }
     }
   );
   if (res.status === 200) {
@@ -41,17 +42,17 @@ const getEventCategory = async () => {
     if (res.status === 200) {
         categories.value = await res.json()
     } else if (res.status === 401 && token !== null) {
-        RefreshToken()
+        RefreshToken();
     }
 }
 
 const users = ref([]);
 const getUser = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
   });
   if (res.status === 200) {
     users.value = await res.json();
@@ -123,33 +124,65 @@ const createEvent = async (event) => {
         return
     }
 
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
-        method: 'POST',
-        headers: {
-            'content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-            eventCategory: {
-                id: event.eventCategory.id
+    if(userRole === 'admin'){
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
+            method: 'POST',
+            headers: {
+                'content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            user: {
-                userId: event.user.userId
-            },
-            bookingName: event.user.name.trim(),
-            bookingEmail: event.user.email.trim(),
-            eventStartTime: event.eventStartTime,
-            eventDuration: event.eventCategory.eventDuration,
-            eventNotes: event.eventNotes.trim()
+            body: JSON.stringify({
+                eventCategory: {
+                    id: event.eventCategory.id
+                },
+                user: {
+                    email: event.user.email
+                },
+                bookingName: event.user.name.trim(),
+                bookingEmail: event.user.email.trim(),
+                eventStartTime: event.eventStartTime,
+                eventDuration: event.eventCategory.eventDuration,
+                eventNotes: event.eventNotes.trim()
+            })
         })
-    })
-    if (res.status == 201 || res.status == 200) {
-        console.log('added successfully');
-        addAlert.value = true
-    } else if (res.status == 400) {
+        if (res.status == 201 || res.status == 200) {
+            console.log('added successfully');
+            addAlert.value = true
+        } else if (res.status == 400) {
         overlap.value = true
-        console.log('error, can not add');
+       console.log('error, can not add');
+        }
+        
+    } else if(userRole !== 'admin'){
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
+            method: 'POST',
+            headers: {
+                'content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+                eventCategory: {
+                    id: event.eventCategory.id
+                },
+                user: {
+                    email: event.user.email
+                },
+                bookingName: event.bookingName.trim(),
+                bookingEmail: event.user.email.trim(),
+                eventStartTime: event.eventStartTime,
+                eventDuration: event.eventCategory.eventDuration,
+                eventNotes: event.eventNotes.trim()
+            })
+        })
+        if (res.status == 201 || res.status == 200) {
+            console.log('added successfully');
+            addAlert.value = true
+        } else if (res.status == 400) {
+        overlap.value = true
+       console.log('error, can not add');
+        }
     }
+    
 }
 
 const added = () => {

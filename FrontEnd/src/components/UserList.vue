@@ -5,6 +5,7 @@ import editUser from "../components/EditUser.vue";
 import addUser from "../components/AddUser.vue";
 
 const users = ref([]);
+
 const newAccess = ref()
 let token = localStorage.getItem("token")
 const refreshToken = localStorage.getItem("refreshToken");
@@ -38,18 +39,23 @@ const noUser = () => {
   }
 };
 
+const cantReach = ref(false)
+
 const getUser = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
     method: "GET",
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
   if (res.status === 200) {
+    cantReach.value = false
     users.value = await res.json();
     users.value.sort();
   } else if (res.status === 401 && token !== null){
     RefreshToken();
+  } else if (res.status === 403){
+    cantReach.value = true
   }
 };
 
@@ -339,10 +345,19 @@ const createUser = async (user) => {
   }
 };
 
+const userRole = localStorage.getItem("role")
 </script>
 
 <template>
-  <div class="body">
+
+  <div v-if="cantReach = true && userRole !== 'admin'" class="body">
+    <div class="noUser mx-auto">
+      <img src="../assets/403.gif" style="width: 40%; margin-left:25%;margin-bottom:-2vw"/>
+      <img src="../assets/403-text.png" style="width: 100%;"/>
+    </div>
+  </div>
+
+  <div v-else class="body">
     <h3
       class="mx-auto"
       style="font-size: 2.1vw; font-weight: bolder; margin-top: 2.5vw"
@@ -429,7 +444,8 @@ const createUser = async (user) => {
     <div class="mt-5">
       <div
         class="row mx-auto row-cols-4 overflow-auto"
-        style="padding-left: 90px; padding-right: 90px; height: 32vw; padding-top: 1vw;"
+        style="padding-left: 4vw; padding-right: 4vw; height: 65vh; padding-top: 1vw;
+                margin-top: 0;"
       >
         <div
           class="col-user"
@@ -437,7 +453,7 @@ const createUser = async (user) => {
           :key="user.userId"
           :value="user"
         >
-          <div class="card-body user-body" style="width: 91%">
+          <div class="card-body user-body" style="width: 19vw;">
             <img
               src="https://api.iconify.design/icomoon-free/bin.svg?color=%23e74694"
               class="delete-icon"
@@ -840,7 +856,7 @@ const createUser = async (user) => {
 .delete-icon {
   cursor: pointer;
   height: 1.5vw;
-  margin-top: 20px;
+  margin-top: 2vh;
   margin-left: 80%;
   transition: all 0.2s ease-in-out;
 }
@@ -927,8 +943,8 @@ const createUser = async (user) => {
 
 .user-body {
   background-color: #ffffff;
-  border-radius: 20px;
-  margin-bottom: 30px;
+  border-radius: 1vw;
+  margin-bottom: 1.8vw;
   margin-left: auto;
   margin-right: auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);

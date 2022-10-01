@@ -5,4 +5,6 @@ import sit.int221.eventsservice.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
     User findByEmail(String email);
+
+    User findByName(String name);
 }

@@ -70,21 +70,22 @@ public class UserService implements UserDetailsService {
 
     public User save(UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
         List<UserDTO> userList = getAllUser();
-        for(int i = 0; i < userList.size(); i++){
-            if(newUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != newUser.getUserId()
-                    && newUser.getEmail().trim().equals(userList.get(i).getEmail()) && userList.get(i).getUserId() != newUser.getUserId()){
-                throw new CheckUniqueUserExceptionHandler("User and Email already exist");
-            } else if (newUser.getName().trim().equals(userList.get(i).getName())){
-                throw new CheckUniqueUserExceptionHandler("User name must be unique.");
-            } else if (newUser.getEmail().trim().equals(userList.get(i).getEmail())){
-                throw new CheckUniqueUserExceptionHandler("User email must be unique.");
-            }
-        }
+//        for(int i = 0; i < userList.size(); i++){
+//            if(newUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != newUser.getUserId()
+//                    && newUser.getEmail().trim().equals(userList.get(i).getEmail()) && userList.get(i).getUserId() != newUser.getUserId()){
+//                throw new CheckUniqueUserExceptionHandler("User and Email already exist");
+//            } else if (newUser.getName().trim().equals(userList.get(i).getName())){
+//                throw new CheckUniqueUserExceptionHandler("User name must be unique.");
+//            } else if (newUser.getEmail().trim().equals(userList.get(i).getEmail())){
+//                throw new CheckUniqueUserExceptionHandler("User email must be unique.");
+//            }
+//        }
         newUser.setName(newUser.getName().trim());
         newUser.setEmail(newUser.getEmail().trim());
         newUser.setPassword(argon2PasswordEncoder.encode(newUser.getPassword()));
         User user = modelMapper.map(newUser, User.class);
-        return repository.saveAndFlush(user);
+        repository.saveAndFlush(user);
+        return user;
     }
 
     @Override

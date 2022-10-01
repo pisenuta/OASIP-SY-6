@@ -591,7 +591,7 @@ const userRole = localStorage.getItem("role")
               <button
                 type="button"
                 class="btn btn-secondary"
-                style="margin-left: 30px; margin-bottom: 1vw; font-size: 0.95vw"
+                style="margin-left: 30px; margin-bottom: 1vw; font-size: 0.95vw; padding: 0.5vw 1.3vw; "
                 v-on:click="(checkDel = false), (showIndex = null)"
               >
                 Cancel

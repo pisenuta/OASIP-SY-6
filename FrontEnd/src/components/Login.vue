@@ -101,7 +101,7 @@ const saveLocal=()=>{
     <!-- match -->
     <div class="container" v-if="match === true">
       <div class="card deleted card-login" >
-        <div class="card-body body-canLogin" style="padding-top: 0;">
+        <div class="card-body body-canLogin">
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw;">
           <p class="card-text" style="margin-top: 10px;margin-bottom: 1vw">Login <b>Successful</b></p>
           <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw; height: 2.3vw;"

@@ -49,7 +49,7 @@ const userEmail = localStorage.getItem("email")
 const newEvent = ref()
 
 const adminEvent = ref({
-    user: {},
+    user: {email: ""},
     eventCategory: {},
     eventNotes: "",
     eventDuration: "",
@@ -113,8 +113,8 @@ check();
                     }}</option>
                 </select> 
 
-                <input v-else class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
-                    :class="{ 'border border-danger': errorName }">
+                <!-- <input class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
+                    :class="{ 'border border-danger': errorName }"> -->
 
                 <div v-if="errorName" class="error"> Please enter name.</div>
             </div>
@@ -130,7 +130,7 @@ check();
                 </table>
                 <input class="form-control style-form" id="email" maxlength="50" :value="newEvent.user.email" disabled readonly
                     :class="{ 'border border-danger': errorEmail || !mailVali }">
-                    
+
                 <!-- <span v-if="!(userRole === 'admin')">{{ userEmail }}</span>  -->
                 <!-- <input class="form-control style-form" id="email" maxlength="50" v-model="newEvent.bookingEmail"
                     :class="{ 'border border-danger': errorEmail || !mailVali }"> -->

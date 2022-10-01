@@ -72,7 +72,7 @@ nav {
     background-color: rgba(33, 37, 41, 1);
     height: 5vw;
     font-family: 'Radio Canada';
-    color: #e74694;
+    color: #f857a6;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -106,7 +106,7 @@ nav {
 }
 
 .nav-link {
-    color: #e74694;
+    color: #f857a6;
     font-size:1vw;
     border-radius: 10px;
 }
@@ -121,7 +121,7 @@ nav {
 .hover-underline-animation {
     display: inline-block;
     position: relative;
-    color: #e74694;
+    color: #f857a6;
 }
 
 .hover-underline-animation:hover a {
@@ -201,6 +201,6 @@ p {
 
 a {
     text-decoration: none;
-    color: #e74694;
+    color: #f857a6;
 }
 </style>

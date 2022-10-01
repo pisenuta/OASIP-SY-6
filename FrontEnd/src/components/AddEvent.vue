@@ -138,8 +138,8 @@ const createEvent = async (event) => {
                 user: {
                     email: event.user.email
                 },
-                bookingName: event.user.name.trim(),
-                bookingEmail: event.user.email.trim(),
+                bookingName: event.user.name,
+                bookingEmail: event.user.email,
                 eventStartTime: event.eventStartTime,
                 eventDuration: event.eventCategory.eventDuration,
                 eventNotes: event.eventNotes.trim()

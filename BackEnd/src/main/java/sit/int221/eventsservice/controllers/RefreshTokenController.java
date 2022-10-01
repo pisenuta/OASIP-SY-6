@@ -46,6 +46,7 @@ public class RefreshTokenController {
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refresh_token);
                 String email = decodedJWT.getSubject();
+                System.out.println(email);
                 User user = userService.getUserByEmail(email);
 
                 ArrayList<String> roles = new ArrayList<>();

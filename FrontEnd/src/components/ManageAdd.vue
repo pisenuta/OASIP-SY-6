@@ -43,13 +43,37 @@ defineProps({
     }
 })
 
-const newEvent = ref({
-    user: {},
+const userRole = localStorage.getItem("role")
+const userEmail = localStorage.getItem("email")
+
+const newEvent = ref()
+
+const adminEvent = ref({
+    user: {email: ""},
     eventCategory: {},
     eventNotes: "",
     eventDuration: "",
     eventStartTime: ""
 })
+
+const studentEvent = ref({
+    user: {email:userEmail},
+    bookingName: "",
+    eventCategory: {},
+    eventNotes: "",
+    eventDuration: "",
+    eventStartTime: ""
+})
+
+const check = () => {
+    if(userRole == 'admin'){
+        newEvent.value = adminEvent.value
+    } else {
+        newEvent.value = studentEvent.value;
+    }
+}
+
+check();
 
 </script>
 <template>
@@ -75,22 +99,13 @@ const newEvent = ref({
                 <table class="booking-line">
                     <tr>
                         <th class="label-signup">Name :</th>
-                        <!-- <th class="maxBooking" :class="{ 'maxinput': newEvent.bookingName.length == 100 }">
+                        <th v-if="userRole !== 'admin'" class="maxBooking" :class="{ 'maxinput': newEvent.bookingName.length == 100 }">
                             <span v-text="newEvent.bookingName.length"></span>/100
-                        </th> -->
+                        </th>
                     </tr>
                 </table>
-<!-- 
-                <select class="form-select style-form" id="month" name="month"
-                    style="width: 50%;height: 2vw;"
-                    :class="{ 'border border-danger': errorName }" v-model="newEvent.user">
-                    <option disabled selected>Select User Below</option>
-                    <option v-for="(user, index) in userList" :key="index" :value="user.name">{{
-                            user.name
-                    }}</option>
-                </select> -->
 
-                <select class="form-select style-form" style="width: 50%;"
+                <select v-if="userRole === 'admin'" class="form-select style-form" style="width: 50%;"
                     :class="{ 'border border-danger': errorName }" v-model="newEvent.user">
                     <option disabled selected>Select User Below</option>
                     <option v-for="(user, index) in userList" :key="index" :value="user">{{
@@ -100,6 +115,7 @@ const newEvent = ref({
 
                 <!-- <input class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
                     :class="{ 'border border-danger': errorName }"> -->
+
                 <div v-if="errorName" class="error"> Please enter name.</div>
             </div>
 
@@ -115,6 +131,7 @@ const newEvent = ref({
                 <input class="form-control style-form" id="email" maxlength="50" :value="newEvent.user.email" disabled readonly
                     :class="{ 'border border-danger': errorEmail || !mailVali }">
 
+                <!-- <span v-if="!(userRole === 'admin')">{{ userEmail }}</span>  -->
                 <!-- <input class="form-control style-form" id="email" maxlength="50" v-model="newEvent.bookingEmail"
                     :class="{ 'border border-danger': errorEmail || !mailVali }"> -->
                 <div v-if="errorEmail" class="error">Please enter Email.</div>
@@ -191,7 +208,7 @@ const newEvent = ref({
     border-color: #ced4da;
 }
 .maxBooking{
-    width: 36vw;
+    width: 37vw;
     text-align: right;
     font-size: 0.7vw;
     color: #888888;

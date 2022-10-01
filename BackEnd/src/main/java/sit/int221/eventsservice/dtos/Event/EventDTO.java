@@ -21,8 +21,8 @@ public class EventDTO {
     private Integer id;
     @NotNull(message = "EventCategory shouldn't be null.")
     private CategoryDTO eventCategory;
-    @NotNull(message = "User shouldn't be null.")
-    private UserDTO user;
+//    @NotNull(message = "User shouldn't be null.")
+    private Integer userId;
     @NotBlank(message = "Name shouldn't be null or empty.")
     @Size(max = 100 , message = "Name must less or equal then 100.")
     private String bookingName;

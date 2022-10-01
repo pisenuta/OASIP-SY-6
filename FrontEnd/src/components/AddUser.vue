@@ -72,11 +72,14 @@ const newUser = ref({
             <div class="card-body">
                 <div style="text-align: center; margin-top: 10px;">
                     <div>
-                        <p class="label-clinic label-add">Name :
-                            <p class="maxtext" :class="{ 'maxinput': newUser.name.length == 100 }">
-                                <span v-text="newUser.name.length"></span>/100
-                            </p>
-                        </p>
+                        <table class="add-user-line">
+                            <tr>
+                                <th class="label-add-user">Name :</th>
+                                <th class="max-add-user" :class="{ 'maxinput': newUser.name.length == 100 }">
+                                    <span v-text="newUser.name.length"></span>/100
+                                </th>
+                            </tr>
+                        </table>
                     </div>
                     <input class="form-control clinic-form mb-3" maxlength="100" v-model="newUser.name"
                         :class="{ 'border border-danger': errorName || notUniqueName }">
@@ -84,11 +87,14 @@ const newUser = ref({
                     <p class="error-clinic" v-if="notUniqueName === true">Name must unique.</p>
 
                     <div>
-                        <p class="label-clinic label-add">Email :
-                            <p class="maxtext" :class="{ 'maxinput': newUser.email.length == 50 }">
-                                <span v-text="newUser.email.length"></span>/50
-                            </p>
-                        </p>
+                        <table class="add-user-line">
+                            <tr>
+                                <th class="label-add-user">Email :</th>
+                                <th class="max-add-user" :class="{ 'maxinput': newUser.email.length == 50 }">
+                                    <span v-text="newUser.email.length"></span>/50
+                                </th>
+                            </tr>
+                        </table>
                     </div>
                     <input class="form-control clinic-form mb-3" maxlength="50" v-model="newUser.email"
                         :class="{ 'border border-danger': errorEmail || notUniqueEmail || invaildEmail }">
@@ -98,12 +104,14 @@ const newUser = ref({
                     <p class="error-clinic" v-if="invaildEmail === true && errorEmail === false">Invaild Email.</p>
                     
                     <div>
-                        <p class="label-clinic label-add">Password :
-                            <p class="maxtext" :class="{ 'maxinput': newUser.password.length == 14 }">
-                                <span v-text="newUser.password.length"></span>/14
-                            </p>
-                        </p>
-                        
+                        <table class="add-user-line">
+                            <tr>
+                                <th class="label-add-user">Password :</th>
+                                <th class="max-add-user" :class="{ 'maxinput': newUser.password.length == 14 }">
+                                    <span v-text="newUser.password.length"></span>/14
+                                </th>
+                            </tr>
+                        </table>      
                     </div>
                     <input class="form-control clinic-form mb-3" minlength="8" maxlength="14" v-model="newUser.password"
                         type="password"
@@ -112,11 +120,14 @@ const newUser = ref({
                     <p class="error-clinic" v-if="passLess === true && errorPass === false">Password must be between 8 and 14 characters.</p>
 
                     <div>
-                        <p class="label-clinic label-add">Confirm Password :
-                            <p class="maxtext" :class="{ 'maxinput': newUser.confirmPassword.length == 14 }">
-                                <span v-text="newUser.confirmPassword.length"></span>/14
-                            </p>
-                        </p>                  
+                        <table class="add-user-line">
+                            <tr>
+                                <th class="label-add-user">Confirm Password :</th>
+                                <th class="max-add-user" :class="{ 'maxinput': newUser.confirmPassword.length == 14 }">
+                                    <span v-text="newUser.confirmPassword.length"></span>/14
+                                </th>
+                            </tr>
+                        </table>                      
                     </div>
                     <input class="form-control clinic-form mb-3" maxlength="14" v-model="newUser.confirmPassword"
                         type="password"
@@ -124,7 +135,11 @@ const newUser = ref({
                     <p class="error-clinic" v-if="errorConfirm === true && notMatch === false">Please confirm Password.</p>
                     <p class="error-clinic" v-if="notMatch === true">Password not match.</p>
 
-                    <p class="label-clinic" style="margin-bottom: 1vw;">Role :</p>
+                    <table class="add-user-line" style="margin-bottom: 1vw;">
+                            <tr>
+                                <th class="label-add-user" >Role :</th>
+                            </tr>
+                    </table>  
                     <select class="form-select style-form" style="width: 20.5vw;height: 2vw; margin-top: -10px;margin-bottom: 0.5vw;"
                         :class="{ 'border border-danger': errorRole }" v-model="newUser.role">
                         <option disabled selected>Select Role Below</option>
@@ -142,6 +157,27 @@ const newUser = ref({
 </template>
  
 <style>
+
+.add-user-line{
+    margin-left: 16%;
+    margin-bottom: 0.5vw;
+}
+
+.label-add-user{
+    font-weight: 100;
+    font-size: 0.92vw;
+    width: 10vw;
+    text-align: left;
+}
+
+.max-add-user{
+    text-align: right;
+    font-weight: normal;
+    font-size: 0.7vw;
+    color: #888888;
+    width: 10.5vw;
+}
+
 .add-user-card {
     border-radius: 20px;
 }

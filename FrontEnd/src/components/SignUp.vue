@@ -1,25 +1,23 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 
-const users = ref([]);
-const getUser = async () => {
-  // const res = await fetch(`https://intproj21.sit.kmutt.ac.th/sy6/api/users`, {
-  // const res = await fetch(`http://localhost:8443/api/users/`, {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  if (res.status === 200) {
-    users.value = await res.json();
-    users.value.sort();
-  }
-};
+// const users = ref([]);
+// const getUser = async () => {
+//     const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
+//     method: "GET",
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+//   if (res.status === 200) {
+//     users.value = await res.json();
+//     users.value.sort();
+//   }
+// };
 
-onBeforeMount(async () => {
-  await getUser();
-});
+// onBeforeMount(async () => {
+//   await getUser();
+// });
 
 const newUser = ref({
   name: "",
@@ -27,6 +25,9 @@ const newUser = ref({
   password: "",
   confirmPassword: "",
   role: ""
+})
+const errorStatus = ref({
+  filedErrors:{email:"",name:""}
 })
 
 const addUserPop = ref(false);
@@ -77,20 +78,6 @@ const createUser = async (user) => {
     }
   }
 
-  if (
-    users.value.find((u) => user.name.trim() === u.name.trim())
-  ) {
-    notUniqueAddName.value = true;
-  } else {
-    notUniqueAddName.value = false;
-  }
-  if (
-    users.value.find((u) => user.email.trim() === u.email.trim())
-  ) {
-    notUniqueAddEmail.value = true;
-  } else {
-    notUniqueAddEmail.value = false;
-  }
   if (user.email == null || user.email == "") {
     errorAddEmail.value = true;
   } else {
@@ -137,14 +124,14 @@ const createUser = async (user) => {
     }),
   });
   if (res.status == 201 || res.status == 200) {
-    const addedEvent = await res.json();
-    users.value.push(addedEvent);
     addUserPop.value = true;
     console.log("added successfully");
   } else if (res.status == 400) {
-    console.log("error, can not add");
+    errorStatus.value = await res.json()
+    console.log(errorStatus.value);
   }
 };
+
 </script>
  
 <template>
@@ -153,7 +140,7 @@ const createUser = async (user) => {
       Sign Up
     </h3>
     <div class="form" style="margin-top:1.5vw;">
-      <div class="marginForm">
+      <div class="marginForm" style="margin-bottom: -0.5vw;">
         <table class="signup-line">
           <tr>
             <th class="label-signup">Name :</th>
@@ -163,9 +150,9 @@ const createUser = async (user) => {
           </tr>
         </table>
         <input class="form-control signup-form" maxlength="100" v-model="newUser.name"
-          :class="{ 'border border-danger': errorAddName || notUniqueAddName }">
-        <p class="error-signup" v-if="errorAddName === true">Please enter Name.</p>
-        <p class="error-signup" v-if="notUniqueAddName === true">Name is already taken.</p>
+          :class="{ 'border border-danger': errorAddName || errorStatus.filedErrors.name }">
+        <p class="error-signup" v-if="errorAddName === true">Please enter Name.</p>>
+        <p class="error-signup" v-if="errorStatus.filedErrors.name === 'User name is already exists'">Name is already taken.</p>
       </div>
 
       <div class="marginForm">
@@ -178,9 +165,9 @@ const createUser = async (user) => {
           </tr>
         </table>
         <input class="form-control signup-form" maxlength="50" v-model="newUser.email"
-          :class="{ 'border border-danger': errorAddEmail || notUniqueAddEmail || invaildAddEmail }">
+          :class="{ 'border border-danger': errorAddEmail || invaildAddEmail || errorStatus.filedErrors.email === 'Email is already exists' }">
         <p class="error-signup" v-if="errorAddEmail === true">Please enter Email.</p>
-        <p class="error-signup" v-if="notUniqueAddEmail === true && errorAddEmail === false">Looks like you already have a OASIP account with this email. <router-link to="/login" style="color:red">Login</router-link> instead?</p>
+        <p class="error-signup" v-if="errorStatus.filedErrors.email === 'Email is already exists'">Looks like you already have a OASIP account with this email. <router-link to="/login" style="color:red">Login</router-link> instead?</p>
         <p class="error-signup" v-if="invaildAddEmail === true && errorAddEmail === false">Invaild Email.</p>
       </div>
 

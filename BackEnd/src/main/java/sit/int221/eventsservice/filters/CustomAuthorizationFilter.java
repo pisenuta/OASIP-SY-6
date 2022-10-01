@@ -53,7 +53,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {
-                    System.out.println("Error loggin in:" + exception.getMessage());
+                    System.out.println("Error login in:" + exception.getMessage());
                     response.setHeader("error", exception.getMessage());
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     Map<String, String> error = new HashMap<>();

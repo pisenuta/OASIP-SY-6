@@ -5,14 +5,18 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import sit.int221.eventsservice.advice.HandleErrorUnsucceess;
 import sit.int221.eventsservice.models.JwtRequest;
+import sit.int221.eventsservice.repositories.UserRepository;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +34,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
     private final AuthenticationManager authenticationManager;
 
     private final String secret = "secret";
@@ -36,7 +42,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private final Integer jwtExpirationInMs = 30 * 60 * 1000;
 
     private final Integer refreshExpirationDateInMs = 24 * 60 * 60 * 1000;
-
 
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -73,27 +78,32 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(request.getRequestURI().toString())
                 .sign(algorithm);
 
+        String role = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).toString();
+        role = role.substring(1, role.length() - 1);
+        System.out.println(role);
+
         Map<String, String> tokens = new HashMap<>();
+        tokens.put("message", "Login Successfully");
         tokens.put("email", user.getUsername());
-        tokens.put("role", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()).toString());
+        tokens.put("role", role);
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 
-//    @Override
-//    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
-//            throws IOException, ServletException {
-//        HandleExceptionLogin errors;
-//        Map<String, String> errorMap = new HashMap<>();
-//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        errorMap.put("Authentication", "Fail");
-//        errors = new HandleExceptionLogin(sdf3.format(timestamp), HttpStatus.UNAUTHORIZED.value(),
-//                "Unauthorized", "Validation", request.getRequestURI(), errorMap);
-//        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//        response.setContentType(APPLICATION_JSON_VALUE);
-//        new ObjectMapper().writeValue(response.getOutputStream(), errors);
-//    }
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
+            throws IOException, ServletException {
+        HandleErrorUnsucceess errors;
+        Map<String, String> errorMap = new HashMap<>();
+        Date timestamp = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        errorMap.put("Authentication", "Fail");
+        errors = new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.UNAUTHORIZED.value(),
+                request.getRequestURI(), "Validation", "Unauthorized", errorMap);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(), errors);
+    }
 }

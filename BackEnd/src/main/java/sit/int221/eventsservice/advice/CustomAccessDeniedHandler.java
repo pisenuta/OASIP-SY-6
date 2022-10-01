@@ -27,13 +27,13 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             throws IOException, ServletException {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        HandleError errors;
+        HandleErrorUnsucceess errors;
         Map<String, String> errorMap = new HashMap<>();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         errorMap.put("Forbidden", "Access denied for user: " + auth.getPrincipal());
-        errors = new HandleError(null, HttpStatus.FORBIDDEN.value(),
-                "Forbidden", "Validation", request.getRequestURI(), errorMap);
+        errors = new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
+                request.getRequestURI(), "Validation", "Forbidden", errorMap);
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), errors);

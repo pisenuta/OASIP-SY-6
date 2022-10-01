@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
@@ -46,7 +47,7 @@ public class UserController {
 
     @PostMapping({"/register"})
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@Valid @RequestBody UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
+    public User create( @Validated @RequestBody UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
         return userService.save(newUser);
     }
 

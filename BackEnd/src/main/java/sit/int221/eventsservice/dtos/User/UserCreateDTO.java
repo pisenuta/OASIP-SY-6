@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import sit.int221.eventsservice.advice.UniqueValidator.UniqueEmail;
+import sit.int221.eventsservice.advice.UniqueValidator.UniqueName;
 import sit.int221.eventsservice.entities.Role;
 
 import javax.validation.constraints.Email;
@@ -19,10 +21,12 @@ public class UserCreateDTO {
     private Integer userId;
     @NotBlank(message = "Name shouldn't be null or empty.")
     @Size(max = 100 , message = "Name must less or equal then 100.")
+    @UniqueName
     private String name;
     @NotBlank(message = "Email shouldn't be null or empty.")
     @Size(max = 45, message = "Email must less or equal then 45.")
     @Email(message = "Invalid email address.")
+    @UniqueEmail
     private String email;
     @NotBlank(message = "Password shouldn't be null or empty.")
     @Size(min = 8, max = 14, message = "Password must be between 8 and 14.")

@@ -70,62 +70,23 @@ public class UserService implements UserDetailsService {
 
     public User save(UserCreateDTO newUser) throws CheckUniqueUserExceptionHandler {
         List<UserDTO> userList = getAllUser();
-        for(int i = 0; i < userList.size(); i++){
-            if(newUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != newUser.getUserId()
-                    && newUser.getEmail().trim().equals(userList.get(i).getEmail()) && userList.get(i).getUserId() != newUser.getUserId()){
-                throw new CheckUniqueUserExceptionHandler("User and Email already exist");
-            } else if (newUser.getName().trim().equals(userList.get(i).getName())){
-                throw new CheckUniqueUserExceptionHandler("User name must be unique.");
-            } else if (newUser.getEmail().trim().equals(userList.get(i).getEmail())){
-                throw new CheckUniqueUserExceptionHandler("User email must be unique.");
-            }
-        }
+//        for(int i = 0; i < userList.size(); i++){
+//            if(newUser.getName().trim().equals(userList.get(i).getName()) && userList.get(i).getUserId() != newUser.getUserId()
+//                    && newUser.getEmail().trim().equals(userList.get(i).getEmail()) && userList.get(i).getUserId() != newUser.getUserId()){
+//                throw new CheckUniqueUserExceptionHandler("User and Email already exist");
+//            } else if (newUser.getName().trim().equals(userList.get(i).getName())){
+//                throw new CheckUniqueUserExceptionHandler("User name must be unique.");
+//            } else if (newUser.getEmail().trim().equals(userList.get(i).getEmail())){
+//                throw new CheckUniqueUserExceptionHandler("User email must be unique.");
+//            }
+//        }
         newUser.setName(newUser.getName().trim());
         newUser.setEmail(newUser.getEmail().trim());
         newUser.setPassword(argon2PasswordEncoder.encode(newUser.getPassword()));
         User user = modelMapper.map(newUser, User.class);
-        return repository.saveAndFlush(user);
+        repository.saveAndFlush(user);
+        return user;
     }
-
-//    public ResponseEntity Login (UserLoginDTO user, HttpServletResponse httpServletResponse, ServletWebRequest request) throws Exception {
-//        Map<String,String> errorMap = new HashMap<>();
-//        String status;
-//
-//        if (repository.existsByEmail(user.getEmail())) {
-//            User userdb = repository.findByEmail(user.getEmail());
-//            if (argon2PasswordEncoder.matches(user.getPassword(), userdb.getPassword())) {
-//                errorMap.put("message", "Password Matched");
-//                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-//                status = HttpStatus.OK.toString();
-//
-//                authenticate(user.getEmail() , user.getPassword());
-//                authenticate(user.getEmail(), user.getPassword());
-//
-//                final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-//
-//                final String token = jwtTokenUtil.generateToken(userDetails);
-//                final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
-//
-//                return ResponseEntity.ok(new JwtResponse("Liogin Successfully", token, refreshToken));
-//
-//            } else {
-//                errorMap.put("message", "Password NOT Matched");
-//                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                status = HttpStatus.UNAUTHORIZED.toString();
-//            }
-//        } else {
-//            errorMap.put("message", "A user with the specified email DOES NOT exist");
-//            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//            status = HttpStatus.NOT_FOUND.toString();
-//        }
-//        HandleValidationErrors errors = new HandleValidationErrors(
-//                Date.from(Instant.now()),
-//                httpServletResponse.getStatus(),
-//                request.getRequest().getRequestURI(),
-//                status,
-//                errorMap.get("message"));
-//        return ResponseEntity.status(httpServletResponse.getStatus()).body(errors);
-//    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

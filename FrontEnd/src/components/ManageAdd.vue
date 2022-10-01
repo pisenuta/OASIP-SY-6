@@ -113,8 +113,8 @@ check();
                     }}</option>
                 </select> 
 
-                <!-- <input class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
-                    :class="{ 'border border-danger': errorName }"> -->
+                <input v-else class="form-control style-form" id="name" maxlength="100" v-model="newEvent.bookingName"
+                    :class="{ 'border border-danger': errorName }">
 
                 <div v-if="errorName" class="error"> Please enter name.</div>
             </div>

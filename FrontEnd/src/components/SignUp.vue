@@ -140,7 +140,7 @@ const createUser = async (user) => {
       Sign Up
     </h3>
     <div class="form" style="margin-top:1.5vw;">
-      <div class="marginForm" style="margin-bottom: -0.5vw;">
+      <div class="marginForm">
         <table class="signup-line">
           <tr>
             <th class="label-signup">Name :</th>
@@ -151,7 +151,7 @@ const createUser = async (user) => {
         </table>
         <input class="form-control signup-form" maxlength="100" v-model="newUser.name"
           :class="{ 'border border-danger': errorAddName || errorStatus.filedErrors.name }">
-        <p class="error-signup" v-if="errorAddName === true">Please enter Name.</p>>
+        <p class="error-signup" v-if="errorAddName === true">Please enter Name.</p>
         <p class="error-signup" v-if="errorStatus.filedErrors.name === 'User name is already exists'">Name is already taken.</p>
       </div>
 

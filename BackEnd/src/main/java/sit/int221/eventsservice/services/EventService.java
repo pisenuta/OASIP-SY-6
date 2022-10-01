@@ -99,6 +99,9 @@ public class EventService {
                     }
                 }
             }
+
+            User addByAdmin = userRepository.findByEmail(newEvent.getBookingEmail());
+            newEvent.setUserId(addByAdmin.getUserId());
             Event e = modelMapper.map(newEvent, Event.class);
             repository.saveAndFlush(e);
             return ResponseEntity.status(HttpStatus.OK).body(e).getBody();

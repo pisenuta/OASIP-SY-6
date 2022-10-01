@@ -60,7 +60,7 @@ public class ApplicationExceptionHandler extends Exception {
         return errors;
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(CheckUniqueUserExceptionHandler.class)
     public HandleValidationErrors handleCheckUniqueUser(CheckUniqueUserExceptionHandler cu, ServletWebRequest request ) {
         HandleValidationErrors errors = new HandleValidationErrors();

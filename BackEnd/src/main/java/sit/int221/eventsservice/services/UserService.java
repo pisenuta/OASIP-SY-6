@@ -87,46 +87,6 @@ public class UserService implements UserDetailsService {
         return repository.saveAndFlush(user);
     }
 
-//    public ResponseEntity Login (UserLoginDTO user, HttpServletResponse httpServletResponse, ServletWebRequest request) throws Exception {
-//        Map<String,String> errorMap = new HashMap<>();
-//        String status;
-//
-//        if (repository.existsByEmail(user.getEmail())) {
-//            User userdb = repository.findByEmail(user.getEmail());
-//            if (argon2PasswordEncoder.matches(user.getPassword(), userdb.getPassword())) {
-//                errorMap.put("message", "Password Matched");
-//                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-//                status = HttpStatus.OK.toString();
-//
-//                authenticate(user.getEmail() , user.getPassword());
-//                authenticate(user.getEmail(), user.getPassword());
-//
-//                final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-//
-//                final String token = jwtTokenUtil.generateToken(userDetails);
-//                final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
-//
-//                return ResponseEntity.ok(new JwtResponse("Liogin Successfully", token, refreshToken));
-//
-//            } else {
-//                errorMap.put("message", "Password NOT Matched");
-//                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                status = HttpStatus.UNAUTHORIZED.toString();
-//            }
-//        } else {
-//            errorMap.put("message", "A user with the specified email DOES NOT exist");
-//            httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//            status = HttpStatus.NOT_FOUND.toString();
-//        }
-//        HandleValidationErrors errors = new HandleValidationErrors(
-//                Date.from(Instant.now()),
-//                httpServletResponse.getStatus(),
-//                request.getRequest().getRequestURI(),
-//                status,
-//                errorMap.get("message"));
-//        return ResponseEntity.status(httpServletResponse.getStatus()).body(errors);
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = repository.findByEmail(email);

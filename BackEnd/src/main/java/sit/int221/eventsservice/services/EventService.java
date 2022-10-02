@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.CustomAccessDeniedHandler;
+import sit.int221.eventsservice.advice.HandleExceptionBadRequest;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
@@ -77,7 +78,7 @@ public class EventService {
         }
     }
 
-    public Event save(EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden {
+    public Event save(EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
         Date newEventStartTime = Date.from(newEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(newEvent.getEventStartTime()), newEvent.getEventDuration());
         List<EventDTO> eventList = getAllEvent();
@@ -126,7 +127,7 @@ public class EventService {
                 repository.saveAndFlush(e);
                 return ResponseEntity.status(HttpStatus.OK).body(e).getBody();
             } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The booking email must be the same as the student's email");
+                throw new HandleExceptionBadRequest("The booking email must be the same as the student's email");
             }
         } else {
             return null;

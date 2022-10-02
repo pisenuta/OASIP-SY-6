@@ -115,4 +115,15 @@ public class ApplicationExceptionHandler extends Exception {
         return new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
                 request.getRequest().getRequestURI(), "Validation", "Forbidden", errorMap);
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HandleExceptionBadRequest.class)
+    public HandleErrorUnsucceess HandleExceptionBadRequest (HandleExceptionBadRequest br, ServletWebRequest request) {
+        Map<String, String> errorMap = new HashMap<>();
+        Date timestamp = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        errorMap.put("Error:", br.getMessage());
+        return new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
+                request.getRequest().getRequestURI(), "Validation Failed", "Bad Request", errorMap);
+    }
 }

@@ -444,8 +444,8 @@ const userRole = localStorage.getItem("role")
     <div class="mt-5">
       <div
         class="row mx-auto row-cols-4 overflow-auto"
-        style="padding-left: 4vw; padding-right: 4vw; height: 65vh; padding-top: 1vw;
-                margin-top: 0;"
+        style="padding-left: 4vw; padding-right: 4vw; height: 67vh; padding-top: 1vw;
+              margin-top: 0; "
       >
         <div
           class="col-user"

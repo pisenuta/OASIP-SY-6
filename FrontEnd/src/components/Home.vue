@@ -14,12 +14,14 @@
                 <th style="padding-left: 0.5vw;">Online Appointment Scheduling System for Integrated Project Clinics</th>
               </tr>
             </table>
-            <router-link to="/login">
-              <button class="btn btn-primary btn-home-login" type="button">get started</button>
-            </router-link>          
+            <div v-if="token === null">
+              <router-link to="/login">
+                <button class="btn btn-primary btn-home-login" type="button">get started</button>
+              </router-link>   
+            </div>
             <div v-if="token !== null">
               <router-link to="/booking">
-              <button class="btn btn-primary btn-home-login" type="button">Booking</button>
+              <button class="btn btn-primary btn-home-login" type="button">booking</button>
             </router-link>
             </div> 
           </div>

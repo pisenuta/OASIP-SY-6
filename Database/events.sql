@@ -1,76 +1,38 @@
-drop database events;
-CREATE DATABASE  IF NOT EXISTS `events` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `events`;
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- -----------------------------------------------------
+-- Schema events
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `events` DEFAULT CHARACTER SET utf8 ;
+USE `events` ;
 
---
--- Table structure for table `event`
---
-
-DROP TABLE IF EXISTS `event`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `event` (
-  `bookingId` int NOT NULL AUTO_INCREMENT,
-  `eventCategoryId` int NOT NULL,
-  `userId` int NOT NULL,
-  `bookingName` varchar(100) NOT NULL,
-  `bookingEmail` varchar(45) NOT NULL,
-  `eventStartTime` datetime NOT NULL,
-  `eventDuration` int NOT NULL,
-  `eventNotes` text(500),
-  PRIMARY KEY (`bookingId`),
-  KEY `fk_Event_EventCategory_idx` (`eventCategoryId`),
-  CONSTRAINT `fk_Event_EventCategory` FOREIGN KEY (`eventCategoryId`) REFERENCES `eventcategory` (`eventCategoryId`),
-  KEY `fk_Event_User_idx` (`userId`),
-  CONSTRAINT `fk_Event_User` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `eventcategory`
---
-
-DROP TABLE IF EXISTS `eventcategory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `eventcategory` (
-  `eventCategoryId` int NOT NULL,
-  `eventCategoryName` varchar(100) NOT NULL,
-  `eventCategoryDescription` text(500),
-  `eventDuration` int NOT NULL,
+-- -----------------------------------------------------
+-- Table `events`.`eventcategory`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `events`.`eventcategory` (
+  `eventCategoryId` INT NOT NULL,
+  `eventCategoryName` VARCHAR(100) NOT NULL,
+  `eventCategoryDescription` TEXT(500) NULL DEFAULT NULL,
+  `eventDuration` INT NOT NULL,
   PRIMARY KEY (`eventCategoryId`),
-  UNIQUE KEY `eventCategoryName_UNIQUE` (`eventCategoryName`),
-  UNIQUE KEY `eventCategoryId_UNIQUE` (`eventCategoryId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  UNIQUE INDEX `eventCategoryName_UNIQUE` (`eventCategoryName` ASC) VISIBLE,
+  UNIQUE INDEX `eventCategoryId_UNIQUE` (`eventCategoryId` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
 
---
--- Dumping data for table `eventcategory`
---
-
-LOCK TABLES `eventcategory` WRITE;
-/*!40000 ALTER TABLE `eventcategory` DISABLE KEYS */;
 INSERT INTO `eventcategory` VALUES
 (1,'Project Management Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย project management clinic ในวิชา INT221 integrated project I ให้นักศึกษาเตรียมเอกสารที่เกี่ยวข้องเพื่อแสดงระหว่างขอคำปรึกษา',30),
 (2,'DevOps/Infra Clinic','Use this event category for DevOps/Infra clinic.',20),
 (3,'Database Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย client-side clinic ในวิชา INT221 integrated project I',15),
 (4,'Client-side Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย database clinic ในวิชา INT221 integrated project I',30),
 (5,'Server-side Clinic',NULL,30);
-/*!40000 ALTER TABLE `eventcategory` ENABLE KEYS */;
-UNLOCK TABLES;
 
-CREATE TABLE `user` (
+-- -----------------------------------------------------
+-- Table `events`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `events`.`user` (
   `userId` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `email` VARCHAR(50) NOT NULL,
@@ -78,22 +40,71 @@ CREATE TABLE `user` (
   `role` ENUM('admin', 'lecturer', 'student') NOT NULL,
   `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`userId`));
+  PRIMARY KEY (`userId`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 80
+DEFAULT CHARACTER SET = utf8mb3;
 
 INSERT INTO `user` VALUES
-(1,'OASIP ADMIN','oasip.admin@kmutt.ac.th','oasipadmin','admin','2022-08-01 00:00:00+07:00','2022-08-01 00:00:00+07:00'),
-(2,'Somchai Jaidee','somchai.jai@kmutt.ac.th','somkiat.kay','lecturer','2022-08-08 15:00:00+07:00','2022-08-08 15:00:00+07:00'),
-(3,'Komkrid Rakdee','komkrid.rak@mail.kmutt.ac.th','komkridrak','student','2022-08-08 15:00:01+07:00','2022-08-08 15:00:01+07:00'),
-(4,'สมเกียรติ ขยันเรียน','somkiat.kay@kmutt.ac.th','somkiat.kay','student','2022-08-16 09:00:00+07:00','2022-08-16 09:00:00+07:00');
+(1,'OASIP ADMIN','oasip.admin@kmutt.ac.th','$argon2id$v=19$m=16,t=2,p=2$qrDZk3Row+UNJ3v7+jGn6A$JtKaDD5PLUlq4ToOgZjEPajo/SOYKWN7/KP5Q9k','admin','2022-08-01 00:00:00+07:00','2022-08-01 00:00:00+07:00'),
+(2,'Somchai Jaidee','somchai.jai@kmutt.ac.th','$argon2id$v=19$m=16,t=2,p=2$qrDZk3Row+UNJ3v7+jGn6A$JtKaDD5PLUlq4ToOgZjEPajo/SOYKWN7/KP5Q9k','lecturer','2022-08-08 15:00:00+07:00','2022-08-08 15:00:00+07:00');
+
+-- -----------------------------------------------------
+-- Table `events`.`event`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `events`.`event` (
+  `bookingId` INT NOT NULL AUTO_INCREMENT,
+  `eventCategoryId` INT NOT NULL,
+  `userId` INT NOT NULL,
+  `bookingName` VARCHAR(100) NOT NULL,
+  `bookingEmail` VARCHAR(45) NOT NULL,
+  `eventStartTime` DATETIME NOT NULL,
+  `eventDuration` INT NOT NULL,
+  `eventNotes` TEXT(500) NULL DEFAULT NULL,
+  PRIMARY KEY (`bookingId`),
+  INDEX `fk_Event_EventCategory_idx` (`eventCategoryId` ASC) VISIBLE,
+  INDEX `fk_Event_User_idx` (`userId` ASC) VISIBLE,
+  CONSTRAINT `fk_Event_EventCategory`
+    FOREIGN KEY (`eventCategoryId`)
+    REFERENCES `events`.`eventcategory` (`eventCategoryId`),
+  CONSTRAINT `fk_Event_User`
+    FOREIGN KEY (`userId`)
+    REFERENCES `events`.`user` (`userId`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 28
+DEFAULT CHARACTER SET = utf8mb3;
 
 
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+-- -----------------------------------------------------
+-- Table `events`.`CategoryOwner`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `events`.`CategoryOwner` (
+  `eventCategoryId` INT NOT NULL,
+  `userId` INT NOT NULL,
+  PRIMARY KEY (`userId`, `eventCategoryId`),
+  INDEX `fk_user_has_eventcategory_eventcategory1_idx` (`eventCategoryId` ASC) VISIBLE,
+  INDEX `fk_user_has_eventcategory_user1_idx` (`userId` ASC) VISIBLE,
+  CONSTRAINT `fk_user_has_eventcategory_user1`
+    FOREIGN KEY (`userId`)
+    REFERENCES `events`.`user` (`userId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_user_has_eventcategory_eventcategory1`
+    FOREIGN KEY (`eventCategoryId`)
+    REFERENCES `events`.`eventcategory` (`eventCategoryId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb3;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+INSERT INTO `CategoryOwner` VALUES
+(1,2),
+(2,2),
+(3,2),
+(4,2),
+(5,2);
 
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

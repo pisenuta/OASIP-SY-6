@@ -145,7 +145,7 @@ public class EventController {
 
 
     @GetMapping({"/clinic"})
-    public List <EventDTO> getEventByCategory(@RequestParam Category eventCategoryId) {
+    public List <EventDTO> getEventByCategory(@RequestParam Category eventCategoryId) throws HandleExceptionForbidden {
         return this.eventService.getEventByCategoryId(eventCategoryId);
     }
 

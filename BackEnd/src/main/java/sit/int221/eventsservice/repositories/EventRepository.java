@@ -11,6 +11,7 @@ import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.entities.User;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
@@ -31,4 +32,8 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query(value = "SELECT e1 FROM Event e1 JOIN CategoryOwner e2 ON e1.eventCategory.id = e2.eventCategoryId.id " +
             "JOIN User u ON u.userId = e2.userId.userId WHERE u.email = :email")
     List<Event> findEventCategoryOwnerByEmail(@Param("email") String email);
+
+    List<Event> findAllByEventCategory_IdInAndEventStartTimeBeforeOrderByEventStartTimeDesc(Collection<Integer> ids, Instant instantTime);
+
+    List<Event> findAllByEventCategory_IdInAndEventStartTimeAfterOrderByEventStartTimeAsc(Collection<Integer> ids, Instant instantTime);
 }

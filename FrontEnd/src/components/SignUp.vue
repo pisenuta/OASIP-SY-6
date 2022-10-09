@@ -26,6 +26,9 @@ const newUser = ref({
   confirmPassword: "",
   role: ""
 })
+const errorStatus = ref({
+  filedErrors: { email: "", name: "" }
+})
 
 const addUserPop = ref(false);
 const notUniqueAddName = ref(false);
@@ -75,20 +78,6 @@ const createUser = async (user) => {
     }
   }
 
-  // if (
-  //   users.value.find((u) => user.name.trim() === u.name.trim())
-  // ) {
-  //   notUniqueAddName.value = true;
-  // } else {
-  //   notUniqueAddName.value = false;
-  // }
-  // if (
-  //   users.value.find((u) => user.email.trim() === u.email.trim())
-  // ) {
-  //   notUniqueAddEmail.value = true;
-  // } else {
-  //   notUniqueAddEmail.value = false;
-  // }
   if (user.email == null || user.email == "") {
     errorAddEmail.value = true;
   } else {
@@ -135,116 +124,140 @@ const createUser = async (user) => {
     }),
   });
   if (res.status == 201 || res.status == 200) {
-    const addedEvent = await res.json();
-    users.value.push(addedEvent);
     addUserPop.value = true;
     console.log("added successfully");
-  } else if (res.status == 500) {
-    console.log(res.error);
-    console.log("NOOO");
+  } else if (res.status == 400) {
+    errorStatus.value = await res.json()
+    console.log(errorStatus.value);
   }
 };
+
 </script>
  
 <template>
   <div class="body">
-    <h3 class="mx-auto" style="font-size: 2.1vw;font-weight: bolder; margin-top: 2.5vw;">
-      Sign Up
-    </h3>
-    <div class="form" style="margin-top:1.5vw;">
-      <div class="marginForm">
-        <table class="signup-line">
-          <tr>
-            <th class="label-signup">Name :</th>
-            <th class="maxSignup" :class="{ 'maxinput': newUser.name.length == 100 }">
-              <span v-text="newUser.name.length"></span>/100
-            </th>
-          </tr>
-        </table>
-        <input class="form-control signup-form" maxlength="100" v-model="newUser.name"
-          :class="{ 'border border-danger': errorAddName || notUniqueAddName }">
-        <p class="error-signup" v-if="errorAddName === true">Please enter Name.</p>
-        <p class="error-signup" v-if="notUniqueAddName === true">Name is already taken.</p>
-      </div>
+    <div class="login-center">
+      <div class="card shadow-lg o-hidden border-0 my-5" style="width: 35vw">
+        <div class="card-body p-0">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="p-5">
+                <div class="text-center">
+                  <h4 class="text-dark mb-4">Sign Up!</h4>
+                </div>
 
-      <div class="marginForm">
-        <table class="signup-line">
-          <tr>
-            <th class="label-signup">Email :</th>
-            <th class="maxSignup" :class="{ 'maxinput': newUser.email.length == 50 }">
-              <span v-text="newUser.email.length"></span>/50
-            </th>
-          </tr>
-        </table>
-        <input class="form-control signup-form" maxlength="50" v-model="newUser.email"
-          :class="{ 'border border-danger': errorAddEmail || notUniqueAddEmail || invaildAddEmail }">
-        <p class="error-signup" v-if="errorAddEmail === true">Please enter Email.</p>
-        <p class="error-signup" v-if="notUniqueAddEmail === true && errorAddEmail === false">Looks like you already have a OASIP account with this email. <router-link to="/login" style="color:red">Login</router-link> instead?</p>
-        <p class="error-signup" v-if="invaildAddEmail === true && errorAddEmail === false">Invaild Email.</p>
-      </div>
+                <form class="user">
+                  <div class="signup-form">
+                    <table class="signup-line">
+                      <tr>
+                        <!-- <th class="label-signup">Name :</th> -->
+                        <th class="maxSignup" :class="{ 'maxinput': newUser.name.length == 100 }">
+                          <span v-text="newUser.name.length"></span>/100
+                        </th>
+                      </tr>
+                    </table>
+                    <input class="form-control" maxlength="100" v-model="newUser.name" placeholder="Name"
+                      :class="{ 'styleError': errorAddName || errorStatus.filedErrors.name }">
+                    <p class="error-signup" v-if="errorAddName === true">Please enter Name.</p>
+                    <p class="error-signup" v-if="errorStatus.filedErrors.name === 'User name is already exists'">Name
+                      is already taken.</p>
+                  </div>
 
-      <div class="marginForm">
-        <table class="signup-line">
-          <tr>
-            <th class="label-signup">Password :</th>
-            <th class="maxSignup" :class="{ 'maxinput': newUser.password.length == 14 }">
-              <span v-text="newUser.password.length"></span>/14
-            </th>
-          </tr>
-        </table>
-        <input class="form-control signup-form" minlength="8" maxlength="14" v-model="newUser.password" type="password"
-          :class="{ 'border border-danger': errorAddPass || passLess}">
-        <p class="error-signup" v-if="errorAddPass === true">Please enter Password.</p>
-        <p class="error-signup" v-if="passLess === true && errorAddPass === false">Password must be between 8 and 14
-          characters.</p>
-      </div>
+                  <div class="signup-form">
+                    <table class="signup-line">
+                      <tr>
+                        <!-- <th class="label-signup">Email :</th> -->
+                        <th class="maxSignup" :class="{ 'maxinput': newUser.email.length == 50 }">
+                          <span v-text="newUser.email.length"></span>/50
+                        </th>
+                      </tr>
+                    </table>
+                    <input class="form-control" maxlength="50" v-model="newUser.email" placeholder="Email"
+                      :class="{ 'styleError': errorAddEmail || invaildAddEmail || errorStatus.filedErrors.email === 'Email is already exists' }">
+                    <p class="error-signup" v-if="errorAddEmail === true">Please enter Email.</p>
+                    <p class="error-signup" v-if="errorStatus.filedErrors.email === 'Email is already exists'">Looks
+                      like you
+                      already have a OASIP account with this email. <router-link to="/login" style="color:red">Login
+                      </router-link>
+                      instead?</p>
+                    <p class="error-signup" v-if="invaildAddEmail === true && errorAddEmail === false">Invaild Email.
+                    </p>
+                    <p class="error-login" v-if="noPass === true">
+                      Please enter password !
+                    </p>
+                  </div>
 
-      <div class="marginForm">
-        <table class="signup-line">
-          <tr>
-            <th class="label-signup">Confirm Password :</th>
-            <th class="maxSignup" :class="{ 'maxinput': newUser.confirmPassword.length == 14 }">
-              <span v-text="newUser.confirmPassword.length"></span>/14
-            </th>
-          </tr>
-        </table>
-        <input class="form-control signup-form" maxlength="14" v-model="newUser.confirmPassword" type="password"
-          :class="{ 'border border-danger': errorConfirm || notMatch}">
-        <p class="error-signup" v-if="errorConfirm === true && notMatch === false">Please confirm Password.</p>
-        <p class="error-signup" v-if="notMatch === true">Password not match.</p>
-      </div>
+                  <div class="signup-form">
+                    <table class="signup-line">
+                      <tr>
+                        <!-- <th class="label-signup">Password :</th> -->
+                        <th class="maxSignup" :class="{ 'maxinput': newUser.password.length == 14 }">
+                          <span v-text="newUser.password.length"></span>/14
+                        </th>
+                      </tr>
+                    </table>
+                    <input class="form-control" minlength="8" maxlength="14" v-model="newUser.password"
+                      placeholder="Password" type="password" :class="{ 'styleError': errorAddPass || passLess}">
+                    <p class="error-signup" v-if="errorAddPass === true">Please enter Password.</p>
+                    <p class="error-signup" v-if="passLess === true && errorAddPass === false">Password must be between
+                      8 and 14
+                      characters.</p>
+                  </div>
 
-      <div class="marginForm">
-        <table class="signup-line">
-          <tr>
-            <th class="label-signup">Role :</th>
-          </tr>
-        </table>
+                  <div class="signup-form">
+                    <table class="signup-line">
+                      <tr>
+                        <!-- <th class="label-signup">Confirm Password :</th> -->
+                        <th class="maxSignup" :class="{ 'maxinput': newUser.confirmPassword.length == 14 }">
+                          <span v-text="newUser.confirmPassword.length"></span>/14
+                        </th>
+                      </tr>
+                    </table>
+                    <input class="form-control" maxlength="14" v-model="newUser.confirmPassword"
+                      placeholder="Confirm Password" type="password" :class="{ 'styleError': errorConfirm || notMatch}">
+                    <p class="error-signup" v-if="errorConfirm === true && notMatch === false">Please confirm Password.
+                    </p>
+                    <p class="error-signup" v-if="notMatch === true">Password not match.</p>
+                  </div>
 
-        <select class="form-select signup-form"
-          :class="{ 'border border-danger': errorAddRole }" v-model="newUser.role">
-          <option disabled selected>Select Role Below</option>
-          <option value="admin">Admin</option>
-          <option value="lecturer">Lecturer</option>
-          <option value="student">Student</option>
-        </select>
-        <p class="error-signup" v-if="errorAddRole === true">Please select your role.</p>
-      </div>
-      <div style="text-align: center; margin-top:2vw">
-        <button type="button" class="btn btn-light mx-auto addEventBtn" @click=createUser(newUser)>
-          Sign Up
-        </button>
+                  <div class="signup-form">
+                    <table class="signup-line">
+                      <tr>
+                        <!-- <th class="label-signup">Role :</th> -->
+                      </tr>
+                    </table>
+
+                    <select class="form-select" :class="{ 'styleError': errorAddRole }"
+                      v-model="newUser.role"> 
+                      <option disabled selected>Select Role Below</option>
+                      <option value="admin">Admin</option>
+                      <option value="lecturer">Lecturer</option>
+                      <option value="student">Student</option>
+                    </select>
+                    <p class="error-signup" v-if="errorAddRole === true">Please select your role.</p>
+                  </div>
+
+                  <hr />
+                  <button type="button" class="btn btn-secondary d-block btn-user w-100 btn-login"
+                    @click=createUser(newUser)>
+                    Sign Up
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- signup success -->
     <div class="container" v-if="addUserPop === true">
-      <div class="card deleted card-login" >
-        <div class="card-body body-canLogin" style="">
+      <div class="card deleted card-login">
+        <div class="card-body body-canLogin" style="padding: 0;">
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw;">
           <p class="card-text" style="margin-top: 10px;margin-bottom: 1vw">Sign Up <b>Successful</b></p>
           <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw; height: 2.3vw;"
-          v-on:click="addUserPop = false" onclick='window.location.href = "/sy6"'>OK</button>
+            v-on:click="addUserPop = false" onclick='window.location.href = "/sy6"'>OK</button>
         </div>
       </div>
     </div>
@@ -252,21 +265,19 @@ const createUser = async (user) => {
 </template>
  
 <style>
-select{
+select {
   font-size: 16px;
 }
+
 .signup-form {
-  width: 40%;
-  margin: auto;
-  margin-bottom: 0.1vw;
-  font-size: 0.9vw;
-  border-radius: 0.3vw;
+  margin-bottom: 2%;
 }
 
-.error-signup{
+.error-signup {
   color: red;
   font-size: 0.75vw;
-  margin-left: 30%;
+  margin-top: 1%;
+  margin-bottom: 0;
 }
 
 .label-signup {

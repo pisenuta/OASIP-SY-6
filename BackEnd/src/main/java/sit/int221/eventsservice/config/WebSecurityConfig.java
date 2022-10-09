@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(
             new AntPathRequestMatcher("/users/**"));
 
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+//    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
     private UserService userService;
@@ -68,7 +68,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(GET, "/api/users/**").hasAuthority("admin")
                 .antMatchers(DELETE, "/api/users/**").hasAuthority("admin")
                 .antMatchers(PUT, "/api/users/**").hasAuthority("admin")
-                .antMatchers("/api/events/", "/api/categories/").hasAnyAuthority("student", "admin", "lecturer")
+                .antMatchers("/api/categories/").hasAnyAuthority("student", "admin", "lecturer")
+                .antMatchers(GET, "/api/events/").hasAnyAuthority("student", "admin", "lecturer")
+                .antMatchers(POST, "/api/events/").hasAnyAuthority("student", "admin")
+                .antMatchers(PUT, "/api/events/").hasAnyAuthority("student", "admin")
+                .antMatchers(DELETE, "/api/events/").hasAnyAuthority("student", "admin")
                 .antMatchers(POST, "/api/users/register/**", "/api/login/**").permitAll()
                 .antMatchers(GET,"/api/refresh-token").permitAll()
                 .anyRequest().authenticated().and()

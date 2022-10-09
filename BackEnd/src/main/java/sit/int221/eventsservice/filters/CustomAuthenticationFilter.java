@@ -5,20 +5,24 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import sit.int221.eventsservice.advice.HandleErrorUnsucceess;
 import sit.int221.eventsservice.models.JwtRequest;
 import sit.int221.eventsservice.repositories.UserRepository;
 
 import javax.servlet.FilterChain;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,6 +59,16 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        ServletContext servletContext = request.getServletContext();
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        assert webApplicationContext != null;
+        UserRepository userRepository = webApplicationContext.getBean(UserRepository.class);
+
+        if (!userRepository.existsByEmail(login.getEmail())) {
+            request.setAttribute("error", "email not found");
+        }
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
         return authenticationManager.authenticate(authenticationToken);
     }
@@ -82,9 +96,17 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         role = role.substring(1, role.length() - 1);
         System.out.println(role);
 
+        ServletContext servletContext = request.getServletContext();
+        WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        assert webApplicationContext != null;
+        UserRepository userRepository = webApplicationContext.getBean(UserRepository.class);
+
+        sit.int221.eventsservice.entities.User username = userRepository.findByEmail(user.getUsername());
+
         Map<String, String> tokens = new HashMap<>();
         tokens.put("message", "Login Successfully");
         tokens.put("email", user.getUsername());
+        tokens.put("name", username.getName());
         tokens.put("role", role);
         tokens.put("access_token", access_token);
         tokens.put("refresh_token", refresh_token);
@@ -95,14 +117,25 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
             throws IOException, ServletException {
+
+        String error = (String) request.getAttribute("error");
+
         HandleErrorUnsucceess errors;
         Map<String, String> errorMap = new HashMap<>();
         Date timestamp = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        errorMap.put("Authentication", "Fail");
-        errors = new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.UNAUTHORIZED.value(),
-                request.getRequestURI(), "Validation", "Unauthorized", errorMap);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+        if (error != null) {
+            if (error.equals("email not found")) {
+                errorMap.put("Authentication", "Email not found");
+            }
+        } else {
+            errorMap.put("Authentication", "Password is incorrect");
+        }
+
+        errors = new HandleErrorUnsucceess(sdf3.format(timestamp), error != null ? HttpStatus.NOT_FOUND.value() : HttpStatus.UNAUTHORIZED.value(),
+                request.getRequestURI(), "Validation", error != null ? "Not Found" : "Unauthorized" , errorMap);
+        response.setStatus(error != null ? HttpStatus.NOT_FOUND.value() : HttpStatus.UNAUTHORIZED.value());
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), errors);
     }

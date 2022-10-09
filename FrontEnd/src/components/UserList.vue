@@ -444,8 +444,8 @@ const userRole = localStorage.getItem("role")
     <div class="mt-5">
       <div
         class="row mx-auto row-cols-4 overflow-auto"
-        style="padding-left: 4vw; padding-right: 4vw; height: 65vh; padding-top: 1vw;
-                margin-top: 0;"
+        style="padding-left: 4vw; padding-right: 4vw; height: 67vh; padding-top: 1vw;
+              margin-top: 0; "
       >
         <div
           class="col-user"
@@ -591,7 +591,7 @@ const userRole = localStorage.getItem("role")
               <button
                 type="button"
                 class="btn btn-secondary"
-                style="margin-left: 30px; margin-bottom: 1vw; font-size: 0.95vw"
+                style="margin-left: 30px; margin-bottom: 1vw; font-size: 0.95vw; padding: 0.5vw 1.3vw; "
                 v-on:click="(checkDel = false), (showIndex = null)"
               >
                 Cancel

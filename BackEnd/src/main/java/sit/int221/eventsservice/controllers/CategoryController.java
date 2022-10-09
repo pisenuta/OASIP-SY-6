@@ -19,12 +19,9 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    public CategoryController() {
-    }
-
     @GetMapping({""})
     public List<CategoryDTO> getCategory() {
-        return this.categoryService.getAllSimpleEventCategory();
+        return this.categoryService.getAllEventCategory();
     }
 
     @PutMapping({"/{Id}"})

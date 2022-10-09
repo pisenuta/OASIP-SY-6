@@ -49,7 +49,7 @@ const userEmail = localStorage.getItem("email")
 const newEvent = ref()
 
 const adminEvent = ref({
-    user: {},
+    user: {email: ""},
     eventCategory: {},
     eventNotes: "",
     eventDuration: "",
@@ -130,7 +130,7 @@ check();
                 </table>
                 <input class="form-control style-form" id="email" maxlength="50" :value="newEvent.user.email" disabled readonly
                     :class="{ 'border border-danger': errorEmail || !mailVali }">
-                    
+
                 <!-- <span v-if="!(userRole === 'admin')">{{ userEmail }}</span>  -->
                 <!-- <input class="form-control style-form" id="email" maxlength="50" v-model="newEvent.bookingEmail"
                     :class="{ 'border border-danger': errorEmail || !mailVali }"> -->

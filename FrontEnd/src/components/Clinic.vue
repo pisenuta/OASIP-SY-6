@@ -300,6 +300,7 @@ ul {
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    font-family: 'Mitr', 'Noto Sans Thai';
 }
 
 .clinic-body h5 {
@@ -317,6 +318,6 @@ ul {
 }
 
 .col-clinic:hover {
-    transform: scale(1.04);
+    transform: scale(1.03);
 }
 </style>

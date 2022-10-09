@@ -57,9 +57,9 @@ const role = localStorage.getItem('role');
                         <img src="https://api.iconify.design/bx/log-out.svg?color=white" style="width:1.2vw;margin-bottom:0.2vw;margin-right:0.2vw;"/>Sign Out
                     </a>
                 </div>
-                <div v-if="token === null">
+                <!-- <div v-if="token === null">
                     <router-link to="/signup" class="nav-link nav-btn"><button class="btn signup-btn nav-btn">Sign Up</button></router-link>
-                </div>
+                </div> -->
             </div>
         </div>
     </nav>
@@ -72,7 +72,7 @@ nav {
     background-color: rgba(33, 37, 41, 1);
     height: 5vw;
     font-family: 'Radio Canada';
-    color: #e74694;
+    color: #f857a6;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -106,7 +106,7 @@ nav {
 }
 
 .nav-link {
-    color: #e74694;
+    color: #f857a6;
     font-size:1vw;
     border-radius: 10px;
 }
@@ -121,7 +121,7 @@ nav {
 .hover-underline-animation {
     display: inline-block;
     position: relative;
-    color: #e74694;
+    color: #f857a6;
 }
 
 .hover-underline-animation:hover a {
@@ -201,6 +201,6 @@ p {
 
 a {
     text-decoration: none;
-    color: #e74694;
+    color: #f857a6;
 }
 </style>

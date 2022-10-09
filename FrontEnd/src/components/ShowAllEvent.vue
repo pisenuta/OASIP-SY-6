@@ -140,6 +140,7 @@ const editEvent = async (editEvent) => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
     body: JSON.stringify({
+      bookingEmail: editEvent.bookingEmail,
       eventStartTime: editEvent.eventStartTime,
       eventNotes: editEvent.eventNotes.trim(),
       eventDuration: editEvent.eventDuration,

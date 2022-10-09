@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -54,6 +55,15 @@ public class Category {
             mappedBy = "eventCategory"
     )
     private Set<Event> events = new LinkedHashSet();
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "eventCategories")
+    @JsonIgnore
+    private Set<User> users = new HashSet<>();
 
     public Category() {
     }

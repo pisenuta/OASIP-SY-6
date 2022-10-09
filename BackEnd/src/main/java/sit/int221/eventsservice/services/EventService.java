@@ -61,18 +61,32 @@ public class EventService {
             } else {
                 throw new HandleExceptionForbidden("You are not allowed to access this event");
             }
+        } else if (userLogin.getRole().equals(Role.lecturer)) {
+            List<Event> eventListByCategoryOwner = repository.findEventCategoryOwnerByEmail(userLogin.getEmail());
+            Event eveventListByCategoryOwnerent = this.repository.findById(id).orElseThrow(() -> {
+                return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
+            });
+            if(eventListByCategoryOwner.contains(eveventListByCategoryOwnerent)) {
+                return this.modelMapper.map(eveventListByCategoryOwnerent, EventDTO.class);
+            }
+            throw new HandleExceptionForbidden("You are not allowed to access this event");
         } return null;
     }
-
 
     public List<EventDTO> getAllEvent() {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains(Role.admin.name()));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
-        if (userLogin.getRole().equals(Role.admin) || userLogin.getRole().equals(Role.lecturer)) {
+        if (userLogin.getRole().equals(Role.admin)) {
             return this.listMapper.mapList(this.repository.findAll(Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
+
         } else if (userLogin.getRole().equals(Role.student)) {
             return this.listMapper.mapList(this.repository.findByBookingEmail(userLogin.getEmail(), Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
+
+        } else if (userLogin.getRole().equals(Role.lecturer)) {
+            List<Event> eventListByCategoryOwner = repository.findEventCategoryOwnerByEmail(userLogin.getEmail());
+            return listMapper.mapList(eventListByCategoryOwner , EventDTO.class, modelMapper);
+
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, userLogin.getEmail() + "is not owner of this event");
         }
@@ -86,7 +100,7 @@ public class EventService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
 
-        if (userLogin.getRole().equals(Role.admin) || userLogin.getRole().equals(Role.lecturer)) {
+        if (userLogin.getRole().equals(Role.admin)) {
             for (EventDTO eventDTO : eventList) {
                 if (Objects.equals(newEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId())) { //เช็คเฉพาะ EventCategory เดียวกัน
                     Date eventStartTime = Date.from(eventDTO.getEventStartTime());
@@ -130,7 +144,7 @@ public class EventService {
                 throw new HandleExceptionBadRequest("The booking email must be the same as the student's email");
             }
         } else {
-            return null;
+            throw new HandleExceptionForbidden("You are not allowed to add event");
         }
     }
 

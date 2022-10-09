@@ -31,7 +31,7 @@ public class CategoryService {
         return (CategoryDTO) this.modelMapper.map(category, CategoryDTO.class);
     }
 
-    public List<CategoryDTO> getAllSimpleEventCategory() {
+    public List<CategoryDTO> getAllEventCategory() {
         List<Category> eventcategories = repository.findAll();
         return listMapper.mapList(eventcategories, CategoryDTO.class, modelMapper);
     }

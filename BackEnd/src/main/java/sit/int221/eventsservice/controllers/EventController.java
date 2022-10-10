@@ -150,7 +150,7 @@ public class EventController {
     }
 
     @GetMapping({"/datetime"})
-    public List <EventDTO> getEventByDateTime(@RequestParam String Date) {
+    public List <EventDTO> getEventByDateTime(@RequestParam String Date) throws HandleExceptionForbidden {
         return  this.eventService.getEventByDateTime(Date+"T00:00:00Z", Date+"T23:59:00Z");
     }
 

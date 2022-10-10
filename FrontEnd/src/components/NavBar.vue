@@ -28,7 +28,7 @@ const role = localStorage.getItem('role');
                             <br>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="role !== 'lecturer'" class="nav-item">
                         <a class="nav-link hover-underline-animation text-wh">
                             <router-link to="/booking">Booking</router-link>
                         </a>

@@ -30,7 +30,7 @@ const RefreshToken = async () => {
 };
 
 const refresh = () => {
-  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+  token = localStorage.setItem('token',`${newAccess.value.access_token}`)
 }
 
 const events = ref([])

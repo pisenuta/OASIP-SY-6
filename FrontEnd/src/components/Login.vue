@@ -87,24 +87,6 @@ const saveLocal = () => {
 
 <template>
   <div class="body">
-    <!-- <div class="login-center">
-      <h1 class="login-head mx-auto">LOGIN</h1>
-      <input class="form-control clinic-form login-input" maxlength="50" v-model="userLogin.email" placeholder="Email"
-       :class="{ 'border border-danger': noEmail || plzEmail || wrongEmail}"
-       style="margin-bottom: 1vw; font-size: 0.85vw; ">
-      <p class="error-login" v-if="noEmail === true && plzEmail === false && wrongEmail === false">Email does not exist !</p>
-      <p class="error-login" v-if="plzEmail === true">Please enter email !</p>
-      <p class="error-login" v-if="wrongEmail === true && plzEmail === false">Invaild Email !</p>
-      <input class="form-control clinic-form mb-3 login-input" maxlength="14" type="password" 
-      style="margin-top:10px;"
-        placeholder="Password" v-model="userLogin.password" :class="{ 'border border-danger': noPass || noMatch }">
-        <p class="error-login" v-if="noPass === true">Please enter password !</p>
-        <p class="error-login" v-if="noMatch === true">Password Incorrect !</p>
-        <p class="error-login" v-if="passlessthen8 === true && noPass === false">Password must be between 8 and 14 character !</p>
-      <button type="button" class="btn btn-secondary btn-login mx-auto"
-        @click="matchPassword(userLogin)">Login</button>
-    </div> -->
-
     <div class="login-center">
       <div class="card shadow-lg o-hidden border-0 my-5" style="width: 30vw">
         <div class="card-body p-0">

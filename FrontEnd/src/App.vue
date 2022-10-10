@@ -14,6 +14,7 @@ import NavBar from './components/NavBar.vue'
 
 html {
   scroll-behavior: smooth;
+  /* font-size: calc(60% + 0.8vmin); */
 }
 
 </style>

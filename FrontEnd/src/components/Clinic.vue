@@ -1,4 +1,4 @@
--<script setup>
+<script setup>
 import { ref, onBeforeMount } from 'vue'
 import editClinic from '../components/EditClinic.vue'
 
@@ -26,8 +26,9 @@ const RefreshToken = async () => {
 };
 
 const refresh = () => {
-  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+  token = localStorage.setItem('token',`${newAccess.value.access_token}`)
 }
+
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`, {

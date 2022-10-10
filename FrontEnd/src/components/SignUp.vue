@@ -237,12 +237,18 @@ const createUser = async (user) => {
                     <p class="error-signup" v-if="errorAddRole === true">Please select your role.</p>
                   </div>
 
-                  <hr />
+                  <!-- <hr /> -->
                   <button type="button" class="btn btn-secondary d-block btn-user w-100 btn-login"
                     @click=createUser(newUser)>
                     Sign Up
                   </button>
+                  <hr />
                 </form>
+                <router-link to="/login">
+                  <div class="text-center">
+                    <a class="small">Already have an Account!</a>
+                  </div>
+                </router-link>
               </div>
             </div>
           </div>
@@ -275,7 +281,7 @@ select {
 
 .error-signup {
   color: red;
-  font-size: 0.75vw;
+  font-size: 0.8rem;
   margin-top: 1%;
   margin-bottom: 0;
 }

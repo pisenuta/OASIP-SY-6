@@ -4,6 +4,7 @@ import editClinic from '../components/EditClinic.vue'
 
 const newAccess = ref()
 let token = localStorage.getItem("token")
+const role = localStorage.getItem("role")
 const refreshToken = localStorage.getItem("refreshToken");
 
 const RefreshToken = async () => {
@@ -158,7 +159,7 @@ const cancelPop = () => {
             <div class="row mx-auto">
                 <div class="col-4 col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
                     <div class="card-body clinic-body">
-                        <img src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
+                        <img v-if="role === 'lecturer' || role === 'admin'" src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
                             v-on:click="showIndex = index, editClinicPop = true" @click="toEditingMode(category)">
                         <h5 class="clinic-title" style="padding-top:20px;">{{ category.eventCategoryName }}</h5>
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>

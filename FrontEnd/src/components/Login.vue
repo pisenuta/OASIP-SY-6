@@ -69,11 +69,11 @@ const matchPassword = async (user) => {
     token.value = await res.json();
     saveLocal();
   } else if (res.status == 401) {
-    // noMatch.value = true
-    // noEmail.value = false
-    errorLogin.value = true;
+    noMatch.value = true
+    noEmail.value = false
+    // errorLogin.value = true;
   } else if (res.status == 404) {
-    // noEmail.value = true
+    noEmail.value = true
   }
 };
 

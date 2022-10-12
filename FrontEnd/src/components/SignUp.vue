@@ -224,6 +224,9 @@ const createUser = async (user) => {
                     <table class="signup-line">
                       <tr>
                         <!-- <th class="label-signup">Role :</th> -->
+                        <th class="maxSignup">
+                          Select Role
+                        </th>
                       </tr>
                     </table>
 

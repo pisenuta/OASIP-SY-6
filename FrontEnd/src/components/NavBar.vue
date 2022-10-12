@@ -59,10 +59,58 @@ const role = localStorage.getItem('role');
                 </div>
                 <!-- <div v-if="token === null">
                     <router-link to="/signup" class="nav-link nav-btn"><button class="btn signup-btn nav-btn">Sign Up</button></router-link>
-                </div> -->
+                </div>  -->
             </div>
         </div>
     </nav>
+    <!-- <nav class="navbar bg-light navbar-expand-md py-3 sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand">
+        <router-link to="/" v-on:clike="page.value == 'home'">
+                    <div class="logo" >
+                        <h1 style="font-size: 2vw;">&lt;PP/&gt;</h1>
+                        <p style="margin-bottom:0px;font-size: 0.7vw;">TEAM</p>
+                    </div>
+                </router-link>
+    </a>
+    <form class="d-flex" role="search">
+      <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/clinic">Clinic</router-link>
+                            <br>
+                        </a>
+                    </li>
+                    <li v-if="role !== 'lecturer'" class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/booking">Booking</router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/appointment">Appointment</router-link>
+                        </a>
+                    </li>
+                    <li v-if="role === 'admin'" class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/user">User</router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/about-us">About Us</router-link>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link hover-underline-animation text-wh">
+                            <router-link to="/login" class="nav-link nav-btn"><button class="btn signin-btn">Sign In</button></router-link>
+                        </a>
+                    </li>
+                </ul>
+
+    </form>
+  </div>
+</nav> -->
 </template>
 
 <style scoped>

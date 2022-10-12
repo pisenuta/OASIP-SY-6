@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -61,18 +62,33 @@ public class EventService {
             } else {
                 throw new HandleExceptionForbidden("You are not allowed to access this event");
             }
-        } return null;
+        } else if (userLogin.getRole().equals(Role.lecturer)) {
+            List<Event> eventListByCategoryOwner = repository.findEventCategoryOwnerByEmail(userLogin.getEmail());
+            Event eveventListByCategoryOwnerent = this.repository.findById(id).orElseThrow(() -> {
+                return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
+            });
+            if (eventListByCategoryOwner.contains(eveventListByCategoryOwnerent)) {
+                return this.modelMapper.map(eveventListByCategoryOwnerent, EventDTO.class);
+            }
+            throw new HandleExceptionForbidden("You are not allowed to access this event");
+        }
+        return null;
     }
-
 
     public List<EventDTO> getAllEvent() {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().contains(Role.admin.name()));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
-        if (userLogin.getRole().equals(Role.admin) || userLogin.getRole().equals(Role.lecturer)) {
+        if (userLogin.getRole().equals(Role.admin)) {
             return this.listMapper.mapList(this.repository.findAll(Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
+
         } else if (userLogin.getRole().equals(Role.student)) {
             return this.listMapper.mapList(this.repository.findByBookingEmail(userLogin.getEmail(), Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
+
+        } else if (userLogin.getRole().equals(Role.lecturer)) {
+            List<Event> eventListByCategoryOwner = repository.findEventCategoryOwnerByEmail(userLogin.getEmail());
+            return listMapper.mapList(eventListByCategoryOwner, EventDTO.class, modelMapper);
+
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, userLogin.getEmail() + "is not owner of this event");
         }
@@ -86,7 +102,7 @@ public class EventService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
 
-        if (userLogin.getRole().equals(Role.admin) || userLogin.getRole().equals(Role.lecturer)) {
+        if (userLogin.getRole().equals(Role.admin)) {
             for (EventDTO eventDTO : eventList) {
                 if (Objects.equals(newEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId())) { //เช็คเฉพาะ EventCategory เดียวกัน
                     Date eventStartTime = Date.from(eventDTO.getEventStartTime());
@@ -130,7 +146,7 @@ public class EventService {
                 throw new HandleExceptionBadRequest("The booking email must be the same as the student's email");
             }
         } else {
-            return null;
+            throw new HandleExceptionForbidden("You are not allowed to add event");
         }
     }
 
@@ -138,18 +154,27 @@ public class EventService {
         return new Date(date.getTime() + (duration * 60000 + 60000));
     }
 
-    public List<EventDTO> getEventByCategoryId(Category eventCategoryId) {
+    public List<EventDTO> getEventByCategoryId(Category eventCategoryId) throws HandleExceptionForbidden {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
         if (userLogin.getRole().equals(Role.admin)) {
             List<Event> eventByCategory = repository.findAllByEventCategoryOrderByEventCategoryDesc(eventCategoryId);
             return listMapper.mapList(eventByCategory, EventDTO.class, modelMapper);
-        } else if(userLogin.getRole().equals(Role.student)){
+        } else if (userLogin.getRole().equals(Role.student)) {
             List<Event> eventByCategory = repository.
-                    findAllByBookingEmailAndEventCategoryOrderByEventCategoryDesc(auth.getPrincipal().toString(),eventCategoryId);
+                    findAllByBookingEmailAndEventCategoryOrderByEventCategoryDesc(auth.getPrincipal().toString(), eventCategoryId);
             return listMapper.mapList(eventByCategory, EventDTO.class, modelMapper);
+        } else if (userLogin.getRole().equals(Role.lecturer)) {
+            List<Integer> eventByCategory = userLogin.getEventCategories().stream().map(Category::getId).collect(Collectors.toList());
+            if (eventByCategory.contains(eventCategoryId.getId())) {
+                List<Event> eventByCategoryId = repository.findAllByEventCategoryOrderByEventCategoryDesc(eventCategoryId);
+                return listMapper.mapList(eventByCategoryId, EventDTO.class, modelMapper);
+            } else {
+                throw new HandleExceptionForbidden("You are not owner of this category");
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, userLogin.getEmail() + "is not owner of this event");
         }
-        return null;
     }
 
     public List<EventDTO> getPastEvent(Instant instant) {
@@ -158,12 +183,17 @@ public class EventService {
         if (userLogin.getRole().equals(Role.admin)) {
             List<Event> pastEvent = repository.findAllByEventStartTimeBeforeOrderByEventStartTimeDesc(instant);
             return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
-        } else if(userLogin.getRole().equals(Role.student)){
+        } else if (userLogin.getRole().equals(Role.student)) {
             List<Event> pastEvent =
-                    repository.findAllByBookingEmailAndEventStartTimeBeforeOrderByEventStartTimeDesc(auth.getPrincipal().toString(),instant);
+                    repository.findAllByBookingEmailAndEventStartTimeBeforeOrderByEventStartTimeDesc(auth.getPrincipal().toString(), instant);
             return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        } else if (userLogin.getRole().equals(Role.lecturer)) {
+            List<Integer> eventByCategory = userLogin.getEventCategories().stream().map(Category::getId).collect(Collectors.toList());
+            List<Event> pastEvent = repository.findAllByEventCategory_IdInAndEventStartTimeBeforeOrderByEventStartTimeDesc(eventByCategory, instant);
+            return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, userLogin.getEmail() + "is not owner of this event");
         }
-        return null;
     }
 
     public List<EventDTO> getUpcomingEvent(Instant instant) {
@@ -172,25 +202,42 @@ public class EventService {
         if (userLogin.getRole().equals(Role.admin)) {
             List<Event> pastEvent = repository.findAllByEventStartTimeAfterOrderByEventStartTimeAsc(instant);
             return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
-        } else if(userLogin.getRole().equals(Role.student)){
+        } else if (userLogin.getRole().equals(Role.student)) {
             List<Event> pastEvent = repository.
-                    findAllByBookingEmailAndEventStartTimeAfterOrderByEventStartTimeAsc(auth.getPrincipal().toString() ,instant);
+                    findAllByBookingEmailAndEventStartTimeAfterOrderByEventStartTimeAsc(auth.getPrincipal().toString(), instant);
             return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        } else if (userLogin.getRole().equals(Role.lecturer)) {
+            List<Integer> eventByCategory = userLogin.getEventCategories().stream().map(Category::getId).collect(Collectors.toList());
+            List<Event> pastEvent = repository.findAllByEventCategory_IdInAndEventStartTimeAfterOrderByEventStartTimeAsc(eventByCategory, instant);
+            return listMapper.mapList(pastEvent, EventDTO.class, modelMapper);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, userLogin.getEmail() + "is not owner of this event");
         }
-        return null;
     }
 
-    public List<EventDTO> getEventByDateTime(String startTime, String endTime) {
+    public List<EventDTO> getEventByDateTime(String startTime, String endTime) throws HandleExceptionForbidden {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
         if (userLogin.getRole().equals(Role.admin)) {
             List<Event> eventByDateTime = repository.findAllByEventStartTimeBetween(Instant.parse(startTime), Instant.parse(endTime));
             return listMapper.mapList(eventByDateTime, EventDTO.class, modelMapper);
-        } else if(userLogin.getRole().equals(Role.student)){
+        } else if (userLogin.getRole().equals(Role.student)) {
             List<Event> eventByDateTime = repository.
-                    findAllByBookingEmailAndEventStartTimeBetween(auth.getPrincipal().toString() ,Instant.parse(startTime), Instant.parse(endTime));
+                    findAllByBookingEmailAndEventStartTimeBetween(auth.getPrincipal().toString(), Instant.parse(startTime), Instant.parse(endTime));
             return listMapper.mapList(eventByDateTime, EventDTO.class, modelMapper);
+        } else if (userLogin.getRole().equals(Role.lecturer)) {
+            List<Event> eventList = repository.findByEventCategory_IdInAndEventStartTimeBetween(userLogin.getEventCategories().stream().map(Category::getId).collect(Collectors.toList()),
+                    Instant.parse(startTime), Instant.parse(endTime));
+            if(eventList != null){
+                return listMapper.mapList(eventList, EventDTO.class, modelMapper);
+            } else {
+                throw new HandleExceptionForbidden("You are not category owner of this event");
+            }
+
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, userLogin.getEmail() + "is not owner of this event");
         }
-        return null;
     }
 }
+
+

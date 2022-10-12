@@ -47,8 +47,8 @@ DEFAULT CHARACTER SET = utf8mb3;
 
 INSERT INTO `user` VALUES
 (1,'OASIP ADMIN','oasip.admin@kmutt.ac.th','$argon2id$v=19$m=16,t=2,p=2$qrDZk3Row+UNJ3v7+jGn6A$JtKaDD5PLUlq4ToOgZjEPajo/SOYKWN7/KP5Q9k','admin','2022-08-01 00:00:00+07:00','2022-08-01 00:00:00+07:00'),
-(2,'Somchai Jaidee','somchai.jai@kmutt.ac.th','$argon2id$v=19$m=16,t=2,p=2$qrDZk3Row+UNJ3v7+jGn6A$JtKaDD5PLUlq4ToOgZjEPajo/SOYKWN7/KP5Q9k','lecturer','2022-08-08 15:00:00+07:00','2022-08-08 15:00:00+07:00');
-
+(2,'Somchai Jaidee','somchai.jai@kmutt.ac.th','$argon2id$v=19$m=16,t=2,p=2$qrDZk3Row+UNJ3v7+jGn6A$JtKaDD5PLUlq4ToOgZjEPajo/SOYKWN7/KP5Q9k','lecturer','2022-08-08 15:00:00+07:00','2022-08-08 15:00:00+07:00'),
+(3,'PBI34 สมส่วน สุขศรี','somsuan.s341@kmutt.ac.th','$argon2id$v=19$m=16,t=2,p=2$qrDZk3Row+UNJ3v7+jGn6A$JtKaDD5PLUlq4ToOgZjEPajo/SOYKWN7/KP5Q9k','lecturer','2022-08-08 15:00:00+07:00','2022-08-08 15:00:00+07:00');
 -- -----------------------------------------------------
 -- Table `events`.`event`
 -- -----------------------------------------------------
@@ -101,8 +101,7 @@ INSERT INTO `CategoryOwner` VALUES
 (1,2),
 (2,2),
 (3,2),
-(4,2),
-(5,2);
+(1,3);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

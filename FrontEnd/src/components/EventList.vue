@@ -25,6 +25,8 @@ const props = defineProps({
         default: false
     }
 });
+const role = localStorage.getItem('role');
+
 const DetailPopUp = ref(false);
 const editingMode = ref(false)
 const showIndex = ref(null);
@@ -106,7 +108,7 @@ function formateTime(date) {
                                         }}
                                     </p>
                                     <!-- Edit -->
-                                    <button class="btn btn-warning edit-event-btn detail-btn-each" style="margin-right: 40px;"
+                                    <button v-if="role !== 'lecturer'" class="btn btn-warning edit-event-btn detail-btn-each" style="margin-right: 40px;"
                                         v-on:click="editingMode = true">Edit Appointment</button>
                                     <div class="containerV2" v-if="editingMode === true">
                                         <div class="card popEdit" style="width: 38rem;" >
@@ -149,7 +151,7 @@ function formateTime(date) {
                                     </div>
 
                                     <!-- Delete -->
-                                    <button class="btn btn-danger cancel-event-btn detail-btn-each" v-on:click="confirmDelete = true">Cancel
+                                    <button v-if="role !== 'lecturer'" class="btn btn-danger cancel-event-btn detail-btn-each" v-on:click="confirmDelete = true">Cancel
                                         Appointment</button>
                                     <div class="containerV2" v-if="confirmDelete === true || deleted === true">
                                         <div class="card alert" v-if="confirmDelete === true">

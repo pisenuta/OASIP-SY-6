@@ -4,120 +4,232 @@ import { ref } from "vue";
 const userLogin = ref({
   email: "",
   password: "",
-})
+});
 
-const clear = () =>{
-  userLogin.value.email = ""
-  userLogin.value.password = ""
-  noMatch.value = false
-  noEmail.value = false
-  window.location.href = "/sy6"
-}
+const clear = () => {
+  userLogin.value.email = "";
+  userLogin.value.password = "";
+  noMatch.value = false;
+  noEmail.value = false;
+  window.location.href = "/sy6";
+};
 
-const token = ref()
-const match = ref(false)
-const noMatch = ref(false)
-const noEmail = ref(false)
-const noPass = ref(false)
-const passlessthen8 = ref(false)
-const wrongEmail = ref(false)
-const plzEmail = ref(false)
+const token = ref();
+const match = ref(false);
+const noMatch = ref(false);
+const noEmail = ref(false);
+const noPass = ref(false);
+const passlessthen8 = ref(false);
+const wrongEmail = ref(false);
+const errorLogin = ref(false);
+const plzEmail = ref(false);
 const matchPassword = async (user) => {
-  if(user.email === null || user.email === ""){
-    plzEmail.value = true
+  if (user.email === null || user.email === "") {
+    plzEmail.value = true;
   } else {
-    plzEmail.value = false
+    plzEmail.value = false;
   }
-  var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  var emailValidate =
+    /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   if (user.email.match(emailValidate)) {
-    wrongEmail.value = false
+    wrongEmail.value = false;
   } else {
-    wrongEmail.value = true
+    wrongEmail.value = true;
   }
-  if(user.password.length < 8){
-    passlessthen8.value = true
+  if (user.password.length < 8) {
+    passlessthen8.value = true;
   } else {
-    passlessthen8.value = false
+    passlessthen8.value = false;
   }
-  if(user.password === null || user.password === ""){
-    noPass.value = true
+  if (user.password === null || user.password === "") {
+    noPass.value = true;
   } else {
-    noPass.value = false
+    noPass.value = false;
   }
-  if (plzEmail.value == true ||  noPass.value == true || passlessthen8.value == true || wrongEmail.value == true) {
-    return
+  if (
+    plzEmail.value == true ||
+    noPass.value == true ||
+    passlessthen8.value == true ||
+    wrongEmail.value == true
+  ) {
+    return;
   }
 
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}login` , {
-    method: 'POST',
-    headers: { 'content-Type': 'application/json' },
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}login`, {
+    method: "POST",
+    headers: { "content-Type": "application/json" },
     body: JSON.stringify({
       email: user.email,
-      password: user.password
-    })
-  })
+      password: user.password,
+    }),
+  });
   if (res.status == 200) {
-    match.value = true
-    token.value = await res.json()
-    saveLocal()
+    match.value = true;
+    token.value = await res.json();
+    saveLocal();
   } else if (res.status == 401) {
-    noMatch.value = true
-    noEmail.value = false
-  } else if (res.status == 404){
-    noEmail.value = true
+    // noMatch.value = true
+    // noEmail.value = false
+    errorLogin.value = true;
+  } else if (res.status == 404) {
+    // noEmail.value = true
   }
-}
+};
 
-const saveLocal=()=>{
-  localStorage.setItem('token',`${token.value.access_token}`)
-  localStorage.setItem('refreshToken',`${token.value.refresh_token}`)
-  localStorage.setItem('email',`${token.value.email}`)
-  localStorage.setItem('role',`${token.value.role}`)
-}
-
+const saveLocal = () => {
+  localStorage.setItem("token", `${token.value.access_token}`);
+  localStorage.setItem("refreshToken", `${token.value.refresh_token}`);
+  localStorage.setItem("email", `${token.value.email}`);
+  localStorage.setItem("role", `${token.value.role}`);
+};
 </script>
- 
+
 <template>
   <div class="body">
     <div class="login-center">
-      <h1 class="login-head mx-auto">LOGIN</h1>
-      <input class="form-control clinic-form login-input" maxlength="50" v-model="userLogin.email" placeholder="Email"
-       :class="{ 'border border-danger': noEmail || plzEmail || wrongEmail}"
-       style="margin-bottom: 1vw; font-size: 0.85vw; ">
-      <p class="error-login" v-if="noEmail === true && plzEmail === false && wrongEmail === false">Email does not exist !</p>
-      <p class="error-login" v-if="plzEmail === true">Please enter email !</p>
-      <p class="error-login" v-if="wrongEmail === true && plzEmail === false">Invaild Email !</p>
-      <input class="form-control clinic-form mb-3 login-input" maxlength="14" type="password" 
-      style="margin-top:10px;"
-        placeholder="Password" v-model="userLogin.password" :class="{ 'border border-danger': noPass || noMatch }">
-        <p class="error-login" v-if="noPass === true">Please enter password !</p>
-        <p class="error-login" v-if="noMatch === true">Password Incorrect !</p>
-        <p class="error-login" v-if="passlessthen8 === true && noPass === false">Password must be between 8 and 14 character !</p>
-      <button type="button" class="btn btn-secondary btn-login mx-auto"
-        @click="matchPassword(userLogin)">Login</button>
+      <div class="card shadow-lg o-hidden border-0 my-5" style="width: 30vw">
+        <div class="card-body p-0">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="p-5">
+                <div class="text-center">
+                  <h4 class="text-dark mb-4">Welcome Back!</h4>
+                </div>
+                <form class="user">
+                  <div class="mb-3">
+                    <input
+                      class="form-control"
+                      maxlength="50"
+                      v-model="userLogin.email"
+                      placeholder="Email"
+                      :class="{
+                        'styleError':
+                          noEmail || plzEmail || wrongEmail || errorLogin,
+                      }"
+                      style="font-size: 0.85vw"
+                    />
+                    <!-- <input id="email" class="form-control form-control-user" type="email" aria-describedby="emailHelp" placeholder="Email" name="email" required v-model="userLogin.email"
+                                      :class="{ 'border border-danger': noEmail }"/> -->
+                    <p
+                      class="error-login"
+                      v-if="
+                        noEmail === true &&
+                        plzEmail === false &&
+                        wrongEmail === false
+                      "
+                    >
+                      Email does not exist !
+                    </p>
+                    <p class="error-login" v-if="plzEmail === true">
+                      Please enter email !
+                    </p>
+                    <p
+                      class="error-login"
+                      v-if="wrongEmail === true && plzEmail === false"
+                    >
+                      Invaild Email !
+                    </p>
+                  </div>
+                  <div class="mb-3">
+                    <input
+                      class="form-control"
+                      maxlength="14"
+                      type="password"
+                      placeholder="Password"
+                      v-model="userLogin.password"
+                      :class="{
+                        'styleError':
+                          noPass || noMatch || errorLogin || passlessthen8,
+                      }"
+                    />
+                    <!-- <input class="form-control form-control-user" type="password" placeholder="Password" maxlength="14" name="password" required v-model="userLogin.password" :class="{ 'border border-danger': noPass || noMatch }"/> -->
+                    <p class="error-login" v-if="noPass === true">
+                      Please enter password !
+                    </p>
+                    <p class="error-login" v-if="noMatch === true">
+                      Password Incorrect !
+                    </p>
+                    <p
+                      class="error-login"
+                      v-if="passlessthen8 === true && noPass === false"
+                    >
+                      Password must be between 8 and 14 character !
+                    </p>
+                    <p class="error-login" v-if="errorLogin === true">
+                      Your password is incorrect or this account doesn't exist.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-secondary d-block btn-user w-100 btn-login"
+                    @click="matchPassword(userLogin)"
+                  >
+                    Login
+                  </button>
+                  <hr />
+                </form>
+                <!-- <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a></div>  -->
+                <router-link to="/signup">
+                  <div class="text-center">
+                    <a class="small">Create an Account!</a>
+                  </div>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- match -->
     <div class="container" v-if="match === true">
-      <div class="card deleted card-login" >
+      <div class="card deleted card-login" style="padding: 0.5vw;">
         <div class="card-body body-canLogin">
-          <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw;">
-          <p class="card-text" style="margin-top: 10px;margin-bottom: 1vw">Login <b>Successful</b></p>
-          <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw; height: 2.3vw;"
-          v-on:click="match = false" @click="clear()">OK</button>
+          <img
+            src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754"
+            style="width: 4.5vw"
+          />
+          <p class="card-text" style="margin-top: 10px; margin-bottom: 1vw">
+            Login <b>Successful</b>
+          </p>
+          <button
+            type="button"
+            class="btn btn-light btn-grad-ok"
+            style="width: 5vw; height: 2.3vw"
+            v-on:click="match = false"
+            @click="clear()"
+          >
+            OK
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
- 
+
 <style>
-.card-login{
+.card-login {
   animation: animate 0.4s ease-in-out;
 }
 
-.login-input{
+.container-login {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+}
+
+.styleError{
+  border-color: red;
+}
+
+.login-input {
   border: 1px solid #ced4da;
   padding-left: 0.5vw;
   font-size: 0.85vw;
@@ -135,7 +247,6 @@ const saveLocal=()=>{
     transition: all 0.2s ease-in-out;
     transform: scale(1);
     transform: translate(-50%, -50%);
-
   }
 }
 .login-center {
@@ -145,13 +256,18 @@ const saveLocal=()=>{
   transform: translate(-50%, -50%);
   justify-content: center;
 }
-.error-login{
+.error-login {
   font-size: 0.75vw;
-  color: #D31027;
-  margin: 0px;
+  color: red;
+  margin-top: 0.5vh;
 }
 .btn-no-match {
-  background-image: linear-gradient(to right, #D31027 0%, #EA384D 51%, #D31027 100%);
+  background-image: linear-gradient(
+    to right,
+    #d31027 0%,
+    #ea384d 51%,
+    #d31027 100%
+  );
   color: white;
   transition: 0.5s;
   border-color: transparent;
@@ -167,14 +283,16 @@ const saveLocal=()=>{
 }
 .login-head {
   margin-bottom: 1.5vw;
-  font-size:2.1vw
+  font-size: 2.1vw;
 }
 
 .btn-login {
-  background-image: linear-gradient(to right,
-      #f857a6 0%,
-      #ff5858 51%,
-      #f857a6 100%);
+  background-image: linear-gradient(
+    to right,
+    #f857a6 0%,
+    #ff5858 51%,
+    #f857a6 100%
+  );
   margin-top: 1vw;
   padding: 0.5vw 1.5vw;
   font-size: 0.8vw;
@@ -188,7 +306,6 @@ const saveLocal=()=>{
   display: block;
   border: 0px;
   letter-spacing: 2px;
-
 }
 
 .btn-login:hover {

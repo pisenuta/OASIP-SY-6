@@ -1,9 +1,10 @@
--<script setup>
+<script setup>
 import { ref, onBeforeMount } from 'vue'
 import editClinic from '../components/EditClinic.vue'
 
 const newAccess = ref()
 let token = localStorage.getItem("token")
+const role = localStorage.getItem("role")
 const refreshToken = localStorage.getItem("refreshToken");
 
 const RefreshToken = async () => {
@@ -26,8 +27,9 @@ const RefreshToken = async () => {
 };
 
 const refresh = () => {
-  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+  token = localStorage.setItem('token',`${newAccess.value.access_token}`)
 }
+
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`, {
@@ -157,7 +159,7 @@ const cancelPop = () => {
             <div class="row mx-auto">
                 <div class="col-4 col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
                     <div class="card-body clinic-body">
-                        <img src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
+                        <img v-if="role === 'lecturer' || role === 'admin'" src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
                             v-on:click="showIndex = index, editClinicPop = true" @click="toEditingMode(category)">
                         <h5 class="clinic-title" style="padding-top:20px;">{{ category.eventCategoryName }}</h5>
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>
@@ -300,6 +302,7 @@ ul {
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    font-family: 'Mitr', 'Noto Sans Thai';
 }
 
 .clinic-body h5 {
@@ -317,6 +320,6 @@ ul {
 }
 
 .col-clinic:hover {
-    transform: scale(1.04);
+    transform: scale(1.03);
 }
 </style>

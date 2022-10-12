@@ -70,7 +70,7 @@ public class EventController {
                 throw new HandleExceptionForbidden("You are not owner of this event");
             }
         } else {
-            throw new HandleExceptionForbidden("You are not owner of this event");
+            throw new HandleExceptionForbidden("You are not allowed to delete event");
         }
     }
 
@@ -87,7 +87,7 @@ public class EventController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
 
-        if (userLogin.getRole().equals(Role.admin) || userLogin.getRole().equals(Role.lecturer)) {
+        if (userLogin.getRole().equals(Role.admin)) {
             for (EventDTO eventDTO : eventList) {
                 if (Objects.equals(updateEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId()) && eventDTO.getId() != Id) { //เช็คเฉพาะ EventCategory เดียวกัน และถ้าอัพเดตตัวเดิมไม่ต้องเช็ค overlapped
                     Date eventStartTime = Date.from(eventDTO.getEventStartTime());
@@ -145,12 +145,12 @@ public class EventController {
 
 
     @GetMapping({"/clinic"})
-    public List <EventDTO> getEventByCategory(@RequestParam Category eventCategoryId) {
+    public List <EventDTO> getEventByCategory(@RequestParam Category eventCategoryId) throws HandleExceptionForbidden {
         return this.eventService.getEventByCategoryId(eventCategoryId);
     }
 
     @GetMapping({"/datetime"})
-    public List <EventDTO> getEventByDateTime(@RequestParam String Date) {
+    public List <EventDTO> getEventByDateTime(@RequestParam String Date) throws HandleExceptionForbidden {
         return  this.eventService.getEventByDateTime(Date+"T00:00:00Z", Date+"T23:59:00Z");
     }
 

@@ -1,9 +1,11 @@
 package sit.int221.eventsservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -40,4 +42,20 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Event> events = new LinkedHashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "CategoryOwner",
+            joinColumns = { @JoinColumn(name = "userId") },
+            inverseJoinColumns = { @JoinColumn(name = "eventCategoryId") })
+    private Set<Category> eventCategories = new HashSet<>();
+
+    public void addEventCategory(Category eventCategory) {
+        this.eventCategories.add(eventCategory);
+        eventCategory.getUsers().add(this);
+    }
 }

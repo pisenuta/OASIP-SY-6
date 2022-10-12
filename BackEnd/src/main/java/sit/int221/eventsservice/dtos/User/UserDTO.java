@@ -27,4 +27,5 @@ public class UserDTO {
     private Role role;
     private Instant createdOn;
     private Instant updatedOn;
+
 }

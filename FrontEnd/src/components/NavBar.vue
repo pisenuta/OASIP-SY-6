@@ -28,7 +28,7 @@ const role = localStorage.getItem('role');
                             <br>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li v-if="role !== 'lecturer'" class="nav-item">
                         <a class="nav-link hover-underline-animation text-wh">
                             <router-link to="/booking">Booking</router-link>
                         </a>
@@ -57,9 +57,9 @@ const role = localStorage.getItem('role');
                         <img src="https://api.iconify.design/bx/log-out.svg?color=white" style="width:1.2vw;margin-bottom:0.2vw;margin-right:0.2vw;"/>Sign Out
                     </a>
                 </div>
-                <div v-if="token === null">
+                <!-- <div v-if="token === null">
                     <router-link to="/signup" class="nav-link nav-btn"><button class="btn signup-btn nav-btn">Sign Up</button></router-link>
-                </div>
+                </div> -->
             </div>
         </div>
     </nav>

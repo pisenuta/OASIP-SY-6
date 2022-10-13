@@ -79,6 +79,11 @@ public class EventController {
         return eventService.save(newEvent);
     }
 
+    @PostMapping({"/guest"})
+    public Event guestCreate(@Valid @RequestBody EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
+        return eventService.save(newEvent);
+    }
+
     @PutMapping({"/{Id}"})
     public ResponseEntity<Event> update(@Valid @RequestBody EventPutDTO updateEvent, @PathVariable Integer Id) throws OverlappedExceptionHandler, HandleExceptionForbidden {
         Date newEventStartTime = Date.from(updateEvent.getEventStartTime());

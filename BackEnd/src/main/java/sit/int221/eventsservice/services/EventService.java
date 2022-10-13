@@ -72,7 +72,7 @@ public class EventService {
             }
             throw new HandleExceptionForbidden("You are not allowed to access this event");
         }
-        return null;
+        throw new HandleExceptionForbidden("You are not allowed to access this event");
     }
 
     public List<EventDTO> getAllEvent() {
@@ -94,36 +94,43 @@ public class EventService {
         }
     }
 
+    public List<EventDTO> getEventToCheckOverlap(){
+        return this.listMapper.mapList(this.repository.findAll(Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
+    }
+
     public Event save(EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
         Date newEventStartTime = Date.from(newEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(newEvent.getEventStartTime()), newEvent.getEventDuration());
-        List<EventDTO> eventList = getAllEvent();
+        List<EventDTO> eventList = getEventToCheckOverlap();
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
 
-        if (userLogin.getRole().equals(Role.admin)) {
-            checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
-
-            User addByAdmin = userRepository.findByEmail(newEvent.getBookingEmail());
-            newEvent.setUserId(addByAdmin.getUserId());
-            Event e = modelMapper.map(newEvent, Event.class);
-            repository.saveAndFlush(e);
-            return ResponseEntity.status(HttpStatus.OK).body(e).getBody();
-
-        } else if (userLogin.getRole().equals(Role.student)) {
-            if (Objects.equals(userLogin.getEmail(), newEvent.getBookingEmail())) {
+        if (userLogin != null) {
+            if (userLogin.getRole().equals(Role.admin)) {
                 checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
-                newEvent.setUserId(userLogin.getUserId());
-                Event e = modelMapper.map(newEvent, Event.class);
-                repository.saveAndFlush(e);
-                return ResponseEntity.status(HttpStatus.OK).body(e).getBody();
-            } else {
-                throw new HandleExceptionBadRequest("The booking email must be the same as the student's email");
+                User addByAdmin = userRepository.findByEmail(newEvent.getBookingEmail());
+                newEvent.setUserId(addByAdmin.getUserId());
+                Event event = modelMapper.map(newEvent, Event.class);
+                repository.saveAndFlush(event);
+                return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
+
+            } else if (userLogin.getRole().equals(Role.student)) {
+                if (Objects.equals(userLogin.getEmail(), newEvent.getBookingEmail())) {
+                    checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
+                    newEvent.setUserId(userLogin.getUserId());
+                    Event event = modelMapper.map(newEvent, Event.class);
+                    repository.saveAndFlush(event);
+                    return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
+                } else {
+                    throw new HandleExceptionBadRequest("The booking email must be the same as the student's email");
+                }
             }
-        } else {
-            throw new HandleExceptionForbidden("You are not allowed to add event");
         }
+        checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
+        Event event = modelMapper.map(newEvent, Event.class);
+        repository.saveAndFlush(event);
+        return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
     }
 
     private void checkOverlapCreate(EventDTO newEvent, Date newEventStartTime, Date newEventEndTime, List<EventDTO> eventList) throws OverlappedExceptionHandler {
@@ -228,7 +235,7 @@ public class EventService {
         } else if (userLogin.getRole().equals(Role.lecturer)) {
             List<Event> eventList = repository.findByEventCategory_IdInAndEventStartTimeBetween(userLogin.getEventCategories().stream().map(Category::getId).collect(Collectors.toList()),
                     Instant.parse(startTime), Instant.parse(endTime));
-            if(eventList != null){
+            if (eventList != null) {
                 return listMapper.mapList(eventList, EventDTO.class, modelMapper);
             } else {
                 throw new HandleExceptionForbidden("You are not category owner of this event");

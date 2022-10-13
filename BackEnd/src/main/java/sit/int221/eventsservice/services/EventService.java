@@ -103,19 +103,7 @@ public class EventService {
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
 
         if (userLogin.getRole().equals(Role.admin)) {
-            for (EventDTO eventDTO : eventList) {
-                if (Objects.equals(newEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId())) { //เช็คเฉพาะ EventCategory เดียวกัน
-                    Date eventStartTime = Date.from(eventDTO.getEventStartTime());
-                    Date eventEndTime = findEndDate(Date.from(eventDTO.getEventStartTime()), eventDTO.getEventDuration());
-                    if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
-                            newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
-                            newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
-                            newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
-                            newEventStartTime.equals(eventStartTime)) {
-                        throw new OverlappedExceptionHandler("Time is Overlapped");
-                    }
-                }
-            }
+            checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
 
             User addByAdmin = userRepository.findByEmail(newEvent.getBookingEmail());
             newEvent.setUserId(addByAdmin.getUserId());
@@ -125,19 +113,7 @@ public class EventService {
 
         } else if (userLogin.getRole().equals(Role.student)) {
             if (Objects.equals(userLogin.getEmail(), newEvent.getBookingEmail())) {
-                for (EventDTO eventDTO : eventList) {
-                    if (Objects.equals(newEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId())) { //เช็คเฉพาะ EventCategory เดียวกัน
-                        Date eventStartTime = Date.from(eventDTO.getEventStartTime());
-                        Date eventEndTime = findEndDate(Date.from(eventDTO.getEventStartTime()), eventDTO.getEventDuration());
-                        if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
-                                newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
-                                newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
-                                newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
-                                newEventStartTime.equals(eventStartTime)) {
-                            throw new OverlappedExceptionHandler("Time is Overlapped");
-                        }
-                    }
-                }
+                checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
                 newEvent.setUserId(userLogin.getUserId());
                 Event e = modelMapper.map(newEvent, Event.class);
                 repository.saveAndFlush(e);
@@ -147,6 +123,26 @@ public class EventService {
             }
         } else {
             throw new HandleExceptionForbidden("You are not allowed to add event");
+        }
+    }
+
+    private void checkOverlapCreate(EventDTO newEvent, Date newEventStartTime, Date newEventEndTime, List<EventDTO> eventList) throws OverlappedExceptionHandler {
+        for (EventDTO eventDTO : eventList) {
+            if (Objects.equals(newEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId())) { //เช็คเฉพาะ EventCategory เดียวกัน
+                Date eventStartTime = Date.from(eventDTO.getEventStartTime());
+                Date eventEndTime = findEndDate(Date.from(eventDTO.getEventStartTime()), eventDTO.getEventDuration());
+                checkIfTwoDateRanges(newEventStartTime, newEventEndTime, eventStartTime, eventEndTime);
+            }
+        }
+    }
+
+    public static void checkIfTwoDateRanges(Date newEventStartTime, Date newEventEndTime, Date eventStartTime, Date eventEndTime) throws OverlappedExceptionHandler {
+        if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
+                newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
+                newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
+                newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
+                newEventStartTime.equals(eventStartTime)) {
+            throw new OverlappedExceptionHandler("Time is Overlapped");
         }
     }
 

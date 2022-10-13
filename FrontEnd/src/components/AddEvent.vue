@@ -178,26 +178,32 @@ const createEvent = async (event) => {
             console.log('added successfully');
             addAlert.value = true
         } else if (res.status == 400) {
-        overlap.value = true
-       console.log('error, can not add');
+            overlap.value = true
+            console.log('error, can not add');
         }
     }
     
 }
 
-const added = () => {
-    addAlert.value = false
-}
+const loginAlert = ref(true)
 </script>
  
 <template>
+    <div v-if="userRole === 'lecturer'" class="body">
+        <div class="noUser mx-auto">
+            <img src="../assets/403.gif" style="width: 40%; margin-left:25%;margin-bottom:-2vw"/>
+            <img src="../assets/403-text.png" style="width: 100%;"/>
+        </div>
+    </div>
+
     <div class="body">
         <h3 class="mx-auto" style="font-size: 2.1vw;font-weight: bolder; margin-top: 2.5vw;">Booking</h3>
         <ManageAdd :categoryList="categories" :userList="users" :errorName="errorName" :errorClinic="errorClinic" :errorEmail="errorEmail"
             :errorTime="errorTime" :mailVali="mailVali" :errorFuture="errorFuture" :overlap="overlap"
             @create="createEvent" />
+
         <!-- plz login -->
-        <div class="Plzlogin" v-if="token === null || token === undefined">
+        <!-- <div class="Plzlogin" v-if="token === null || token === undefined">
             <div class="card alertPlzlogin">
                 <div class="card-body" style="margin-top: 10px">
                     <img src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
@@ -211,7 +217,26 @@ const added = () => {
                         </button></router-link>
                 </div>
             </div>
+        </div> -->
+
+        <div class="Plzlogin" v-if="(token === null || token === undefined || role === 'guest') && loginAlert == true">
+            <div class="card alertPlzlogin">
+                <div class="card-body" style="margin-top: 10px">
+                    <img src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
+                        style="width: 5.5vw" />
+                    <p class="card-text" style="margin-top: 0.5vw;margin-bottom: 1vw;">
+                        Do you want to booking as guest?
+                    </p>
+                    <div  style="margin-bottom: 1vw">
+                        <button type="button" class="btn btn-success btn-grad-ok" style="margin-right: 1vw;" v-on:click="loginAlert = false"> Yes </button>
+                        <router-link to="/login">
+                            <button type="button" class="btn btn-warning btn-plzlogin"> No </button>
+                        </router-link>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="container" v-if="addAlert === true">
             <div class="card" id="center-popup" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">

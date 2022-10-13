@@ -83,6 +83,12 @@ const saveLocal = () => {
   localStorage.setItem("email", `${token.value.email}`);
   localStorage.setItem("role", `${token.value.role}`);
 };
+
+let showPassword = ref(false);
+const toggleShow = () => {
+  showPassword.value = !showPassword.value;
+}
+
 </script>
 
 <template>
@@ -94,7 +100,7 @@ const saveLocal = () => {
             <div class="col-lg-12">
               <div class="p-5">
                 <div class="text-center">
-                  <h4 class="text-dark mb-4">Welcome Back!</h4>
+                  <h4 class="text-dark mb-4" style="font-size: 1.25vw;">Welcome Back!</h4>
                 </div>
                 <form class="user">
                   <div class="mb-3">
@@ -132,18 +138,31 @@ const saveLocal = () => {
                     </p>
                   </div>
                   <div class="mb-3">
-                    <input
-                      class="form-control"
-                      maxlength="14"
-                      type="password"
-                      placeholder="Password"
-                      v-model="userLogin.password"
-                      :class="{
-                        'styleError':
-                          noPass || noMatch || errorLogin || passlessthen8,
-                      }"
-                    />
-                    <!-- <input class="form-control form-control-user" type="password" placeholder="Password" maxlength="14" name="password" required v-model="userLogin.password" :class="{ 'border border-danger': noPass || noMatch }"/> -->
+                    <div class="input-group mx-auto">
+                      <input 
+                        :type="showPassword ? 'text' : 'Password'"
+                        class="form-control" 
+                        minlength="8" maxlength="14" 
+                        v-model="userLogin.password"
+                        placeholder="Password" 
+                        :class="{ 
+                          'styleError': 
+                          noPass || noMatch || errorLogin || passlessthen8
+                        }"
+                      >
+                      <button class="btn btn-outline-primary" 
+                        :class="(noPass || noMatch || errorLogin || passlessthen8) ? 'btn-outline-danger' : 'btn-outline-primary'"
+                        @click="toggleShow" 
+                        style="border-radius: 0 0.375rem 0.375rem 0;"
+                      >
+                        <div>
+                          <font-awesome-icon icon="fa-solid fa-eye" v-if="showPassword"/>
+                        <font-awesome-icon icon="fa-solid fa-eye-slash" v-if="!showPassword"/>
+                        </div>
+                        
+                      </button>
+                    </div>
+
                     <p class="error-login" v-if="noPass === true">
                       Please enter password !
                     </p>
@@ -171,7 +190,7 @@ const saveLocal = () => {
                 </form>
                 <!-- <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a></div>  -->
                 <router-link to="/signup">
-                  <div class="text-center">
+                  <div class="text-center" style="font-size:0.9vw">
                     <a class="small">Create an Account!</a>
                   </div>
                 </router-link>

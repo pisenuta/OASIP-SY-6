@@ -47,7 +47,7 @@ const userRole = localStorage.getItem("role")
 const userEmail = localStorage.getItem("email")
 
 const newEvent = ref()
-
+const file = ref({})
 const adminEvent = ref({
     user: {email: ""},
     eventCategory: {},
@@ -62,7 +62,7 @@ const studentEvent = ref({
     eventCategory: {},
     eventNotes: "",
     eventDuration: "",
-    eventStartTime: ""
+    eventStartTime: "",
 })
 
 const check = () => {
@@ -74,6 +74,11 @@ const check = () => {
 }
 
 check();
+
+const clearFile = () => {
+   
+}
+
 
 </script>
 <template>
@@ -175,7 +180,20 @@ check();
                 <textarea class="form-control style-form" rows="3" maxlength="500"
                     v-model="newEvent.eventNotes"></textarea>
             </div>
+<!-- 
+            <div class="marginForm">
+                <input type="file" class="form-control style-form" id="inputGroupFile01" style="width:50%">
+            </div> -->
+            <div class="marginForm">
+                <div class="input-group mx-auto" style="width:50%">
+                    <input type="file" class="form-control" style="font-size:auto" aria-label="Upload">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <font-awesome-icon icon="fa-solid fa-trash-can" />
+                    </button>
+                </div>
+            </div>
         </div>
+
         <div style="text-align: center;">
             <button type="button" class="btn btn-dark mx-auto addEventBtn" @click="$emit('create', newEvent)">
                 Booking

@@ -1,24 +1,6 @@
 <script setup>
 import { ref, onBeforeMount } from "vue";
 
-// const users = ref([]);
-// const getUser = async () => {
-//     const res = await fetch(`${import.meta.env.VITE_BASE_URL}users` , {
-//     method: "GET",
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-//   if (res.status === 200) {
-//     users.value = await res.json();
-//     users.value.sort();
-//   }
-// };
-
-// onBeforeMount(async () => {
-//   await getUser();
-// });
-
 const newUser = ref({
   name: "",
   email: "",
@@ -132,18 +114,28 @@ const createUser = async (user) => {
   }
 };
 
+//showPassword
+let showPassword = ref(false);
+let showConfirmPassword = ref(false);
+const toggleShow = () => {
+  showPassword.value = !showPassword.value;
+};
+const toggleShowConfirm = () => {
+  showConfirmPassword.value = !showConfirmPassword.value;
+};
+
 </script>
  
 <template>
   <div class="body">
-    <div class="login-center">
+    <div class="login-center" style="top: 55%;">
       <div class="card shadow-lg o-hidden border-0 my-5" style="width: 35vw">
         <div class="card-body p-0">
           <div class="row">
             <div class="col-lg-12">
               <div class="p-5">
                 <div class="text-center">
-                  <h4 class="text-dark mb-4">Sign Up!</h4>
+                  <h4 class="text-dark mb-4" style="font-size: 1.25vw;">Sign Up!</h4>
                 </div>
 
                 <form class="user">
@@ -196,8 +188,19 @@ const createUser = async (user) => {
                         </th>
                       </tr>
                     </table>
-                    <input class="form-control" minlength="8" maxlength="14" v-model="newUser.password"
-                      placeholder="Password" type="password" :class="{ 'styleError': errorAddPass || passLess}">
+
+                    <div class="input-group mx-auto">
+                      <input :type="showPassword ? 'text' : 'Password'" class="form-control" minlength="8" maxlength="14" v-model="newUser.password"
+                        placeholder="Password" :class="{ 'styleError': errorAddPass || passLess}">
+                      <button class="btn btn-outline-primary" 
+                        :class="(errorAddPass || passLess) ? 'btn-outline-danger' : 'btn-outline-primary'"
+                        @click="toggleShow" 
+                        style="border-radius: 0 0.375rem 0.375rem 0;"
+                      >
+                        <font-awesome-icon icon="fa-solid fa-eye" v-if="showPassword"/>
+                        <font-awesome-icon icon="fa-solid fa-eye-slash" v-if="!showPassword"/>
+                      </button>
+                    </div>
                     <p class="error-signup" v-if="errorAddPass === true">Please enter Password.</p>
                     <p class="error-signup" v-if="passLess === true && errorAddPass === false">Password must be between
                       8 and 14
@@ -213,8 +216,19 @@ const createUser = async (user) => {
                         </th>
                       </tr>
                     </table>
-                    <input class="form-control" maxlength="14" v-model="newUser.confirmPassword"
-                      placeholder="Confirm Password" type="password" :class="{ 'styleError': errorConfirm || notMatch}">
+
+                    <div class="input-group mx-auto">
+                      <input :type="showConfirmPassword ? 'text' : 'Password'" class="form-control" minlength="8" maxlength="14" v-model="newUser.confirmPassword"
+                        placeholder="Confirm Password" :class="{ 'styleError': errorConfirm || notMatch}">
+                      <button class="btn btn-outline-primary" 
+                        :class="(errorConfirm || notMatch) ? 'btn-outline-danger' : 'btn-outline-primary'"
+                        @click="toggleShowConfirm" 
+                        style="border-radius: 0 0.375rem 0.375rem 0;"
+                      >
+                        <font-awesome-icon icon="fa-solid fa-eye" v-if="showConfirmPassword"/>
+                        <font-awesome-icon icon="fa-solid fa-eye-slash" v-if="!showConfirmPassword"/>
+                      </button>
+                    </div>
                     <p class="error-signup" v-if="errorConfirm === true && notMatch === false">Please confirm Password.
                     </p>
                     <p class="error-signup" v-if="notMatch === true">Password not match.</p>
@@ -248,7 +262,7 @@ const createUser = async (user) => {
                   <hr />
                 </form>
                 <router-link to="/login">
-                  <div class="text-center">
+                  <div class="text-center" style="font-size:0.9vw">
                     <a class="small">Already have an Account!</a>
                   </div>
                 </router-link>
@@ -265,8 +279,8 @@ const createUser = async (user) => {
         <div class="card-body body-canLogin" style="padding: 0;">
           <img src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754" style="width: 4.5vw;">
           <p class="card-text" style="margin-top: 10px;margin-bottom: 1vw">Sign Up <b>Successful</b></p>
-          <button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw; height: 2.3vw;"
-            v-on:click="addUserPop = false" onclick='window.location.href = "/sy6"'>OK</button>
+          <router-link to="/login"><button type="button" class="btn btn-light btn-grad-ok" style="width: 5vw; height: 2.3vw;"
+            v-on:click="addUserPop = false">OK</button></router-link>
         </div>
       </div>
     </div>
@@ -284,9 +298,9 @@ select {
 
 .error-signup {
   color: red;
-  font-size: 0.8rem;
+  font-size: 0.7vw;
   margin-top: 1%;
-  margin-bottom: 0;
+  margin-bottom: -0.5vw;
 }
 
 .label-signup {
@@ -311,4 +325,15 @@ select {
   margin-left: 30%;
   margin-bottom: 0.5vw;
 }
+.form-control,.form-select{
+  font-size: 0.82vw;
+}
+/* input{
+  height: 2vw;
+  font-size: 0.82vw;
+}
+select{
+  height: 2vw;
+  font-size: 0.82vw;
+} */
 </style>

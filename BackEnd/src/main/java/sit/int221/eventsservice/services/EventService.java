@@ -137,6 +137,10 @@ public class EventService {
     }
 
     public static void checkIfTwoDateRanges(Date newEventStartTime, Date newEventEndTime, Date eventStartTime, Date eventEndTime) throws OverlappedExceptionHandler {
+        checkTimeOverlap(newEventStartTime, newEventEndTime, eventStartTime, eventEndTime);
+    }
+
+    public static void checkTimeOverlap(Date newEventStartTime, Date newEventEndTime, Date eventStartTime, Date eventEndTime) throws OverlappedExceptionHandler {
         if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
                 newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
                 newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||

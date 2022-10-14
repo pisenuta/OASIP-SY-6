@@ -28,16 +28,19 @@ import sit.int221.eventsservice.repositories.UserRepository;
 import sit.int221.eventsservice.services.EventService;
 
 import javax.validation.Valid;
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @RestController
 @RequestMapping({"/api/events"})
 public class EventController {
     @Autowired
     private EventService eventService;
+
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private EventRepository repository;
+
     @Autowired
     private UserRepository userRepository;
 

@@ -65,11 +65,23 @@ const studentEvent = ref({
     eventStartTime: ""
 })
 
+const guestEvent = ref({
+    user: null,
+    bookingName: "",
+    bookingEmail: "",
+    eventCategory: {},
+    eventNotes: "",
+    eventDuration: "",
+    eventStartTime: ""
+})
+
 const check = () => {
     if(userRole == 'admin'){
         newEvent.value = adminEvent.value
-    } else {
+    } else if (userRole == 'student') {
         newEvent.value = studentEvent.value;
+    } else if (userRole == 'guest') {
+        newEvent.value = guestEvent.value;
     }
 }
 
@@ -123,12 +135,15 @@ check();
                 <table class="booking-line">
                     <tr>
                         <th class="label-signup">Email :</th>
-                        <!-- <th class="maxBooking" :class="{ 'maxinput': newEvent.bookingEmail.length == 50 }">
+                        <th v-if="userRole === 'guest'" class="maxBooking" :class="{ 'maxinput': newEvent.bookingEmail.length == 50 }">
                             <span v-text="newEvent.bookingEmail.length"></span>/50
-                        </th> -->
+                        </th>
                     </tr>
                 </table>
-                <input class="form-control style-form" id="email" maxlength="50" :value="newEvent.user.email" disabled readonly
+                <input v-if="userRole === 'guest'" class="form-control style-form" id="email" maxlength="50" v-model="newEvent.bookingEmail"
+                    :class="{ 'border border-danger': errorEmail || !mailVali }">
+
+                <input v-else class="form-control style-form" id="email" maxlength="50" :value="newEvent.user.email" disabled readonly
                     :class="{ 'border border-danger': errorEmail || !mailVali }">
 
                 <!-- <span v-if="!(userRole === 'admin')">{{ userEmail }}</span>  -->
@@ -175,6 +190,14 @@ check();
                 <textarea class="form-control style-form" rows="3" maxlength="500"
                     v-model="newEvent.eventNotes"></textarea>
             </div>
+
+            <FilePond
+                name="test"
+                ref="pond"
+
+                @change="onFileChanged($event)"
+                label-idle="Drop files here or <span class='filepond--label-action'>Browse</span>"
+              />
         </div>
         <div style="text-align: center;">
             <button type="button" class="btn btn-dark mx-auto addEventBtn" @click="$emit('create', newEvent)">

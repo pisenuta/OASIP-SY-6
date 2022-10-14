@@ -145,12 +145,12 @@ public class EventService {
         Category eventCategory = categoryRepository.findById(categoryId).orElseThrow(()->new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Category Id: "+ categoryId + "Does Not Exist!"));
         LocalDateTime time = LocalDateTime.ofInstant(newEvent.getEventStartTime(), ZoneId.systemDefault());
-        String formattedDate = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String dateTime = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String subject = "Dear " + newEvent.getBookingName() + ",";
         String body = message + "\n \n" +
                 "Name : " + newEvent.getBookingName() + "\n" +
                 "Clinic : " + eventCategory.getEventCategoryName() + "\n" +
-                "Date : " + formattedDate + "\n" +
+                "Date : " + dateTime + "\n" +
                 "Duration :" + newEvent.getEventDuration() + " minute \n" +
                 "Note : " + newEvent.getEventNotes() + "\n \n" + "-- \n" +
                 "Thank you for using our service. \n" +

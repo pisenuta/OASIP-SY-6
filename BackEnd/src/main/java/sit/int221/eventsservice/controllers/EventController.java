@@ -28,16 +28,19 @@ import sit.int221.eventsservice.repositories.UserRepository;
 import sit.int221.eventsservice.services.EventService;
 
 import javax.validation.Valid;
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @RestController
 @RequestMapping({"/api/events"})
 public class EventController {
     @Autowired
     private EventService eventService;
+
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private EventRepository repository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -79,8 +82,13 @@ public class EventController {
         return eventService.save(newEvent);
     }
 
+    @PostMapping({"/guest"})
+    public Event guestCreate(@Valid @RequestBody EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
+        return eventService.save(newEvent);
+    }
+
     @PutMapping({"/{Id}"})
-    public ResponseEntity update(@Valid @RequestBody EventPutDTO updateEvent, @PathVariable Integer Id) throws OverlappedExceptionHandler, HandleExceptionForbidden {
+    public ResponseEntity<Event> update(@Valid @RequestBody EventPutDTO updateEvent, @PathVariable Integer Id) throws OverlappedExceptionHandler, HandleExceptionForbidden {
         Date newEventStartTime = Date.from(updateEvent.getEventStartTime());
         Date newEventEndTime = eventService.findEndDate(Date.from(updateEvent.getEventStartTime()), updateEvent.getEventDuration());
         List<EventDTO> eventList = getEvents();
@@ -88,50 +96,14 @@ public class EventController {
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
 
         if (userLogin.getRole().equals(Role.admin)) {
-            for (EventDTO eventDTO : eventList) {
-                if (Objects.equals(updateEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId()) && eventDTO.getId() != Id) { //เช็คเฉพาะ EventCategory เดียวกัน และถ้าอัพเดตตัวเดิมไม่ต้องเช็ค overlapped
-                    Date eventStartTime = Date.from(eventDTO.getEventStartTime());
-                    Date eventEndTime = eventService.findEndDate(Date.from(eventDTO.getEventStartTime()), eventDTO.getEventDuration());
-                    if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
-                            newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
-                            newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
-                            newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
-                            newEventStartTime.equals(eventStartTime)) {
-                        throw new OverlappedExceptionHandler("Time is Overlapped");
-                    }
-                }
-            }
-            Event event = repository.findById(Id).orElseThrow(
-                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
-            );
-            modelMapper.map(updateEvent, event);
-            repository.saveAndFlush(event);
-            return ResponseEntity.status(200).body(event);
+            return checkOverlapUpdate(updateEvent, Id, newEventStartTime, newEventEndTime, eventList);
         } else if (userLogin.getRole().equals(Role.student)) {
             Event eventForCheck =  repository.findById(Id).orElseThrow(
                     () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
             );
             if (Objects.equals(updateEvent.getBookingEmail(), userLogin.getEmail())) {
                 if(Objects.equals(updateEvent.getBookingEmail(), eventForCheck.getBookingEmail())) {
-                    for (EventDTO eventDTO : eventList) {
-                        if (Objects.equals(updateEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId()) && eventDTO.getId() != Id) { //เช็คเฉพาะ EventCategory เดียวกัน และถ้าอัพเดตตัวเดิมไม่ต้องเช็ค overlapped
-                            Date eventStartTime = Date.from(eventDTO.getEventStartTime());
-                            Date eventEndTime = eventService.findEndDate(Date.from(eventDTO.getEventStartTime()), eventDTO.getEventDuration());
-                            if (newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventStartTime) ||
-                                    newEventStartTime.before(eventEndTime) && newEventEndTime.after(eventEndTime) ||
-                                    newEventStartTime.before(eventStartTime) && newEventEndTime.after(eventEndTime) ||
-                                    newEventStartTime.after(eventStartTime) && newEventEndTime.before(eventEndTime) ||
-                                    newEventStartTime.equals(eventStartTime)) {
-                                throw new OverlappedExceptionHandler("Time is Overlapped");
-                            }
-                        }
-                    }
-                    Event event = repository.findById(Id).orElseThrow(
-                            () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
-                    );
-                    modelMapper.map(updateEvent, event);
-                    repository.saveAndFlush(event);
-                    return ResponseEntity.status(200).body(event);
+                    return checkOverlapUpdate(updateEvent, Id, newEventStartTime, newEventEndTime, eventList);
                 } else {
                     throw new HandleExceptionForbidden("You are not owner of this event");
                 }
@@ -141,6 +113,22 @@ public class EventController {
         } else {
             throw new HandleExceptionForbidden("You are not allowed to update this event");
         }
+    }
+
+    private ResponseEntity<Event> checkOverlapUpdate(@RequestBody @Valid EventPutDTO updateEvent, @PathVariable Integer Id, Date newEventStartTime, Date newEventEndTime, List<EventDTO> eventList) throws OverlappedExceptionHandler {
+        for (EventDTO eventDTO : eventList) {
+            if (Objects.equals(updateEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId()) && !Objects.equals(eventDTO.getId(), Id)) { //เช็คเฉพาะ EventCategory เดียวกัน และถ้าอัพเดตตัวเดิมไม่ต้องเช็ค overlapped
+                Date eventStartTime = Date.from(eventDTO.getEventStartTime());
+                Date eventEndTime = eventService.findEndDate(Date.from(eventDTO.getEventStartTime()), eventDTO.getEventDuration());
+                EventService.checkTimeOverlap(newEventStartTime, newEventEndTime, eventStartTime, eventEndTime);
+            }
+        }
+        Event event = repository.findById(Id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
+        );
+        modelMapper.map(updateEvent, event);
+        repository.saveAndFlush(event);
+        return ResponseEntity.status(200).body(event);
     }
 
 

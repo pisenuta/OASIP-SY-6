@@ -55,7 +55,7 @@ INSERT INTO `user` VALUES
 CREATE TABLE IF NOT EXISTS `events`.`event` (
   `bookingId` INT NOT NULL AUTO_INCREMENT,
   `eventCategoryId` INT NOT NULL,
-  `userId` INT NOT NULL,
+  `userId` INT NULL,
   `bookingName` VARCHAR(100) NOT NULL,
   `bookingEmail` VARCHAR(45) NOT NULL,
   `eventStartTime` DATETIME NOT NULL,

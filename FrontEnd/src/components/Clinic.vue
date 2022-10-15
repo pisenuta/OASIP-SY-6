@@ -34,9 +34,9 @@ const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`, {
         method: "GET",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        // headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+        // },
     });
     if (res.status === 200) {
         categories.value = await res.json()
@@ -133,9 +133,9 @@ const cancelPop = () => {
     <div class="body">
         <h3 style="font-size: 2.1vw;font-weight: bold;margin-top: 2.5vw;">Clinic</h3>
         <!-- plz login -->
-    <div class="Plzlogin"
+    <!-- <div class="Plzlogin"
       v-if="token === null || token === undefined"
-    >
+        >
       <div class="card alertPlzlogin">
         <div class="card-body" style="margin-top: 10px">
           <img
@@ -154,7 +154,7 @@ const cancelPop = () => {
           </button></router-link>
         </div>
       </div>
-    </div>
+    </div> -->
         <div class="containerClinic" style="margin-top: 2vw;">
             <div class="row mx-auto">
                 <div class="col-4 col-clinic" v-for="(category, index) in categories" :key="index" :value="category">

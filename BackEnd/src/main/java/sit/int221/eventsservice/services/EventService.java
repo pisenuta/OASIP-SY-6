@@ -18,11 +18,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.HandleExceptionBadRequest;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
+import sit.int221.eventsservice.dtos.Event.EventPutDTO;
 import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.entities.Role;
@@ -30,6 +33,8 @@ import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.CategoryRepository;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.repositories.UserRepository;
+
+import javax.validation.Valid;
 
 @AllArgsConstructor
 @Service
@@ -136,8 +141,35 @@ public class EventService {
         checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
         Event event = modelMapper.map(newEvent, Event.class);
         eventRepository.saveAndFlush(event);
-        sendEmail(newEvent, "Your appointment is confirmed.");
+//        sendEmail(newEvent, "Your appointment is confirmed.");
         return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
+    }
+
+    public ResponseEntity<Event> update(EventPutDTO updateEvent, Integer Id) throws OverlappedExceptionHandler, HandleExceptionForbidden {
+        Date newEventStartTime = Date.from(updateEvent.getEventStartTime());
+        Date newEventEndTime = findEndDate(Date.from(updateEvent.getEventStartTime()), updateEvent.getEventDuration());
+        List<EventDTO> eventList = getEventToCheckOverlap();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+
+        if (userLogin.getRole().equals(Role.admin)) {
+            return checkOverlapUpdate(updateEvent, Id, newEventStartTime, newEventEndTime, eventList);
+        } else if (userLogin.getRole().equals(Role.student)) {
+            Event eventForCheck =  eventRepository.findById(Id).orElseThrow(
+                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
+            );
+            if (Objects.equals(updateEvent.getBookingEmail(), userLogin.getEmail())) {
+                if(Objects.equals(updateEvent.getBookingEmail(), eventForCheck.getBookingEmail())) {
+                    return checkOverlapUpdate(updateEvent, Id, newEventStartTime, newEventEndTime, eventList);
+                } else {
+                    throw new HandleExceptionForbidden("You are not owner of this event");
+                }
+            } else {
+                throw new HandleExceptionForbidden("The booking email must be the same as the student's email");
+            }
+        } else {
+            throw new HandleExceptionForbidden("You are not allowed to update this event");
+        }
     }
 
     private void sendEmail(EventDTO newEvent, String message) {
@@ -158,7 +190,6 @@ public class EventService {
         emailService.sendEmail(newEvent.getBookingEmail() , subject , body);
     }
 
-
     private void checkOverlapCreate(EventDTO newEvent, Date newEventStartTime, Date newEventEndTime, List<EventDTO> eventList) throws OverlappedExceptionHandler {
         for (EventDTO eventDTO : eventList) {
             if (Objects.equals(newEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId())) { //เช็คเฉพาะ EventCategory เดียวกัน
@@ -167,6 +198,22 @@ public class EventService {
                 checkIfTwoDateRanges(newEventStartTime, newEventEndTime, eventStartTime, eventEndTime);
             }
         }
+    }
+
+    private ResponseEntity<Event> checkOverlapUpdate(@RequestBody @Valid EventPutDTO updateEvent, @PathVariable Integer Id, Date newEventStartTime, Date newEventEndTime, List<EventDTO> eventList) throws OverlappedExceptionHandler {
+        for (EventDTO eventDTO : eventList) {
+            if (Objects.equals(updateEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId()) && !Objects.equals(eventDTO.getId(), Id)) { //เช็คเฉพาะ EventCategory เดียวกัน และถ้าอัพเดตตัวเดิมไม่ต้องเช็ค overlapped
+                Date eventStartTime = Date.from(eventDTO.getEventStartTime());
+                Date eventEndTime = findEndDate(Date.from(eventDTO.getEventStartTime()), eventDTO.getEventDuration());
+                EventService.checkTimeOverlap(newEventStartTime, newEventEndTime, eventStartTime, eventEndTime);
+            }
+        }
+        Event event = eventRepository.findById(Id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
+        );
+        modelMapper.map(updateEvent, event);
+        eventRepository.saveAndFlush(event);
+        return ResponseEntity.status(200).body(event);
     }
 
     public static void checkIfTwoDateRanges(Date newEventStartTime, Date newEventEndTime, Date eventStartTime, Date eventEndTime) throws OverlappedExceptionHandler {

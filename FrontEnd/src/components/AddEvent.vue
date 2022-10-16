@@ -28,16 +28,16 @@ const RefreshToken = async () => {
 };
 
 const refresh = () => {
-  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+  token = localStorage.setItem('token',`${newAccess.value.access_token}`)
 }
 
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`,{
         method: 'GET',
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
+        // headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+        // }
     })
     if (res.status === 200) {
         categories.value = await res.json()
@@ -77,21 +77,26 @@ const errorFuture = ref(false)
 const overlap = ref(false)
 
 const createEvent = async (event) => {
-    // if (event.bookingName == null || event.bookingName == '') {
-    //     errorName.value = true
-    // } else {
-    //     errorName.value = false
-    // }
-    // if (event.bookingEmail == null || event.bookingEmail == '') {
-    //     errorEmail.value = true
-    // } else {
-    //     errorEmail.value = false
-    // }
-    if (Object.keys(event.user).length === 0){
+    if(userRole === 'guest') {
+        if (event.bookingName == null || event.bookingName == '') {
         errorName.value = true
-    } else {
+        } else {
         errorName.value = false
+        }
+        if (event.bookingEmail == null || event.bookingEmail == '') {
+        errorEmail.value = true
+        } else {
+        errorEmail.value = false
+        }
     }
+    else if(userRole !== 'guest') {
+        if (Object.keys(event.user).length === 0){
+        errorName.value = true
+        } else {
+        errorName.value = false
+        }
+    }
+    
     if (Object.keys(event.eventCategory).length === 0) {
         errorClinic.value = true
     } else {
@@ -111,16 +116,16 @@ const createEvent = async (event) => {
 
     var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    // if (event.bookingEmail.match(emailValidate)) {
-    //     mailVali.value = true
-    // } else {
-    //     mailVali.value = false
-    //     console.log('not validate');
-    // }
+    if (event.bookingEmail.match(emailValidate)) {
+        mailVali.value = true
+    } else {
+        mailVali.value = false
+        console.log('not validate');
+    }
     // if (errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true) {
     //     return
     // }
-    if (errorName.value == true || errorClinic.value == true || errorTime.value == true || errorFuture.value == true) {
+    if (errorName.value == true || errorClinic.value == true || errorTime.value == true || errorFuture.value == true || mailVali.value == false) {
         return
     }
 
@@ -153,7 +158,7 @@ const createEvent = async (event) => {
        console.log('error, can not add');
         }
         
-    } else if(userRole !== 'admin'){
+    } else if(userRole === 'student'){
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
             headers: {
@@ -181,23 +186,54 @@ const createEvent = async (event) => {
         overlap.value = true
        console.log('error, can not add');
         }
+    } else if (userRole === 'guest'){
+        const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/guest`, {
+            method: 'POST',
+            headers: {
+                'content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                eventCategory: {
+                    id: event.eventCategory.id
+                },
+                user: null,
+                bookingName: event.bookingName.trim(),
+                bookingEmail: event.bookingEmail.trim(),
+                eventStartTime: event.eventStartTime,
+                eventDuration: event.eventCategory.eventDuration,
+                eventNotes: event.eventNotes.trim()
+            })
+        })
+        if (res.status == 201 || res.status == 200) {
+            console.log('added successfully');
+            addAlert.value = true
+        } else if (res.status == 400) {
+            overlap.value = true
+            console.log('error, can not add');
+        }
     }
     
 }
 
-const added = () => {
-    addAlert.value = false
-}
+const loginAlert = ref(true)
+
 </script>
  
 <template>
+    <div v-if="userRole === 'lecturer'" class="body">
+        <div class="noUser mx-auto">
+            <img src="../assets/403.gif" style="width: 40%; margin-left:25%;margin-bottom:-2vw"/>
+            <img src="../assets/403-text.png" style="width: 100%;"/>
+        </div>
+    </div>
+
     <div class="body">
         <h3 class="mx-auto" style="font-size: 2.1vw;font-weight: bolder; margin-top: 2.5vw;">Booking</h3>
         <ManageAdd :categoryList="categories" :userList="users" :errorName="errorName" :errorClinic="errorClinic" :errorEmail="errorEmail"
             :errorTime="errorTime" :mailVali="mailVali" :errorFuture="errorFuture" :overlap="overlap"
             @create="createEvent" />
         <!-- plz login -->
-        <div class="Plzlogin" v-if="token === null || token === undefined">
+        <!-- <div class="Plzlogin" v-if="token === null || token === undefined">
             <div class="card alertPlzlogin">
                 <div class="card-body" style="margin-top: 10px">
                     <img src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
@@ -211,7 +247,26 @@ const added = () => {
                         </button></router-link>
                 </div>
             </div>
+        </div> -->
+
+        <div class="Plzlogin" v-if="(token === null || token === undefined || role === 'guest') && loginAlert == true">
+            <div class="card alertPlzlogin">
+                <div class="card-body" style="margin-top: 10px">
+                    <img src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
+                        style="width: 5.5vw" />
+                    <p class="card-text" style="margin-top: 0.5vw;margin-bottom: 1vw;">
+                        Do you want to booking as guest?
+                    </p>
+                    <div  style="margin-bottom: 1vw">
+                        <button type="button" class="btn btn-success btn-grad-ok" style="margin-right: 1vw;" v-on:click="loginAlert = false"> Yes </button>
+                        <router-link to="/login">
+                            <button type="button" class="btn btn-warning btn-plzlogin"> No </button>
+                        </router-link>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="container" v-if="addAlert === true">
             <div class="card" id="center-popup" style="width: 23rem; height: 15rem;">
                 <div class="card-body" style="margin-top: 10px;">

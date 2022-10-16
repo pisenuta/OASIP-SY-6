@@ -1,9 +1,10 @@
--<script setup>
+<script setup>
 import { ref, onBeforeMount } from 'vue'
 import editClinic from '../components/EditClinic.vue'
 
 const newAccess = ref()
 let token = localStorage.getItem("token")
+const role = localStorage.getItem("role")
 const refreshToken = localStorage.getItem("refreshToken");
 
 const RefreshToken = async () => {
@@ -26,15 +27,16 @@ const RefreshToken = async () => {
 };
 
 const refresh = () => {
-  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+  token = localStorage.setItem('token',`${newAccess.value.access_token}`)
 }
+
 const categories = ref([])
 const getEventCategory = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}categories`, {
         method: "GET",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+        // headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+        // },
     });
     if (res.status === 200) {
         categories.value = await res.json()
@@ -131,9 +133,9 @@ const cancelPop = () => {
     <div class="body">
         <h3 style="font-size: 2.1vw;font-weight: bold;margin-top: 2.5vw;">Clinic</h3>
         <!-- plz login -->
-    <div class="Plzlogin"
+    <!-- <div class="Plzlogin"
       v-if="token === null || token === undefined"
-    >
+        >
       <div class="card alertPlzlogin">
         <div class="card-body" style="margin-top: 10px">
           <img
@@ -152,12 +154,12 @@ const cancelPop = () => {
           </button></router-link>
         </div>
       </div>
-    </div>
+    </div> -->
         <div class="containerClinic" style="margin-top: 2vw;">
             <div class="row mx-auto">
                 <div class="col-4 col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
                     <div class="card-body clinic-body">
-                        <img src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
+                        <img v-if="role === 'lecturer' || role === 'admin'" src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
                             v-on:click="showIndex = index, editClinicPop = true" @click="toEditingMode(category)">
                         <h5 class="clinic-title" style="padding-top:20px;">{{ category.eventCategoryName }}</h5>
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>

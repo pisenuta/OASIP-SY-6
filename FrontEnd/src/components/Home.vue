@@ -14,16 +14,16 @@
                 <th style="padding-left: 0.5vw;">Online Appointment Scheduling System for Integrated Project Clinics</th>
               </tr>
             </table>
-            <div v-if="token === null">
+            <div v-if="token !== null">
+              <router-link to="/booking">
+                <button class="btn btn-primary btn-home-login" type="button">booking</button>
+              </router-link>
+            </div> 
+            <div v-else>
               <router-link to="/login">
                 <button class="btn btn-primary btn-home-login" type="button">get started</button>
               </router-link>   
             </div>
-            <div v-if="token !== null">
-              <router-link to="/booking">
-              <button class="btn btn-primary btn-home-login" type="button">booking</button>
-            </router-link>
-            </div> 
           </div>
           
         </div>
@@ -70,6 +70,7 @@
 }
 .home-text{
   font-size: 3vw;
+  /* font-size: 3.4rem; */
   letter-spacing: 0.15vw;
 }
 .btn-home-login{

@@ -30,7 +30,7 @@ const RefreshToken = async () => {
 };
 
 const refresh = () => {
-  token = localStorage.setItem('token',`${newAccess.value.accessToken}`)
+  token = localStorage.setItem('token',`${newAccess.value.access_token}`)
 }
 
 const events = ref([])
@@ -297,7 +297,7 @@ const closeEdited = () => {
             style="width: 5.5vw"
           />
           <p class="card-text" style="margin-top: 0.5vw;margin-bottom: 1vw;">
-            Please login to see reservation
+            Please login to see appointment
           </p>
           <router-link to="/login"><button
             type="button"
@@ -411,7 +411,7 @@ h3 {
 }
 ::-webkit-scrollbar-thumb{
   border-radius: 0.5vw;
-  background-color: #F857A2;
+  background-color: #F857A2;                                 
 }
 /* 
 .scroll-down {

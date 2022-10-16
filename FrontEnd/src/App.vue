@@ -1,6 +1,13 @@
 <script setup>
+import { ref } from "vue";
 import NavBar from './components/NavBar.vue'
 
+const role = ref(localStorage.getItem('role'))
+if (localStorage.getItem('role') === null){
+  localStorage.setItem('role','guest')
+}else {
+  localStorage.setItem('role',role.value)
+}
 </script>
 
 <template>

@@ -18,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.HandleExceptionBadRequest;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
@@ -30,6 +33,7 @@ import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.CategoryRepository;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.repositories.UserRepository;
+import sit.int221.eventsservice.storage.StorageService;
 
 @AllArgsConstructor
 @Service
@@ -48,6 +52,9 @@ public class EventService {
 
     @Autowired
     private ListMapper listMapper;
+
+    @Autowired
+    private StorageService storageService;
 
     public EventDTO getEventById(Integer id) throws HandleExceptionForbidden {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -102,7 +109,7 @@ public class EventService {
         return this.listMapper.mapList(this.eventRepository.findAll(Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
     }
 
-    public Event save(EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
+    public Event addEvent(EventDTO newEvent, MultipartFile file) throws OverlappedExceptionHandler, HandleExceptionBadRequest {
         Date newEventStartTime = Date.from(newEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(newEvent.getEventStartTime()), newEvent.getEventDuration());
         List<EventDTO> eventList = getEventToCheckOverlap();
@@ -136,7 +143,15 @@ public class EventService {
         checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
         Event event = modelMapper.map(newEvent, Event.class);
         eventRepository.saveAndFlush(event);
-        sendEmail(newEvent, "Your appointment is confirmed.");
+//        sendEmail(newEvent, "Your appointment is confirmed.");
+
+        if(file != null) {
+            if (!file.isEmpty()) {
+                storageService.store(file, event.getId());
+                file.getOriginalFilename();
+            }
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
     }
 
@@ -269,6 +284,28 @@ public class EventService {
 
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, userLogin.getEmail() + "is not owner of this event");
+        }
+    }
+
+    public void deleteEvent(Integer Id) throws HandleExceptionForbidden {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+        if (userLogin.getRole().equals(Role.admin)) {
+            eventRepository.findById(Id).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            Id + " does not exist !!!"));
+            eventRepository.deleteById(Id);
+        } else if (userLogin.getRole().equals(Role.student)) {
+            Event event = eventRepository.findById(Id).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            Id + " does not exist !!!"));
+            if (Objects.equals(event.getUser().getEmail(), userLogin.getEmail())) {
+                eventRepository.deleteById(Id);
+            } else {
+                throw new HandleExceptionForbidden("You are not owner of this event");
+            }
+        } else {
+            throw new HandleExceptionForbidden("You are not allowed to delete event");
         }
     }
 }

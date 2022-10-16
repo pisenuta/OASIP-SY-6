@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.InternalResourceView;
 import sit.int221.eventsservice.services.ListMapper;
 
 @Configuration
@@ -21,6 +22,11 @@ public class ApplicationConfig {
     @Bean
     public ListMapper listMapper() {
         return ListMapper.getInstance();
+    }
+
+    @Bean
+    public InternalResourceView internalResourceView() {
+        return new InternalResourceView();
     }
 
     @Bean

@@ -88,7 +88,7 @@ public class EventController {
         return eventService.save(eventPost, file);
     }
 
-    @PostMapping({"/guest"})
+    @PostMapping(value = "/guest",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public Event guestCreate(@Valid @RequestPart("event") String newEvent, @RequestPart(value = "file", required = false) MultipartFile file)
             throws OverlappedExceptionHandler, HandleExceptionBadRequest, JsonProcessingException, HandleExceptionForbidden {
         objectMapper.registerModule(new JavaTimeModule());

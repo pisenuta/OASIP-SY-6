@@ -1,7 +1,6 @@
 package sit.int221.eventsservice.advice;
 
 
-import org.hibernate.cfg.annotations.reflection.internal.XMLContext;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -92,38 +92,38 @@ public class ApplicationExceptionHandler extends Exception {
         errors.setPath(request.getRequest().getRequestURI());
         errors.setMessage(message);
         errors.setError(mser);
-        return (ResponseEntity) ResponseEntity.status(httpStatus.value()).body(errors);
-    }
-
-    public static ResponseEntity<Object> uniqueHandleException(HttpStatus httpStatus, String message) {
-        Map<String, Object> errorMap = new HashMap<>();
-        errorMap.put("timestamp", Instant.now());
-        errorMap.put("status", httpStatus.value());
-        errorMap.put("message", message);
-        errorMap.put("path", "/api/match");
-        errorMap.put("error", httpStatus.getReasonPhrase());
-        return new ResponseEntity<Object>(errorMap, httpStatus);
+        return ResponseEntity.status(httpStatus.value()).body(errors);
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(HandleExceptionForbidden.class)
-    public HandleErrorUnsucceess handleExceptionForbidden(HandleExceptionForbidden fb, ServletWebRequest request) {
+    public HandleErrorUnsuccessful handleExceptionForbidden(HandleExceptionForbidden fb, ServletWebRequest request) {
         Map<String, String> errorMap = new HashMap<>();
         Date timestamp = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         errorMap.put("Error:", fb.getMessage());
-        return new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
+        return new HandleErrorUnsuccessful(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
                 request.getRequest().getRequestURI(), "Validation", "Forbidden", errorMap);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(HandleExceptionBadRequest.class)
-    public HandleErrorUnsucceess HandleExceptionBadRequest (HandleExceptionBadRequest br, ServletWebRequest request) {
+    public HandleErrorUnsuccessful HandleExceptionBadRequest (HandleExceptionBadRequest br, ServletWebRequest request) {
         Map<String, String> errorMap = new HashMap<>();
         Date timestamp = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         errorMap.put("Error:", br.getMessage());
-        return new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
+        return new HandleErrorUnsuccessful(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
                 request.getRequest().getRequestURI(), "Validation Failed", "Bad Request", errorMap);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public HandleErrorUnsuccessful handleMaxSizeException(MaxUploadSizeExceededException exc, ServletWebRequest request) {
+        Map<String, String> errorMap = new HashMap<>();
+        Date timestamp = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        errorMap.put("Error:", "Unable to upload. File is too large!");
+        return new HandleErrorUnsuccessful(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
+                request.getRequest().getRequestURI(), "Expectation_Failed", "Validation", errorMap);
     }
 }

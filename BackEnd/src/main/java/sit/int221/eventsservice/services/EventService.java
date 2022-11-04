@@ -20,11 +20,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.HandleExceptionBadRequest;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
+import sit.int221.eventsservice.dtos.Event.EventPostDTO;
 import sit.int221.eventsservice.dtos.Event.EventPutDTO;
 import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Category;
@@ -47,6 +50,8 @@ public class EventService {
     private final CategoryRepository categoryRepository;
 
     private EmailService emailService;
+
+    private FileStorageService fileStorageService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -107,7 +112,7 @@ public class EventService {
         return this.listMapper.mapList(this.eventRepository.findAll(Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
     }
 
-    public Event save(EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
+    public Event save(EventPostDTO newEvent, MultipartFile file) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
         Date newEventStartTime = Date.from(newEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(newEvent.getEventStartTime()), newEvent.getEventDuration());
         List<EventDTO> eventList = getEventToCheckOverlap();
@@ -122,6 +127,7 @@ public class EventService {
                 newEvent.setUserId(addByAdmin.getUserId());
                 Event event = modelMapper.map(newEvent, Event.class);
                 eventRepository.saveAndFlush(event);
+                fileStorageService.storeFile(file, event);
                 sendEmail(newEvent, "Your appointment is confirmed.");
                 return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
 
@@ -131,6 +137,7 @@ public class EventService {
                     newEvent.setUserId(userLogin.getUserId());
                     Event event = modelMapper.map(newEvent, Event.class);
                     eventRepository.saveAndFlush(event);
+                    fileStorageService.storeFile(file, event);
                     sendEmail(newEvent ,"Your appointment is confirmed.");
                     return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
                 } else {
@@ -141,7 +148,8 @@ public class EventService {
         checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
         Event event = modelMapper.map(newEvent, Event.class);
         eventRepository.saveAndFlush(event);
-//        sendEmail(newEvent, "Your appointment is confirmed.");
+        fileStorageService.storeFile(file, event);
+        sendEmail(newEvent, "Your appointment is confirmed.");
         return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
     }
 
@@ -172,7 +180,7 @@ public class EventService {
         }
     }
 
-    private void sendEmail(EventDTO newEvent, String message) {
+    private void sendEmail(EventPostDTO newEvent, String message) {
         int categoryId = Integer.parseInt(newEvent.getEventCategory().getId().toString());
         Category eventCategory = categoryRepository.findById(categoryId).orElseThrow(()->new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Category Id: "+ categoryId + "Does Not Exist!"));
@@ -190,7 +198,7 @@ public class EventService {
         emailService.sendEmail(newEvent.getBookingEmail() , subject , body);
     }
 
-    private void checkOverlapCreate(EventDTO newEvent, Date newEventStartTime, Date newEventEndTime, List<EventDTO> eventList) throws OverlappedExceptionHandler {
+    private void checkOverlapCreate(EventPostDTO newEvent, Date newEventStartTime, Date newEventEndTime, List<EventDTO> eventList) throws OverlappedExceptionHandler {
         for (EventDTO eventDTO : eventList) {
             if (Objects.equals(newEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId())) { //เช็คเฉพาะ EventCategory เดียวกัน
                 Date eventStartTime = Date.from(eventDTO.getEventStartTime());

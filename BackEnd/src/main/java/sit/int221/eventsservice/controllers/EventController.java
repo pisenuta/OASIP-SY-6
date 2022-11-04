@@ -1,22 +1,26 @@
 package sit.int221.eventsservice.controllers;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.eventsservice.advice.HandleExceptionBadRequest;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
+import sit.int221.eventsservice.dtos.Event.EventPostDTO;
 import sit.int221.eventsservice.dtos.Event.EventPutDTO;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
 import sit.int221.eventsservice.entities.Event;
@@ -36,13 +40,12 @@ public class EventController {
     private EventService eventService;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     private EventRepository repository;
 
     @Autowired
     private UserRepository userRepository;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping({"/{Id}"})
     public EventDTO getEventById(@PathVariable Integer Id) throws HandleExceptionForbidden {
@@ -77,14 +80,20 @@ public class EventController {
         }
     }
 
-    @PostMapping({""})
-    public Event create(@Valid @RequestBody EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
-        return eventService.save(newEvent);
+    @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Event create(@Valid @RequestPart("event") String newEvent, @RequestPart(value = "file", required = false) MultipartFile file)
+            throws OverlappedExceptionHandler, HandleExceptionBadRequest, JsonProcessingException, HandleExceptionForbidden {
+        objectMapper.registerModule(new JavaTimeModule());
+        EventPostDTO eventPost = objectMapper.readValue(newEvent, EventPostDTO.class);
+        return eventService.save(eventPost, file);
     }
 
     @PostMapping({"/guest"})
-    public Event guestCreate(@Valid @RequestBody EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
-        return eventService.save(newEvent);
+    public Event guestCreate(@Valid @RequestPart("event") String newEvent, @RequestPart(value = "file", required = false) MultipartFile file)
+            throws OverlappedExceptionHandler, HandleExceptionBadRequest, JsonProcessingException, HandleExceptionForbidden {
+        objectMapper.registerModule(new JavaTimeModule());
+        EventPostDTO eventPost = objectMapper.readValue(newEvent, EventPostDTO.class);
+        return eventService.save(eventPost, file);
     }
 
     @PutMapping({"/{Id}"})

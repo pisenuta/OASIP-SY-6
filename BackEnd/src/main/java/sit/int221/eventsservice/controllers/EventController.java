@@ -1,5 +1,6 @@
 package sit.int221.eventsservice.controllers;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
@@ -96,10 +97,14 @@ public class EventController {
         return eventService.save(eventPost, file);
     }
 
-    @PutMapping({"/{Id}"})
-    public ResponseEntity<Event> update(@Valid @RequestBody EventPutDTO updateEvent, @PathVariable Integer Id) throws OverlappedExceptionHandler, HandleExceptionForbidden {
-        return eventService.update(updateEvent, Id);
+    @PutMapping(value = "/{Id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Event> update(@Valid @RequestPart("event") String editEvent, @PathVariable Integer Id,  @RequestPart(value = "file", required = false) MultipartFile file)
+            throws OverlappedExceptionHandler, HandleExceptionForbidden, IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        EventPutDTO updateEvent = objectMapper.readValue(editEvent, EventPutDTO.class);
+        return eventService.update(updateEvent, Id, file);
     }
+
 
     @GetMapping({"/clinic"})
     public List <EventDTO> getEventByCategory(@RequestParam Category eventCategoryId) throws HandleExceptionForbidden {

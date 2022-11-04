@@ -1,12 +1,14 @@
 package sit.int221.eventsservice.services;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +31,7 @@ import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
 import sit.int221.eventsservice.dtos.Event.EventPostDTO;
 import sit.int221.eventsservice.dtos.Event.EventPutDTO;
+import sit.int221.eventsservice.dtos.File.FileStorageProperties;
 import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Category;
 import sit.int221.eventsservice.entities.Role;
@@ -52,6 +55,8 @@ public class EventService {
     private EmailService emailService;
 
     private FileStorageService fileStorageService;
+
+    private final FileStorageProperties fileStorageProperties;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -128,7 +133,7 @@ public class EventService {
                 Event event = modelMapper.map(newEvent, Event.class);
                 eventRepository.saveAndFlush(event);
                 fileStorageService.storeFile(file, event);
-                sendEmail(newEvent, "Your appointment is confirmed.");
+//                sendEmail(newEvent, "Your appointment is confirmed.");
                 return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
 
             } else if (userLogin.getRole().equals(Role.student)) {
@@ -149,18 +154,23 @@ public class EventService {
         Event event = modelMapper.map(newEvent, Event.class);
         eventRepository.saveAndFlush(event);
         fileStorageService.storeFile(file, event);
-        sendEmail(newEvent, "Your appointment is confirmed.");
+//        sendEmail(newEvent, "Your appointment is confirmed.");
         return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
     }
 
-    public ResponseEntity<Event> update(EventPutDTO updateEvent, Integer Id) throws OverlappedExceptionHandler, HandleExceptionForbidden {
+    public ResponseEntity<Event> update(EventPutDTO updateEvent, Integer Id, MultipartFile file) throws OverlappedExceptionHandler, HandleExceptionForbidden, IOException {
         Date newEventStartTime = Date.from(updateEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(updateEvent.getEventStartTime()), updateEvent.getEventDuration());
         List<EventDTO> eventList = getEventToCheckOverlap();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+        Event eventById = eventRepository.getById(Id);
+
+        String userDir = eventById.getUser() != null ? "User/" + "User_" + eventById.getUser().getUserId() : "Guest";
+        Path path = Paths.get(fileStorageProperties.getUploadDir() + "/" + userDir + "/" + "Event_" + eventById.getId());
 
         if (userLogin.getRole().equals(Role.admin)) {
+            updateFile(file, path, eventById);
             return checkOverlapUpdate(updateEvent, Id, newEventStartTime, newEventEndTime, eventList);
         } else if (userLogin.getRole().equals(Role.student)) {
             Event eventForCheck =  eventRepository.findById(Id).orElseThrow(
@@ -168,6 +178,7 @@ public class EventService {
             );
             if (Objects.equals(updateEvent.getBookingEmail(), userLogin.getEmail())) {
                 if(Objects.equals(updateEvent.getBookingEmail(), eventForCheck.getBookingEmail())) {
+                    updateFile(file, path, eventById);
                     return checkOverlapUpdate(updateEvent, Id, newEventStartTime, newEventEndTime, eventList);
                 } else {
                     throw new HandleExceptionForbidden("You are not owner of this event");
@@ -179,6 +190,43 @@ public class EventService {
             throw new HandleExceptionForbidden("You are not allowed to update this event");
         }
     }
+
+
+    public void updateFile(MultipartFile file, Path path, Event eventById) throws IOException {
+        if (file != null) {
+            if (Files.exists(path)) {
+                if (!Files.list(path).collect(Collectors.toList()).isEmpty()) {
+                    fileStorageService.deleteFile(path + "/" + Files.list(path).collect(Collectors.toList()).get(0).getFileName());
+                    fileStorageService.storeFile(file, eventById);
+                } else {
+                    fileStorageService.storeFile(file, eventById);
+                }
+            }
+        } else {
+            if (Files.exists(path)) {
+                if (!Files.list(path).collect(Collectors.toList()).isEmpty()) {
+                    fileStorageService.deleteFile(path + "/" + getFile(path).get("fileName"));
+                }
+            }
+        }
+    }
+
+    public Map<String, String> getFile(Path filePath) throws IOException {
+        Map<String, String> fileMap = new HashMap<>();
+        if (Files.list(filePath).collect(Collectors.toList()).isEmpty()) {
+            fileMap.put("fileName", "");
+            fileMap.put("pathFile", filePath.toString());
+            return fileMap;
+        }
+        Path pathFile = Files.list(filePath).collect(Collectors.toList()).get(0);
+        System.out.println("PathFile: " + pathFile);
+        String fileName = fileStorageService.loadFileAsResource(pathFile.toString()).getFilename();
+        System.out.println("FileName: " + fileName);
+        fileMap.put("fileName", fileName);
+        fileMap.put("pathFile", pathFile.toString());
+        return fileMap;
+    }
+
 
     private void sendEmail(EventPostDTO newEvent, String message) {
         int categoryId = Integer.parseInt(newEvent.getEventCategory().getId().toString());

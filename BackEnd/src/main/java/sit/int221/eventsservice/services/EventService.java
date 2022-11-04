@@ -117,6 +117,37 @@ public class EventService {
         return this.listMapper.mapList(this.eventRepository.findAll(Sort.by("eventStartTime").descending()), EventDTO.class, this.modelMapper);
     }
 
+    public ResponseEntity<String> deleteEvent(Integer Id) throws HandleExceptionForbidden {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+        Event eventById = eventRepository.getById(Id);
+
+        String userDir = eventById.getUser() != null ? "User/" + "User_" + eventById.getUser().getUserId() : "Guest";
+        String path = Paths.get(fileStorageProperties.getUploadDir() + "/" + userDir + "/" + "Event_" + eventById.getId()).toString();
+
+        if (userLogin.getRole().equals(Role.admin)) {
+            eventRepository.findById(Id).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            Id + " does not exist !!!"));
+            eventRepository.deleteById(Id);
+            fileStorageService.deleteDir(path);
+            return ResponseEntity.status(200).body("Delete Event " + Id + " Successfully");
+        } else if (userLogin.getRole().equals(Role.student)) {
+            Event event = eventRepository.findById(Id).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            Id + " does not exist !!!"));
+            if (Objects.equals(event.getUser().getEmail(), userLogin.getEmail())) {
+                eventRepository.deleteById(Id);
+                fileStorageService.deleteDir(path);
+                return ResponseEntity.status(200).body("Delete Event " + Id + " Successfully");
+            } else {
+                throw new HandleExceptionForbidden("You are not owner of this event");
+            }
+        } else {
+            throw new HandleExceptionForbidden("You are not allowed to delete event");
+        }
+    }
+
     public Event save(EventPostDTO newEvent, MultipartFile file) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
         Date newEventStartTime = Date.from(newEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(newEvent.getEventStartTime()), newEvent.getEventDuration());

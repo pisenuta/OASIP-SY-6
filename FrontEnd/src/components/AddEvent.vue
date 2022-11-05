@@ -76,6 +76,7 @@ const mailVali = ref(true)
 const mailNotFound = ref(false)
 const errorFuture = ref(false)
 const overlap = ref(false)
+const loading = ref(false)
 
 const createEvent = async (event) => {
     if(userRole === 'guest') {
@@ -157,12 +158,15 @@ const createEvent = async (event) => {
                 eventNotes: event.eventNotes.trim()
             })
         })
+        loading.value = true
         if (res.status == 201 || res.status == 200) {
+            loading.value = false
             console.log('added successfully');
             addAlert.value = true
         } else if (res.status == 400) {
-        overlap.value = true
-       console.log('error, can not add');
+            loading.value = false
+            overlap.value = true
+            console.log('error, can not add');
         }
         
     } else if(userRole === 'student'){
@@ -186,12 +190,15 @@ const createEvent = async (event) => {
                 eventNotes: event.eventNotes.trim()
             })
         })
+        loading.value = true
         if (res.status == 201 || res.status == 200) {
+            loading.value = false
             console.log('added successfully');
             addAlert.value = true
         } else if (res.status == 400) {
-        overlap.value = true
-       console.log('error, can not add');
+            loading.value = false
+            overlap.value = true
+            console.log('error, can not add');
         }
     } else if (userRole === 'guest'){
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/guest`, {
@@ -211,13 +218,17 @@ const createEvent = async (event) => {
                 eventNotes: event.eventNotes.trim()
             })
         })
+        loading.value = true
         if (res.status == 201 || res.status == 200) {
             console.log('added successfully');
+            loading.value = false
             addAlert.value = true
         } else if (res.status == 400) {
+            loading.value = false
             overlap.value = true
             console.log('error, can not add');
         } else if (res.status == 500) {
+            loading.value = false
             mailNotFound.value = true
         }
     }
@@ -274,6 +285,13 @@ const loginAlert = ref(true)
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="container" style="background-color: transparent;" v-if="loading === true">
+            <div class="card" id="center-popup" style="background-color: transparent;box-shadow:none;border-color: transparent;">
+                <img src="../assets/loading.gif" style="width: 10vw;">
+            </div>
+            
         </div>
 
         <div class="container" v-if="addAlert === true">

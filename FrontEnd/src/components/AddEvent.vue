@@ -89,6 +89,14 @@ const createEvent = async (event) => {
         } else {
         errorEmail.value = false
         }
+        var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if (event.bookingEmail.match(emailValidate)) {
+        mailVali.value = true
+        } else {
+        mailVali.value = false
+        console.log('not validate');
+        }
     }
     else if(userRole === 'admin') {
         if (Object.keys(event.user).length === 0){
@@ -121,14 +129,6 @@ const createEvent = async (event) => {
         errorFuture.value = true
     }
 
-    var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    if (event.bookingEmail.match(emailValidate)) {
-        mailVali.value = true
-    } else {
-        mailVali.value = false
-        console.log('not validate');
-    }
     // if (errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true) {
     //     return
     // }

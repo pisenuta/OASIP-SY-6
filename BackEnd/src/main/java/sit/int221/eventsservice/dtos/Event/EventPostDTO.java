@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 import sit.int221.eventsservice.dtos.Category.CategoryDTO;
-import sit.int221.eventsservice.dtos.User.UserDTO;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,7 +16,7 @@ import java.time.Instant;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventDTO {
+public class EventPostDTO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @NotNull(message = "EventCategory shouldn't be null.")
@@ -38,6 +38,5 @@ public class EventDTO {
     @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventNotes;
 
-    private String fileName;
-    private String fileUrl;
+    private MultipartFile file;
 }

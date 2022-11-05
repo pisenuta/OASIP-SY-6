@@ -10,8 +10,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-
-public class HandleErrorUnsucceess {
+public class HandleErrorUnsuccessful {
     private String timestamp;
     private Integer status;
     private String path;

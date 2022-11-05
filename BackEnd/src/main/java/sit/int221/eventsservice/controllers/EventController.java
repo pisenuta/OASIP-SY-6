@@ -1,28 +1,25 @@
 package sit.int221.eventsservice.controllers;
 
+import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-import org.modelmapper.ModelMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MultipartFile;
 import sit.int221.eventsservice.advice.HandleExceptionBadRequest;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
+import sit.int221.eventsservice.dtos.Event.EventPostDTO;
 import sit.int221.eventsservice.dtos.Event.EventPutDTO;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
 import sit.int221.eventsservice.entities.Event;
 import sit.int221.eventsservice.entities.Category;
-import sit.int221.eventsservice.entities.Role;
-import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.repositories.UserRepository;
 import sit.int221.eventsservice.services.EventService;
@@ -36,13 +33,12 @@ public class EventController {
     private EventService eventService;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
     private EventRepository repository;
 
     @Autowired
     private UserRepository userRepository;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping({"/{Id}"})
     public EventDTO getEventById(@PathVariable Integer Id) throws HandleExceptionForbidden {
@@ -55,80 +51,32 @@ public class EventController {
     }
 
     @DeleteMapping({"/{Id}"})
-    public void delete(@PathVariable Integer Id) throws HandleExceptionForbidden {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
-        if (userLogin.getRole().equals(Role.admin)) {
-            repository.findById(Id).orElseThrow(() ->
-                    new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            Id + " does not exist !!!"));
-            repository.deleteById(Id);
-        } else if (userLogin.getRole().equals(Role.student)) {
-            Event event = repository.findById(Id).orElseThrow(() ->
-                    new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            Id + " does not exist !!!"));
-            if (Objects.equals(event.getUser().getEmail(), userLogin.getEmail())) {
-                repository.deleteById(Id);
-            } else {
-                throw new HandleExceptionForbidden("You are not owner of this event");
-            }
-        } else {
-            throw new HandleExceptionForbidden("You are not allowed to delete event");
-        }
+    public ResponseEntity<String> delete(@PathVariable Integer Id) throws HandleExceptionForbidden {
+        return this.eventService.deleteEvent(Id);
     }
 
-    @PostMapping({""})
-    public Event create(@Valid @RequestBody EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
-        return eventService.save(newEvent);
+    @PostMapping(value = "", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Event create(@Valid @RequestPart("event") String newEvent, @RequestPart(value = "file", required = false) MultipartFile file)
+            throws OverlappedExceptionHandler, HandleExceptionBadRequest, JsonProcessingException, HandleExceptionForbidden {
+        objectMapper.registerModule(new JavaTimeModule());
+        EventPostDTO eventPost = objectMapper.readValue(newEvent, EventPostDTO.class);
+        return eventService.save(eventPost, file);
     }
 
-    @PostMapping({"/guest"})
-    public Event guestCreate(@Valid @RequestBody EventDTO newEvent) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest {
-        return eventService.save(newEvent);
+    @PostMapping(value = "/guest",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Event guestCreate(@Valid @RequestPart("event") String newEvent, @RequestPart(value = "file", required = false) MultipartFile file)
+            throws OverlappedExceptionHandler, HandleExceptionBadRequest, JsonProcessingException, HandleExceptionForbidden {
+        objectMapper.registerModule(new JavaTimeModule());
+        EventPostDTO eventPost = objectMapper.readValue(newEvent, EventPostDTO.class);
+        return eventService.save(eventPost, file);
     }
 
-    @PutMapping({"/{Id}"})
-    public ResponseEntity<Event> update(@Valid @RequestBody EventPutDTO updateEvent, @PathVariable Integer Id) throws OverlappedExceptionHandler, HandleExceptionForbidden {
-        Date newEventStartTime = Date.from(updateEvent.getEventStartTime());
-        Date newEventEndTime = eventService.findEndDate(Date.from(updateEvent.getEventStartTime()), updateEvent.getEventDuration());
-        List<EventDTO> eventList = getEvents();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
-
-        if (userLogin.getRole().equals(Role.admin)) {
-            return checkOverlapUpdate(updateEvent, Id, newEventStartTime, newEventEndTime, eventList);
-        } else if (userLogin.getRole().equals(Role.student)) {
-            Event eventForCheck =  repository.findById(Id).orElseThrow(
-                    () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
-            );
-            if (Objects.equals(updateEvent.getBookingEmail(), userLogin.getEmail())) {
-                if(Objects.equals(updateEvent.getBookingEmail(), eventForCheck.getBookingEmail())) {
-                    return checkOverlapUpdate(updateEvent, Id, newEventStartTime, newEventEndTime, eventList);
-                } else {
-                    throw new HandleExceptionForbidden("You are not owner of this event");
-                }
-            } else {
-                throw new HandleExceptionForbidden("The booking email must be the same as the student's email");
-            }
-        } else {
-            throw new HandleExceptionForbidden("You are not allowed to update this event");
-        }
-    }
-
-    private ResponseEntity<Event> checkOverlapUpdate(@RequestBody @Valid EventPutDTO updateEvent, @PathVariable Integer Id, Date newEventStartTime, Date newEventEndTime, List<EventDTO> eventList) throws OverlappedExceptionHandler {
-        for (EventDTO eventDTO : eventList) {
-            if (Objects.equals(updateEvent.getEventCategory().getId(), eventDTO.getEventCategory().getId()) && !Objects.equals(eventDTO.getId(), Id)) { //เช็คเฉพาะ EventCategory เดียวกัน และถ้าอัพเดตตัวเดิมไม่ต้องเช็ค overlapped
-                Date eventStartTime = Date.from(eventDTO.getEventStartTime());
-                Date eventEndTime = eventService.findEndDate(Date.from(eventDTO.getEventStartTime()), eventDTO.getEventDuration());
-                EventService.checkTimeOverlap(newEventStartTime, newEventEndTime, eventStartTime, eventEndTime);
-            }
-        }
-        Event event = repository.findById(Id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
-        );
-        modelMapper.map(updateEvent, event);
-        repository.saveAndFlush(event);
-        return ResponseEntity.status(200).body(event);
+    @PutMapping(value = "/{Id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Event> update(@Valid @RequestPart("event") String editEvent, @PathVariable Integer Id,  @RequestPart(value = "file", required = false) MultipartFile file)
+            throws OverlappedExceptionHandler, HandleExceptionForbidden, IOException {
+        objectMapper.registerModule(new JavaTimeModule());
+        EventPutDTO updateEvent = objectMapper.readValue(editEvent, EventPutDTO.class);
+        return eventService.update(updateEvent, Id, file);
     }
 
 

@@ -37,6 +37,10 @@ defineProps({
         type: Boolean,
         default: false
     },
+    mailNotFound: {
+        type: Boolean,
+        default: false
+    },
     overlap: {
         type: Boolean,
         default: false
@@ -151,6 +155,7 @@ check();
                     :class="{ 'border border-danger': errorEmail || !mailVali }"> -->
                 <div v-if="errorEmail" class="error">Please enter Email.</div>
                 <div v-if="!mailVali && !errorEmail" class="error">Invalid Email.</div>
+                <div v-if="mailNotFound" class="error">Not found email account.</div>
             </div>
 
             <div class="marginForm">

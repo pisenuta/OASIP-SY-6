@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,12 +25,12 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             throws IOException, ServletException {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        HandleErrorUnsucceess errors;
+        HandleErrorUnsuccessful errors;
         Map<String, String> errorMap = new HashMap<>();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         errorMap.put("Forbidden", "Access denied for user: " + auth.getPrincipal());
-        errors = new HandleErrorUnsucceess(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
+        errors = new HandleErrorUnsuccessful(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
                 request.getRequestURI(), "Validation", "Forbidden", errorMap);
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(APPLICATION_JSON_VALUE);

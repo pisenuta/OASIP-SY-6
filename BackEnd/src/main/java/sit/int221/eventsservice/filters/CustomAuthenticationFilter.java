@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,11 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import sit.int221.eventsservice.advice.HandleErrorUnsucceess;
+import sit.int221.eventsservice.advice.HandleErrorUnsuccessful;
 import sit.int221.eventsservice.models.JwtRequest;
 import sit.int221.eventsservice.repositories.UserRepository;
 
@@ -120,7 +118,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         String error = (String) request.getAttribute("error");
 
-        HandleErrorUnsucceess errors;
+        HandleErrorUnsuccessful errors;
         Map<String, String> errorMap = new HashMap<>();
         Date timestamp = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -133,7 +131,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
             errorMap.put("Authentication", "Password is incorrect");
         }
 
-        errors = new HandleErrorUnsucceess(sdf3.format(timestamp), error != null ? HttpStatus.NOT_FOUND.value() : HttpStatus.UNAUTHORIZED.value(),
+        errors = new HandleErrorUnsuccessful(sdf3.format(timestamp), error != null ? HttpStatus.NOT_FOUND.value() : HttpStatus.UNAUTHORIZED.value(),
                 request.getRequestURI(), "Validation", error != null ? "Not Found" : "Unauthorized" , errorMap);
         response.setStatus(error != null ? HttpStatus.NOT_FOUND.value() : HttpStatus.UNAUTHORIZED.value());
         response.setContentType(APPLICATION_JSON_VALUE);

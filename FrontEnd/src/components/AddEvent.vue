@@ -73,6 +73,7 @@ const errorClinic = ref(false)
 const errorEmail = ref(false)
 const errorTime = ref(false)
 const mailVali = ref(true)
+const mailNotFound = ref(false)
 const errorFuture = ref(false)
 const overlap = ref(false)
 
@@ -88,9 +89,23 @@ const createEvent = async (event) => {
         } else {
         errorEmail.value = false
         }
+        var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if (event.bookingEmail.match(emailValidate)) {
+        mailVali.value = true
+        } else {
+        mailVali.value = false
+        console.log('not validate');
+        }
     }
-    else if(userRole !== 'guest') {
+    else if(userRole === 'admin') {
         if (Object.keys(event.user).length === 0){
+        errorName.value = true
+        } else {
+        errorName.value = false
+        }
+    } else if(userRole === 'student') {
+        if (event.bookingName == null || event.bookingName == '') {
         errorName.value = true
         } else {
         errorName.value = false
@@ -114,14 +129,6 @@ const createEvent = async (event) => {
         errorFuture.value = true
     }
 
-    var emailValidate = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-    if (event.bookingEmail.match(emailValidate)) {
-        mailVali.value = true
-    } else {
-        mailVali.value = false
-        console.log('not validate');
-    }
     // if (errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true) {
     //     return
     // }
@@ -210,6 +217,8 @@ const createEvent = async (event) => {
         } else if (res.status == 400) {
             overlap.value = true
             console.log('error, can not add');
+        } else if (res.status == 500) {
+            mailNotFound.value = true
         }
     }
     
@@ -230,7 +239,7 @@ const loginAlert = ref(true)
     <div class="body">
         <h3 class="mx-auto" style="font-size: 2.1vw;font-weight: bolder; margin-top: 2.5vw;">Booking</h3>
         <ManageAdd :categoryList="categories" :userList="users" :errorName="errorName" :errorClinic="errorClinic" :errorEmail="errorEmail"
-            :errorTime="errorTime" :mailVali="mailVali" :errorFuture="errorFuture" :overlap="overlap"
+            :errorTime="errorTime" :mailVali="mailVali" :errorFuture="errorFuture" :overlap="overlap" :mailNotFound="mailNotFound"
             @create="createEvent" />
         <!-- plz login -->
         <!-- <div class="Plzlogin" v-if="token === null || token === undefined">
@@ -260,7 +269,7 @@ const loginAlert = ref(true)
                     <div  style="margin-bottom: 1vw">
                         <button type="button" class="btn btn-success btn-grad-ok" style="margin-right: 1vw;" v-on:click="loginAlert = false"> Yes </button>
                         <router-link to="/login">
-                            <button type="button" class="btn btn-warning btn-plzlogin"> No </button>
+                            <button type="button" class="btn btn-warning btn-plzlogin" style="text-transform: capitalize;"> No </button>
                         </router-link>
                     </div>
                 </div>

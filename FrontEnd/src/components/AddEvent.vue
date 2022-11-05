@@ -90,8 +90,14 @@ const createEvent = async (event) => {
         errorEmail.value = false
         }
     }
-    else if(userRole !== 'guest') {
+    else if(userRole === 'admin') {
         if (Object.keys(event.user).length === 0){
+        errorName.value = true
+        } else {
+        errorName.value = false
+        }
+    } else if(userRole === 'student') {
+        if (event.bookingName == null || event.bookingName == '') {
         errorName.value = true
         } else {
         errorName.value = false

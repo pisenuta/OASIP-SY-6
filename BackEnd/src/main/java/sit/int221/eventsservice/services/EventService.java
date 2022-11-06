@@ -64,14 +64,23 @@ public class EventService {
     @Autowired
     private ListMapper listMapper;
 
-    public EventDTO getEventById(Integer id) throws HandleExceptionForbidden {
+    public EventDTO getEventById(Integer id) throws HandleExceptionForbidden, IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
+        Event eventById = eventRepository.findById(id).orElseThrow(() -> new HandleExceptionForbidden("Event not found"));
+
+        String userDir = eventById.getUser() != null ? "User/" + "User_" + eventById.getUser().getUserId() : "Guest";
+        Path path = Paths.get(fileStorageProperties.getUploadDir() + "/" + userDir + "/" + "Event_" + eventById.getId());
+
         if (userLogin.getRole().equals(Role.admin)) {
             Event event = this.eventRepository.findById(id).orElseThrow(() -> {
                 return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
             });
-            return this.modelMapper.map(event, EventDTO.class);
+
+            EventDTO eventDTO = this.modelMapper.map(event, EventDTO.class);
+            eventDTO.setFileName(getFile(path).get("fileName"));
+            eventDTO.setFileUrl(getFile(path).get("pathFile"));
+            return eventDTO;
         } else if (userLogin.getRole().equals(Role.student)) {
             Event event = this.eventRepository.findById(id).orElseThrow(() -> {
                 return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");

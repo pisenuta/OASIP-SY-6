@@ -41,7 +41,7 @@ public class EventController {
     ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping({"/{Id}"})
-    public EventDTO getEventById(@PathVariable Integer Id) throws HandleExceptionForbidden {
+    public EventDTO getEventById(@PathVariable Integer Id) throws HandleExceptionForbidden, IOException {
         return this.eventService.getEventById(Id);
     }
 

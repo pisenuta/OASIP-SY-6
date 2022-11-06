@@ -122,7 +122,7 @@ public class ApplicationExceptionHandler extends Exception {
         Map<String, String> errorMap = new HashMap<>();
         Date timestamp = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        errorMap.put("Error:", "Unable to upload. File is too large!");
+        errorMap.put("Error:", "The file size cannot be larger than 10 MB.");
         return new HandleErrorUnsuccessful(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
                 request.getRequest().getRequestURI(), "Expectation_Failed", "Validation", errorMap);
     }

@@ -81,22 +81,30 @@ public class EventService {
             eventDTO.setFileName(getFile(path).get("fileName"));
             eventDTO.setFileUrl(getFile(path).get("pathFile"));
             return eventDTO;
+
         } else if (userLogin.getRole().equals(Role.student)) {
             Event event = this.eventRepository.findById(id).orElseThrow(() -> {
                 return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
             });
             if (Objects.equals(event.getUser().getEmail(), userLogin.getEmail())) {
-                return this.modelMapper.map(event, EventDTO.class);
+                EventDTO eventDTO = this.modelMapper.map(event, EventDTO.class);
+                eventDTO.setFileName(getFile(path).get("fileName"));
+                eventDTO.setFileUrl(getFile(path).get("pathFile"));
+                return eventDTO;
             } else {
                 throw new HandleExceptionForbidden("You are not allowed to access this event");
             }
+
         } else if (userLogin.getRole().equals(Role.lecturer)) {
             List<Event> eventListByCategoryOwner = eventRepository.findEventCategoryOwnerByEmail(userLogin.getEmail());
             Event eveventListByCategoryOwnerent = this.eventRepository.findById(id).orElseThrow(() -> {
                 return new ResponseStatusException(HttpStatus.NOT_FOUND, id + " Does Not Exist !!!");
             });
             if (eventListByCategoryOwner.contains(eveventListByCategoryOwnerent)) {
-                return this.modelMapper.map(eveventListByCategoryOwnerent, EventDTO.class);
+                EventDTO eventDTO = this.modelMapper.map(eveventListByCategoryOwnerent, EventDTO.class);
+                eventDTO.setFileName(getFile(path).get("fileName"));
+                eventDTO.setFileUrl(getFile(path).get("pathFile"));
+                return eventDTO;
             }
             throw new HandleExceptionForbidden("You are not allowed to access this event");
         }

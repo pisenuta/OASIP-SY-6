@@ -7,15 +7,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +38,7 @@ public class FileController {
 //        return new UploadFileResponse(fileName, fileDownloadUri,
 //                file.getContentType(), file.getSize());
 //    }
-
+//
 //    @PostMapping("/uploadMultipleFiles")
 //    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
 //        return Arrays.asList(files)
@@ -50,11 +47,19 @@ public class FileController {
 //                .collect(Collectors.toList());
 //    }
 
-    @GetMapping("/download-file/{id}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable  String id, HttpServletRequest request) {
+    @GetMapping("/{eventId}")
+    public ResponseEntity<Object> listFileName(@PathVariable Integer eventId) {
+        List<String> filenames = fileStorageService.listFileName(eventId);
+        return ResponseEntity.ok().body(filenames);
+
+    }
+
+    @GetMapping("/download-file/{id}/{filename:.+}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Integer id, @PathVariable String filename, HttpServletRequest request) throws IOException {
         // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(id);
-//        System.out.println(resource.getFile().getAbsolutePath());
+        Resource resource = fileStorageService.loadAsResource(id, filename);
+        System.out.println(resource.getFile().getAbsolutePath());
+
         // Try to determine file's content type
         String contentType = null;
         try {
@@ -67,7 +72,7 @@ public class FileController {
         }
 
         // Fallback to the default content type if type could not be determined
-        if(contentType == null) {
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
 

@@ -39,4 +39,6 @@ public class EventPostDTO {
     private String eventNotes;
 
     private MultipartFile file;
+    private String fileName;
+    private String fileUrl;
 }

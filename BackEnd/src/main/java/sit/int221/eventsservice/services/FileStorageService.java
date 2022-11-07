@@ -38,32 +38,37 @@ public class FileStorageService {
     }
 
     public String storeFile(MultipartFile file, Event event) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        System.out.println("fileName: " + fileName);
-        String userDir;
-        if(event.getUser() != null){
-            userDir = "User/" + "User_" + event.getUser().getUserId().toString();
-        }else {
-            userDir = "Guest";
-        }
-        System.out.println("userDir: " + userDir);
+        String userDir = event.getUser() != null ? "User/" + "User_" + event.getUser().getUserId() : "Guest";
         String eventDir = "Event_" + event.getId().toString();
-        System.out.println("eventDir: " + eventDir);
-
-
-        try {
-            if(fileName.contains("..")) {
-                throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+        if (file == null) {
+            try {
+                Path fileDir = this.fileStorageLocation.resolve(userDir).resolve(eventDir);
+                Path targetLocation = Files.createDirectories(fileDir);
+            } catch (Exception ex) {
+                throw new FileStorageException("Could not create the directory where the uploaded files will be stored.", ex);
             }
-            Path fileDir = this.fileStorageLocation.resolve(userDir).resolve(eventDir);
-            System.out.println("fileDir: " + fileDir.toString());
-            Path targetLocation = Files.createDirectories(fileDir).resolve(fileName);
-            System.out.println("targetLocation: " + targetLocation.toString());
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-            return fileName;
-        } catch (IOException ex) {
-            throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
+        if (file != null) {
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            System.out.println("fileName: " + fileName);
+            System.out.println("userDir: " + userDir);
+            System.out.println("eventDir: " + eventDir);
+
+            try {
+                if (fileName.contains("..")) {
+                    throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
+                }
+                Path fileDir = this.fileStorageLocation.resolve(userDir).resolve(eventDir);
+                System.out.println("fileDir: " + fileDir.toString());
+                Path targetLocation = Files.createDirectories(fileDir).resolve(fileName);
+                System.out.println("targetLocation: " + targetLocation.toString());
+                Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+                return fileName;
+            } catch (IOException ex) {
+                throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
+            }
+        }
+        return userDir;
     }
 
     public Resource loadFileAsResource(String fileName) {
@@ -72,7 +77,7 @@ public class FileStorageService {
             Resource resource = new UrlResource(filePath.toUri());
             System.out.println(filePath.toUri());
             System.out.println(resource);
-            if(resource.exists()) {
+            if (resource.exists()) {
                 return resource;
             } else {
                 throw new MyFileNotFoundException("File not found " + "eventNo" + fileName);

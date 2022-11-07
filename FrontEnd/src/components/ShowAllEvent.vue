@@ -172,9 +172,63 @@ const getAllEvent = async () => {
   }
 }
 
+const fileById = ref('')
+
+const showFile = async (id) => {
+  if(detail.value === false){
+    detail.value = true
+  } else {
+    detail.value = false
+  }
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}files/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (res.status === 200) {
+      fileById.value = await res.json();
+      console.log(fileById[0]);
+    } else if (res.status === 401 && token !== null){
+      fileById.value = null
+      RefreshToken();
+    }
+}
+
+const downloadFile = async (id) => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}files/download-file/${id}/${fileById.value[0]}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (res.status === 200) {
+      window.open(res.url, '_blank');
+      console.log('yes');
+    } else if (res.status === 401 && token !== null){
+      RefreshToken();
+    }
+}
+
+const removeFile = async (id) => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}files/delete-file/${id}/${fileById.value[0]}`, { 
+    method: 'DELETE' ,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
+  if (res.status === 200) {
+    console.log('deleted successfully')
+    window.reload()
+  }
+  else console.log('error, can not delete')
+}
+
 onBeforeMount(async () => {
   await getAllEvent();
   await getEventCategory();
+  await showFile();
+  await downloadFile();
 })
 
 const schedule = () => {
@@ -212,7 +266,7 @@ const reset = () => {
   filterDate.value = ""
 }
 
-const detail = ref(false)
+const detail = ref(true)
 const showDetail = () => {
   if(detail.value === false){
     detail.value = true
@@ -224,6 +278,7 @@ const showDetail = () => {
 const closeEdited = () => {
   edited.value = false
 }
+
 </script>
  
 <template>
@@ -238,7 +293,8 @@ const closeEdited = () => {
             <div class="card-body overflow-auto" style="height:35.5vw; margin: 1vw;padding-top: 0;">
               <div v-if="events.length !== 0">
                 <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
-                  @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @closeEdited="closeEdited"/>
+                  @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @showFile="showFile" @closeEdited="closeEdited" 
+                  :fileById="fileById" @downloadFile="downloadFile" @removeFile="removeFile"/>
               </div>
               <h5 class="mx-auto Noschedule" >
                 {{ schedule() }}

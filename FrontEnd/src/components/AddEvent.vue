@@ -20,6 +20,7 @@ const RefreshToken = async () => {
     newAccess.value = await res.json()
     refresh()
     getEventCategory()
+    getUser()
   } else if (res.status === 401){
     localStorage.clear()
     window.location.href = "/sy6"
@@ -78,7 +79,7 @@ const errorFuture = ref(false)
 const overlap = ref(false)
 const loading = ref(false)
 
-const createEvent = async (event) => {
+const createEvent = async (event, newFile) => {
     if(userRole === 'guest') {
         if (event.bookingName == null || event.bookingName == '') {
         errorName.value = true
@@ -130,65 +131,79 @@ const createEvent = async (event) => {
         errorFuture.value = true
     }
 
+
     // if (errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true) {
     //     return
     // }
     if (errorName.value == true || errorClinic.value == true || errorTime.value == true || errorFuture.value == true || mailVali.value == false) {
         return
     }
-
+    console.log(newFile.files);
+    console.log(newFile.files[0]);
     if(userRole === 'admin'){
+        let adminformData = new FormData();
+        let adminEvent = {
+            eventCategory: {
+                    id: event.eventCategory.id
+            },
+            userId: event.user.id,
+            bookingName: event.user.name,
+            bookingEmail: event.user.email,
+            eventStartTime: event.eventStartTime,
+            eventDuration: event.eventCategory.eventDuration,
+            eventNotes: event.eventNotes.trim()
+        }
+
+        // if (newFile.files.length != 0) {
+        //     adminformData.append("file", newFile.files[0]);
+        // }
+        adminformData.append("file", newFile.files[0]);
+        adminformData.append( 'event',  JSON.stringify(adminEvent) );
+
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
             headers: {
-                'content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            body: JSON.stringify({
-                eventCategory: {
-                    id: event.eventCategory.id
-                },
-                user: {
-                    email: event.user.email
-                },
-                bookingName: event.user.name,
-                bookingEmail: event.user.email,
-                eventStartTime: event.eventStartTime,
-                eventDuration: event.eventCategory.eventDuration,
-                eventNotes: event.eventNotes.trim()
-            })
+            body: adminformData
         })
-        loading.value = true
+        // loading.value = true
         if (res.status == 201 || res.status == 200) {
             loading.value = false
             console.log('added successfully');
             addAlert.value = true
-        } else if (res.status == 400) {
+        } else if (res.status == 400 || res.status == 415) {
             loading.value = false
             overlap.value = true
             console.log('error, can not add');
         }
         
     } else if(userRole === 'student'){
+        let stdformData = new FormData();
+        let stdEvent = {
+            eventCategory: {
+                id: event.eventCategory.id
+            },
+            userId: event.user.id,
+            bookingName: event.bookingName.trim(),
+            bookingEmail: event.user.email,
+            eventStartTime: event.eventStartTime,
+            eventDuration: event.eventCategory.eventDuration,
+            eventNotes: event.eventNotes.trim()
+        }
+
+        // if (newFile.files.length != 0) {
+        //     adminformData.append("file", newFile.files[0]);
+        // }
+        stdformData.append("file", newFile.files[0]);
+        stdformData.append( 'event',  JSON.stringify(stdEvent) );
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
             headers: {
                 'content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            body: JSON.stringify({
-                eventCategory: {
-                    id: event.eventCategory.id
-                },
-                user: {
-                    email: event.user.email
-                },
-                bookingName: event.bookingName.trim(),
-                bookingEmail: event.user.email.trim(),
-                eventStartTime: event.eventStartTime,
-                eventDuration: event.eventCategory.eventDuration,
-                eventNotes: event.eventNotes.trim()
-            })
+            body: stdEvent
         })
         loading.value = true
         if (res.status == 201 || res.status == 200) {
@@ -201,22 +216,28 @@ const createEvent = async (event) => {
             console.log('error, can not add');
         }
     } else if (userRole === 'guest'){
+        let guestformData = new FormData();
+        let guestEvent = {
+            eventCategory: {
+                id: event.eventCategory.id
+            },
+            userId: null,
+            bookingName: event.bookingName.trim(),
+            bookingEmail: event.bookingEmail.trim(),
+            eventStartTime: event.eventStartTime,
+            eventDuration: event.eventCategory.eventDuration,
+            eventNotes: event.eventNotes.trim()
+        }
+
+        // if (newFile.files.length != 0) {
+        //     adminformData.append("file", newFile.files[0]);
+        // }
+        guestformData.append("file", newFile.files[0]);
+        guestformData.append( 'event',  JSON.stringify(guestEvent) );
+
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/guest`, {
             method: 'POST',
-            headers: {
-                'content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                eventCategory: {
-                    id: event.eventCategory.id
-                },
-                user: null,
-                bookingName: event.bookingName.trim(),
-                bookingEmail: event.bookingEmail.trim(),
-                eventStartTime: event.eventStartTime,
-                eventDuration: event.eventCategory.eventDuration,
-                eventNotes: event.eventNotes.trim()
-            })
+            body: guestformData
         })
         loading.value = true
         if (res.status == 201 || res.status == 200) {

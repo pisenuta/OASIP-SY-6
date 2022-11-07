@@ -91,6 +91,29 @@ const check = () => {
 
 check();
 
+const fileupload = ref()
+
+const maxFileError = ref(false)
+const uploadFile = () => {
+    let maxFileSize = 10 * 1024 * 1024 //10MB
+    if (fileupload.value.files[0] != undefined && fileupload.value.files[0].size > maxFileSize) {
+        console.log('too big')
+        let fileInput = document.getElementById('fileInput')
+        fileInput.setCustomValidity('The file size cannot be larger than 10 MB.')
+        fileInput.reportValidity()
+        fileInput.type = 'text'
+        fileInput.type = 'file'
+        maxFileError.value == true
+    } else {
+      maxFileError.value == false
+      fileInput.setCustomValidity('')
+    }
+}
+const clearInput = () => {
+  let input = fileupload.value
+  input.type = 'text'
+  input.type = 'file'
+}
 </script>
 <template>
     <div class="body">
@@ -196,16 +219,26 @@ check();
                     v-model="newEvent.eventNotes"></textarea>
             </div>
 
-            <FilePond
-                name="test"
-                ref="pond"
-
-                @change="onFileChanged($event)"
-                label-idle="Drop files here or <span class='filepond--label-action'>Browse</span>"
-              />
+            <div class="marginForm">
+                <div class="input-group mx-auto" style="width:50%">
+                    <input 
+                        id="fileInput"
+                        type="file" 
+                        class="form-control style-form" 
+                        style="font-size:auto"
+                        ref="fileupload"
+                        multiple
+                        @change="uploadFile()"
+                    >
+                    <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
+                        <font-awesome-icon icon="fa-solid fa-trash-can" />
+                    </button>
+                </div>
+                <span v-show="maxFileError == true" class="text-red-500">The file size cannot be longer than 10 MB</span>
+            </div>
         </div>
         <div style="text-align: center;">
-            <button type="button" class="btn btn-dark mx-auto addEventBtn" @click="$emit('create', newEvent)">
+            <button type="button" class="btn btn-dark mx-auto addEventBtn" @click="$emit('create', newEvent,fileupload)">
                 Booking
             </button>
         </div>

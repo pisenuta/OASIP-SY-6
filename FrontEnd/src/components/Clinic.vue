@@ -232,7 +232,7 @@ ul {
 .clinic-pic{
     width: 10vw;  
     margin-left:25%;
-    margin-top: 5%;
+    margin-top: 10%;
 }
 .clinic-popup {
     position: fixed;

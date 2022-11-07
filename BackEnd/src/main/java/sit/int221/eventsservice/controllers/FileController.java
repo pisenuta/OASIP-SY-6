@@ -82,10 +82,10 @@ public class FileController {
                 .body(resource);
     }
 
-    @DeleteMapping("/delete-file/{fileName:.+}")
-    public ResponseEntity<String> deleteFile(@PathVariable String fileName) {
+    @DeleteMapping("/delete-file/{id}/{fileName:.+}")
+    public ResponseEntity<String> deleteFile(@PathVariable Integer id,@PathVariable String fileName) {
         // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+        Resource resource = fileStorageService.loadAsResource(id, fileName);
         try {
             Files.delete(resource.getFile().toPath());
         } catch (IOException e) {

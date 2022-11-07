@@ -2,7 +2,17 @@
 import { ref } from "vue";
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
-defineEmits(['delete', 'edit', 'toEditingMode', 'cancelEdit', 'showDetail', 'closeEdited'])
+defineEmits([
+    'delete', 
+    'edit', 
+    'toEditingMode', 
+    'cancelEdit', 
+    'showDetail', 
+    'closeEdited', 
+    'showFile', 
+    'downloadFile',
+    'removeFile'
+])
 const props = defineProps({
     eventList: {
         type: Array,
@@ -23,6 +33,10 @@ const props = defineProps({
     detail:{
         type: Boolean,
         default: false
+    },
+    fileById:{
+        type: String,
+        require: true,
     }
 });
 const role = localStorage.getItem('role');
@@ -71,7 +85,7 @@ function formateTime(date) {
                 <p><b>Date :</b> {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }}  {{ formateTime(event.eventStartTime) }}</p>
                 <button class="btn detail-Btn" 
                     v-on:click="showIndex = index , DetailPopUp = true"
-                    @click="$emit('showDetail')"
+                    @click="$emit('showFile', event.id)"
                     style="font-weight: bold;">More ></button>
             </div>
         </div>
@@ -81,19 +95,19 @@ function formateTime(date) {
                 <ul>
                     <li v-for="(event, index) in eventList" :key="index" >
                         <div class="card-body " v-if="DetailPopUp == true">
-                            <div class="card popDetail" style="width: 38rem;" v-if="showIndex === index">
+                            <div class="card popDetail" style="width: 31.5vw;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header"
-                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">EVENT DETAIL
+                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 1vw;">EVENT DETAIL
                                     </div>
                                     <button class="close-detail" @click="$emit('showDetail')" v-on:click="showIndex = null , DetailPopUp = false">
                                         &times;
                                     </button>
                                 </div>
-                                <div class="card-body" v-if="showIndex === index" style="text-align: center;">
-                                    <b>{{ event.bookingName }}</b><br />
-                                    {{ event.bookingEmail }}<br /><br />
-                                    <span style="font-weight: bold; color: #e74694">Clinic</span><br />
+                                <div class="card-body" v-if="showIndex === index" style="text-align: center; font-size: 0.95vw;">
+                                    <b style="font-size: 1vw;">{{ event.bookingName }}</b><br />
+                                    <p>{{ event.bookingEmail }}</p>
+                                    <span style="font-weight: bold; color: #e74694;font-size: 1vw;">Clinic</span><br />
                                     {{ event.eventCategory.eventCategoryName }}<br />
                                     {{ moment(event.eventStartTime).format('ddd, D MMM YYYY')}} at
                                     {{ formateTime(event.eventStartTime) }}<br />
@@ -107,11 +121,33 @@ function formateTime(date) {
                                                 event.eventNotes
                                         }}
                                     </p>
+                            
+                                    <div v-if="fileById !== null && fileById[0] !== undefined" style="margin-bottom: 1vw;">
+                                        <p style="font-weight: bold; color: #e74694;margin-bottom: 0.5vw;margin-top: 1.4vw;">File</p>
+            
+
+                                        <div class="input-group" style="width: 20vw; left: 18%;">
+                                            <!-- <input type="text" class="form-control" v-model="fileById[0]" disabled> -->
+                                            <div type="text" class="form-control" style="cursor:default; background-color: #e9ecef;height: 2vw;">
+                                                {{fileById[0].slice(0, 28)}}
+                                                <a v-if="fileById[0].length > 28">...</a>
+                                            </div>
+                                            <button class="input-group-text btn btn-outline-primary" type="button" @click="$emit('downloadFile', event.id)" style="height: 2vw;">
+                                                <font-awesome-icon icon="fa-solid fa-file-arrow-down" />
+                                            </button>
+
+                                            <button class="input-group-text btn btn-outline-danger" type="button" @click="$emit('removeFile', event.id)" style="height: 2vw;">
+                                                <font-awesome-icon icon="fa-solid fa-trash-can" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    
                                     <!-- Edit -->
                                     <button v-if="role !== 'lecturer'" class="btn btn-warning edit-event-btn detail-btn-each" style="margin-right: 40px;"
                                         v-on:click="editingMode = true">Edit Appointment</button>
                                     <div class="containerV2" v-if="editingMode === true">
-                                        <div class="card popEdit" style="width: 38rem;" >
+                                        <div class="card popEdit" style="width: 31.5vw;" >
                                             <div class="card-body">
                                                 <div class="card-title">
                                                     <div class="card-header"

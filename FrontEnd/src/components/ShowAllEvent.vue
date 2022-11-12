@@ -22,7 +22,7 @@ const RefreshToken = async () => {
     getAllEvent();
     getEventCategory();
 
-  } else if (res.status === 401){
+  } else if (res.status === 401 || res.status === 403){
     localStorage.clear()
     window.location.href = "/sy6"
     console.log("plz log out");

@@ -93,26 +93,57 @@ check();
 
 const fileupload = ref()
 
-const maxFileError = ref(false)
-const uploadFile = () => {
-    let maxFileSize = 10 * 1024 * 1024 //10MB
-    if (fileupload.value.files[0] != undefined && fileupload.value.files[0].size > maxFileSize) {
-        console.log('too big')
-        let fileInput = document.getElementById('fileInput')
-        fileInput.setCustomValidity('The file size cannot be larger than 10 MB.')
-        fileInput.reportValidity()
-        fileInput.type = 'text'
-        fileInput.type = 'file'
-        maxFileError.value == true
-    } else {
-      maxFileError.value == false
-      fileInput.setCustomValidity('')
-    }
-}
 const clearInput = () => {
-  let input = fileupload.value
-  input.type = 'text'
-  input.type = 'file'
+    let fileInput = document.getElementById('fileInput')
+	fileInput.type = 'text'
+	fileInput.type = 'file'
+	fileupload.value = ''
+	dataTransfer.items.clear()
+}
+
+// const maxFileError = ref(false)
+// const uploadFile = () => {
+//     let maxFileSize = 10 * 1024 * 1024 //10MB
+//     if (fileupload.value.files[0] != undefined && fileupload.value.files[0].size > maxFileSize) {
+//         console.log('too big')
+//         let fileInput = document.getElementById('fileInput')
+//         fileInput.setCustomValidity('The file size cannot be larger than 10 MB.')
+//         fileInput.reportValidity()
+//         fileInput.type = 'text'
+//         fileInput.type = 'file'
+//         maxFileError.value == true
+//     } else {
+//       maxFileError.value == false
+//       fileInput.setCustomValidity('')
+//     }
+// }
+
+let dataTransfer = new DataTransfer()
+
+const uploadFile = (e) => {
+	let maxFileSize = 10 * 1024 * 1024 //10MB
+	if (e.target.files[0].size > maxFileSize) {
+		let fileInput = document.getElementById('fileInput')
+		fileInput.setCustomValidity('The file size cannot be larger than 10 MB.')
+		fileInput.reportValidity()
+        console.log('1');
+		if (fileupload.value === undefined || fileupload.value === '') {
+			clearInput()
+            console.log('2');
+
+		} else {
+			dataTransfer.items.clear()
+			dataTransfer.items.add(fileupload.value)
+			fileInput.files = dataTransfer.files
+            console.log(dataTransfer);
+            console.log(fileupload);
+            console.log('3');
+		}
+	} else {
+		fileupload.value = e.target.files[0]
+		fileInput.setCustomValidity('')
+        console.log('4');
+	}
 }
 </script>
 <template>
@@ -226,15 +257,13 @@ const clearInput = () => {
                         type="file" 
                         class="form-control style-form" 
                         style="font-size:auto"
-                        ref="fileupload"
                         multiple
-                        @change="uploadFile()"
+                        @change="uploadFile($event)"
                     >
                     <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
                         <font-awesome-icon icon="fa-solid fa-trash-can" />
                     </button>
                 </div>
-                <span v-show="maxFileError == true" class="text-red-500">The file size cannot be longer than 10 MB</span>
             </div>
         </div>
         <div style="text-align: center;">

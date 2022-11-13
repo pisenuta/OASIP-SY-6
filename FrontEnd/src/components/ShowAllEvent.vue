@@ -219,7 +219,8 @@ const removeFile = async (id) => {
   })
   if (res.status === 200) {
     console.log('deleted successfully')
-    window.reload()
+    alert('Delete file successfully')
+    location.reload()
   }
   else console.log('error, can not delete')
 }
@@ -278,6 +279,11 @@ const showDetail = () => {
 const closeEdited = () => {
   edited.value = false
 }
+const editingEvent = ref({})
+const toEditingMode = (editEvent) => {
+  editingEvent.value = editEvent
+    console.log(editingEvent.value)
+}
 
 </script>
  
@@ -294,7 +300,8 @@ const closeEdited = () => {
               <div v-if="events.length !== 0">
                 <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
                   @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @showFile="showFile" @closeEdited="closeEdited" 
-                  :fileById="fileById" @downloadFile="downloadFile" @removeFile="removeFile"/>
+                  :fileById="fileById" @downloadFile="downloadFile" @removeFile="removeFile"
+                  :currentEvent="editingEvent" @toEditingMode="toEditingMode"/>
               </div>
               <h5 class="mx-auto Noschedule" >
                 {{ schedule() }}

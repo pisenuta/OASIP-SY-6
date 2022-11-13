@@ -138,8 +138,8 @@ const createEvent = async (event, newFile) => {
     if (errorName.value == true || errorClinic.value == true || errorTime.value == true || errorFuture.value == true || mailVali.value == false) {
         return
     }
-    console.log(newFile.files);
-    console.log(newFile.files[0]);
+    // console.log(newFile.files);
+    // console.log(newFile.files[0]);
     if(userRole === 'admin'){
         let adminformData = new FormData();
         let adminEvent = {
@@ -157,7 +157,7 @@ const createEvent = async (event, newFile) => {
         // if (newFile.files.length != 0) {
         //     adminformData.append("file", newFile.files[0]);
         // }
-        adminformData.append("file", newFile.files[0]);
+        adminformData.append("file", newFile);
         adminformData.append( 'event',  JSON.stringify(adminEvent) );
 
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
 defineEmits([
@@ -11,7 +11,8 @@ defineEmits([
     'closeEdited', 
     'showFile', 
     'downloadFile',
-    'removeFile'
+    'removeFile',
+    'toEditingMode'
 ])
 const props = defineProps({
     eventList: {
@@ -37,7 +38,11 @@ const props = defineProps({
     fileById:{
         type: String,
         require: true,
-    }
+    },
+    currentEvent: {
+        type: Object,
+        default: {}
+    },
 });
 const role = localStorage.getItem('role');
 
@@ -51,22 +56,31 @@ const showDeleted = () => {
     deleted.value = true
     DetailPopUp.value = false
 }
-const editTime = ref("")
-const editNote = ref("")
+// const editTime = ref("")
+// const editNote = ref("")
 
-const editEvent = (event) => {
-    if(editTime.value === null || editTime.value === ''){
-        event.eventNotes = editNote.value
-    } else {
-        event.eventStartTime = editTime.value
-        event.eventNotes = editNote.value
+// const editEvent = (event) => {
+//     if(editTime.value === null || editTime.value === ''){
+//         event.eventNotes = editNote.value
+//     } else {
+//         event.eventStartTime = editTime.value
+//         event.eventNotes = editNote.value
+//     }
+//     return event
+// }
+// const resetEditData = () => {
+//     editTime.value = ""
+//     editNote.value = ""
+// }
+
+const newEvent = computed(() => {
+    return {
+        id: props.currentEvent.id,
+        eventStartTime: props.currentEvent.eventStartTime,
+        eventNotes: props.currentEvent.eventNotes
     }
-    return event
-}
-const resetEditData = () => {
-    editTime.value = ""
-    editNote.value = ""
-}
+})
+
 function formateTime(date) {
     const options = {hour: "numeric", minute: "numeric"};
     return new Date(date).toLocaleString("th-TH", options);
@@ -145,7 +159,7 @@ function formateTime(date) {
                                     
                                     <!-- Edit -->
                                     <button v-if="role !== 'lecturer'" class="btn btn-warning edit-event-btn detail-btn-each" style="margin-right: 40px;"
-                                        v-on:click="editingMode = true">Edit Appointment</button>
+                                        v-on:click="editingMode = true" @click="$emit('toEditingMode', event)">Edit Appointment</button>
                                     <div class="containerV2" v-if="editingMode === true">
                                         <div class="card popEdit" style="width: 31.5vw;" >
                                             <div class="card-body">
@@ -163,19 +177,20 @@ function formateTime(date) {
                                                     <p v-if="overlap" class="error">Time is overlapping</p>
                                                     <Datepicker 
                                                         :minDate="new Date()" 
-                                                        v-model="editTime"
+                                                        v-model="newEvent.eventStartTime"
                                                         class="datepicker" 
                                                         :class="{'border border-danger' : overlap}"
                                                         style="margin-bottom: 10px;" 
                                                     />
-                                                    <p class="noti">* If you not insert start date, The date will remain the same date</p>
+                                                    <!-- <p class="noti">* If you not insert start date, The date will remain the same date</p> -->
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
-                                                    <textarea class="form-control style-form" rows="3" maxlength="500" v-model="editNote"></textarea>
+                                                    <textarea class="form-control style-form" rows="3" maxlength="500" v-model="newEvent.eventNotes"></textarea>
+                                                    
                                                     <div style="margin-top: 30px;">
                                                         <button type="button" class="btn btn-success confirm-edit-btn"
                                                             style="margin-right: 40px;"
-                                                            @click="$emit('edit', editEvent(event), resetEditData())"
+                                                            @click="$emit('edit', newEvent)"
                                                             >Submit</button>
                                                         <button type="button" class="btn btn-secondary"
                                                             v-on:click="editingMode = false"

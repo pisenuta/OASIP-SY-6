@@ -195,7 +195,7 @@ const createEvent = async (event, newFile) => {
         // if (newFile.files.length != 0) {
         //     adminformData.append("file", newFile.files[0]);
         // }
-        stdformData.append("file", newFile.files[0]);
+        stdformData.append("file", newFile);
         stdformData.append( 'event',  JSON.stringify(stdEvent) );
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
@@ -232,7 +232,7 @@ const createEvent = async (event, newFile) => {
         // if (newFile.files.length != 0) {
         //     adminformData.append("file", newFile.files[0]);
         // }
-        guestformData.append("file", newFile.files[0]);
+        guestformData.append("file", newFile);
         guestformData.append( 'event',  JSON.stringify(guestEvent) );
 
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/guest`, {

@@ -68,10 +68,6 @@ const showDeleted = () => {
 //     }
 //     return event
 // }
-// const resetEditData = () => {
-//     editTime.value = ""
-//     editNote.value = ""
-// }
 
 const newEvent = computed(() => {
     return {
@@ -86,6 +82,34 @@ function formateTime(date) {
     return new Date(date).toLocaleString("th-TH", options);
 }
 
+const editfileupload = ref()
+let dataTransfer = new DataTransfer()
+
+const uploadFile = (e) => {
+	let maxFileSize = 10 * 1024 * 1024 //10MB
+	if (e.target.files[0].size > maxFileSize) {
+		let fileInput = document.getElementById('fileInput')
+		fileInput.setCustomValidity('The file size cannot be larger than 10 MB.')
+		fileInput.reportValidity()
+        console.log('1');
+		if (editfileupload.value === undefined || editfileupload.value === '') {
+			clearInput()
+            console.log('2');
+
+		} else {
+			dataTransfer.items.clear()
+			dataTransfer.items.add(editfileupload.value)
+			fileInput.files = dataTransfer.files
+            console.log(dataTransfer);
+            console.log(editfileupload);
+            console.log('3');
+		}
+	} else {
+		editfileupload.value = e.target.files[0]
+		fileInput.setCustomValidity('')
+        console.log('4');
+	}
+}
 </script>
 
 <template>
@@ -186,15 +210,22 @@ function formateTime(date) {
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <p>Note :</p>
                                                     <textarea class="form-control style-form" rows="3" maxlength="500" v-model="newEvent.eventNotes"></textarea>
-                                                    
+                                                    <input 
+                                                        id="fileInput"
+                                                        type="file" 
+                                                        class="form-control style-form" 
+                                                        style="font-size:auto"
+                                                        multiple
+                                                        @change="uploadFile($event)"
+                                                    >
                                                     <div style="margin-top: 30px;">
                                                         <button type="button" class="btn btn-success confirm-edit-btn"
                                                             style="margin-right: 40px;"
-                                                            @click="$emit('edit', newEvent)"
+                                                            @click="$emit('edit', newEvent, editfileupload)"
                                                             >Submit</button>
                                                         <button type="button" class="btn btn-secondary"
                                                             v-on:click="editingMode = false"
-                                                            @click="$emit('cancelEdit',resetEditData())">Cancel</button>
+                                                            @click="$emit('cancelEdit')">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>

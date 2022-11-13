@@ -124,7 +124,7 @@ const removeEvent = async (removeEventId) => {
 const overlap = ref(false)
 const edited = ref(false)
 const errorPast = ref(false)
-const editEvent = async (editEvent) => {
+const editEvent = async (editEvent, newFile) => {
   if (moment(editEvent.eventStartTime).isAfter(moment(new Date()))) {
     errorPast.value = false
   } else {
@@ -133,19 +133,25 @@ const editEvent = async (editEvent) => {
   if(errorPast.value == true){
         return
   }
+
+  let editformData = new FormData();
+  let editeventwithfile = {
+    bookingEmail: editEvent.bookingEmail,
+    eventStartTime: editEvent.eventStartTime,
+    eventNotes: editEvent.eventNotes.trim(),
+    eventDuration: editEvent.eventDuration,
+    eventCategory: editEvent.eventCategory
+  }
+
+  editformData.append("file", newFile);
+  editformData.append( 'event',  JSON.stringify(editeventwithfile) );
+
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${editEvent.id}`, {
     method: 'PUT',
     headers: {
-      'content-type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
-    body: JSON.stringify({
-      bookingEmail: editEvent.bookingEmail,
-      eventStartTime: editEvent.eventStartTime,
-      eventNotes: editEvent.eventNotes.trim(),
-      eventDuration: editEvent.eventDuration,
-      eventCategory: editEvent.eventCategory
-    })
+    body: editformData
   })
   if (res.status === 200) {
     edited.value = true
@@ -220,6 +226,8 @@ const removeFile = async (id) => {
   if (res.status === 200) {
     console.log('deleted successfully')
     alert('Delete file successfully')
+    getAllEvent();
+    showDetail();
     location.reload()
   }
   else console.log('error, can not delete')

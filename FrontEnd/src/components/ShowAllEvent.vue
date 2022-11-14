@@ -156,6 +156,7 @@ const editEvent = async (editEvent, newFile) => {
   if (res.status === 200) {
     edited.value = true
     overlap.value = false
+    showFile(editEvent.id)
     console.log('edited successfully');
   } else {
     edited.value = false
@@ -225,10 +226,10 @@ const removeFile = async (id) => {
   })
   if (res.status === 200) {
     console.log('deleted successfully')
-    alert('Delete file successfully')
-    getAllEvent();
+    // alert('Delete file successfully')
+    showFile(id)
     showDetail();
-    location.reload()
+    // location.reload()
   }
   else console.log('error, can not delete')
 }

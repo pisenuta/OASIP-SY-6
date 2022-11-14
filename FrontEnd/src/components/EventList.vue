@@ -72,6 +72,9 @@ const showDeleted = () => {
 const newEvent = computed(() => {
     return {
         id: props.currentEvent.id,
+        bookingEmail: props.currentEvent.bookingEmail,
+        eventCategory: props.currentEvent.eventCategory,
+        eventDuration: props.currentEvent.eventDuration,
         eventStartTime: props.currentEvent.eventStartTime,
         eventNotes: props.currentEvent.eventNotes
     }
@@ -109,6 +112,21 @@ const uploadFile = (e) => {
 		fileInput.setCustomValidity('')
         console.log('4');
 	}
+}
+
+const clearInput = () => {
+    let fileInput = document.getElementById('fileInput')
+	fileInput.type = 'text'
+	fileInput.type = 'file'
+	fileupload.value = ''
+	dataTransfer.items.clear()
+}
+
+const deleteFileAlert = ref(false)
+const deletedFile = ref(false)
+const showDeletedFile = () => {
+    deleteFileAlert.value = false
+    deletedFile.value = true
 }
 </script>
 
@@ -167,14 +185,18 @@ const uploadFile = (e) => {
                                         <div class="input-group" style="width: 20vw; left: 18%;">
                                             <!-- <input type="text" class="form-control" v-model="fileById[0]" disabled> -->
                                             <div type="text" class="form-control" style="cursor:default; background-color: #e9ecef;height: 2vw;">
-                                                {{fileById[0].slice(0, 28)}}
+                                                {{fileById[0].slice(0, 25)}}
                                                 <a v-if="fileById[0].length > 28">...</a>
                                             </div>
-                                            <button class="input-group-text btn btn-outline-primary" type="button" @click="$emit('downloadFile', event.id)" style="height: 2vw;">
+                                            <button class="input-group-text btn btn-outline-success" type="button" @click="$emit('downloadFile', event.id)" style="height: 2vw;">
                                                 <font-awesome-icon icon="fa-solid fa-file-arrow-down" />
                                             </button>
 
-                                            <button class="input-group-text btn btn-outline-danger" type="button" @click="$emit('removeFile', event.id)" style="height: 2vw;">
+                                            <button 
+                                                class="input-group-text btn btn-outline-danger" 
+                                                type="button" 
+                                                style="height: 2vw;"
+                                                v-on:click="deleteFileAlert = true">
                                                 <font-awesome-icon icon="fa-solid fa-trash-can" />
                                             </button>
                                         </div>
@@ -190,7 +212,7 @@ const uploadFile = (e) => {
                                                 <div class="card-title">
                                                     <div class="card-header"
                                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px;">
-                                                        Event #{{ index + 1 }}</div>
+                                                        EDIT EVENT</div>
                                                 </div>
                                                 <div v-if="showIndex === index">
                                                     <b>{{ event.bookingName }}</b><br />
@@ -202,22 +224,30 @@ const uploadFile = (e) => {
                                                     <Datepicker 
                                                         :minDate="new Date()" 
                                                         v-model="newEvent.eventStartTime"
-                                                        class="datepicker" 
+                                                        class="datepicker mx-auto" 
                                                         :class="{'border border-danger' : overlap}"
-                                                        style="margin-bottom: 10px;" 
+                                                        style="margin-bottom: 10px; width: 70%;" 
                                                     />
                                                     <!-- <p class="noti">* If you not insert start date, The date will remain the same date</p> -->
                                                     {{ event.eventDuration }} minutes<br /><br />
-                                                    <p>Note :</p>
-                                                    <textarea class="form-control style-form" rows="3" maxlength="500" v-model="newEvent.eventNotes"></textarea>
-                                                    <input 
-                                                        id="fileInput"
-                                                        type="file" 
-                                                        class="form-control style-form" 
-                                                        style="font-size:auto"
-                                                        multiple
-                                                        @change="uploadFile($event)"
-                                                    >
+                                                    <span style="font-weight: bold; color: #e74694"><p>Note :</p></span>
+                                                    <textarea class="form-control style-form" style="width: 70%;" rows="3" maxlength="500" v-model="newEvent.eventNotes"></textarea>
+                                                    
+                                                    <span style="font-weight: bold; color: #e74694;"><p style="margin-top:1vw">File :</p></span>
+                                                    <div class="input-group mx-auto" style="width: 70%;">
+                                                        <input 
+                                                            id="fileInput"
+                                                            type="file" 
+                                                            class="form-control style-form" 
+                                                            style="font-size:auto"
+                                                            multiple
+                                                            @change="uploadFile($event)"
+                                                            v-on:change="fileById[0]"
+                                                        >
+                                                        <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
+                                                            <font-awesome-icon icon="fa-solid fa-trash-can" />
+                                                        </button>
+                                                    </div>     
                                                     <div style="margin-top: 30px;">
                                                         <button type="button" class="btn btn-success confirm-edit-btn"
                                                             style="margin-right: 40px;"
@@ -251,6 +281,24 @@ const uploadFile = (e) => {
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Delete File -->
+                                    <div class="containerV2" v-if="deleteFileAlert === true || deletedFile === true">
+                                        <div class="card alert" v-if="deleteFileAlert === true">
+                                            <div class="card-body">
+                                                <img
+                                                    src="https://api.iconify.design/akar-icons/circle-alert.svg?color=%23bb2d3b" style="width: 4.5vw">
+                                                <p class="card-text" style="margin-top: 20px;"><b>Are you sure you want
+                                                        to delete file ?</b></p>
+                                                <button type="button" class="btn btn-danger cancel-event-btn"
+                                                    style="padding: 5px 20px 5px 20px;"
+                                                    @click="$emit('removeFile', event.id)" 
+                                                    v-on:click="showDeletedFile">Sure</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    style="margin-left: 30px;" v-on:click="deleteFileAlert = false">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -268,6 +316,7 @@ const uploadFile = (e) => {
                     </div>
                 </div>
             </div>
+
             <div class="containerV2" v-if="edited === true">
                 <div class="card alertEdit">
                     <div class="card-body" style="margin-top: 10px;">
@@ -280,6 +329,19 @@ const uploadFile = (e) => {
                     </div>
                 </div>
             </div>
+
+            <div class="containerV2" v-if="deletedFile === true">
+                <div class="card alertEdit" id="deleted">
+                    <div class="card-body" style="margin-top: 10px;">
+                        <img
+                            src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+                        <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> File Successfully</p>
+                        <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
+                            v-on:click="deletedFile = false">OK</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>

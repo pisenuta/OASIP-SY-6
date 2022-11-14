@@ -232,22 +232,24 @@ const showDeletedFile = () => {
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <span style="font-weight: bold; color: #e74694"><p>Note :</p></span>
                                                     <textarea class="form-control style-form" style="width: 70%;" rows="3" maxlength="500" v-model="newEvent.eventNotes"></textarea>
-                                                    
-                                                    <span style="font-weight: bold; color: #e74694;"><p style="margin-top:1vw">File :</p></span>
-                                                    <div class="input-group mx-auto" style="width: 70%;">
-                                                        <input 
-                                                            id="fileInput"
-                                                            type="file" 
-                                                            class="form-control style-form" 
-                                                            style="font-size:auto"
-                                                            multiple
-                                                            @change="uploadFile($event)"
-                                                            v-on:change="fileById[0]"
-                                                        >
-                                                        <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
-                                                            <font-awesome-icon icon="fa-solid fa-trash-can" />
-                                                        </button>
+                                                    <div v-if="fileById !== null && fileById[0] !== undefined">
+                                                        <span style="font-weight: bold; color: #e74694;"><p style="margin-top:1vw">File :</p></span>
+                                                        <div class="input-group mx-auto" style="width: 70%;">
+                                                            <input 
+                                                                id="fileInput"
+                                                                type="file" 
+                                                                class="form-control style-form" 
+                                                                style="font-size:auto"
+                                                                multiple
+                                                                @change="uploadFile($event)"
+                                                                v-on:change="fileById[0]"
+                                                            >
+                                                            <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
+                                                                <font-awesome-icon icon="fa-solid fa-trash-can" />
+                                                            </button>
+                                                        </div>     
                                                     </div>     
+                                                    
                                                     <div style="margin-top: 30px;">
                                                         <button type="button" class="btn btn-success confirm-edit-btn"
                                                             style="margin-right: 40px;"

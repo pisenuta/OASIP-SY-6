@@ -101,7 +101,7 @@ const createEvent = async (event, newFile) => {
         }
     }
     else if(userRole === 'admin') {
-        if (Object.keys(event.user).length === 0){
+        if (event.user.name === undefined){
         errorName.value = true
         } else {
         errorName.value = false
@@ -159,6 +159,7 @@ const createEvent = async (event, newFile) => {
         // }
         adminformData.append("file", newFile);
         adminformData.append( 'event',  JSON.stringify(adminEvent) );
+        loading.value = true
 
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
@@ -167,7 +168,6 @@ const createEvent = async (event, newFile) => {
             },
             body: adminformData
         })
-        // loading.value = true
         if (res.status == 201 || res.status == 200) {
             loading.value = false
             console.log('added successfully');
@@ -197,6 +197,8 @@ const createEvent = async (event, newFile) => {
         // }
         stdformData.append("file", newFile);
         stdformData.append( 'event',  JSON.stringify(stdEvent) );
+        loading.value = true
+
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
             headers: {
@@ -205,7 +207,7 @@ const createEvent = async (event, newFile) => {
             },
             body: stdEvent
         })
-        loading.value = true
+
         if (res.status == 201 || res.status == 200) {
             loading.value = false
             console.log('added successfully');
@@ -234,7 +236,8 @@ const createEvent = async (event, newFile) => {
         // }
         guestformData.append("file", newFile);
         guestformData.append( 'event',  JSON.stringify(guestEvent) );
-
+        loading.value = true
+        
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/guest`, {
             method: 'POST',
             body: guestformData

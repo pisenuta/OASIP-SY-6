@@ -73,7 +73,7 @@ public class EventController {
 
     @PutMapping(value = "/{Id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Event> update(@Valid @RequestPart("event") String editEvent, @PathVariable Integer Id,  @RequestPart(value = "file", required = false) MultipartFile file)
-            throws OverlappedExceptionHandler, HandleExceptionForbidden, IOException {
+            throws OverlappedExceptionHandler, HandleExceptionForbidden, IOException, HandleExceptionBadRequest {
         objectMapper.registerModule(new JavaTimeModule());
         EventPutDTO updateEvent = objectMapper.readValue(editEvent, EventPutDTO.class);
         return eventService.update(updateEvent, Id, file);

@@ -40,7 +40,10 @@ import sit.int221.eventsservice.entities.User;
 import sit.int221.eventsservice.repositories.CategoryRepository;
 import sit.int221.eventsservice.repositories.EventRepository;
 import sit.int221.eventsservice.repositories.UserRepository;
+import javax.validation.Validator;
+import javax.validation.ConstraintViolationException;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 
 @AllArgsConstructor
@@ -58,6 +61,8 @@ public class EventService {
     private FileStorageService fileStorageService;
 
     private final FileStorageProperties fileStorageProperties;
+
+    private Validator validator;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -155,6 +160,15 @@ public class EventService {
     }
 
     public Event save(EventPostDTO newEvent, MultipartFile file) throws OverlappedExceptionHandler, HandleExceptionForbidden, HandleExceptionBadRequest, IOException {
+        Set<ConstraintViolation<EventPostDTO>> violations = validator.validate(newEvent);
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<EventPostDTO> constraintViolation : violations) {
+                sb.append(constraintViolation.getMessage()).append(" | ");
+            }
+            throw new HandleExceptionBadRequest(sb.toString());
+        }
+
         Date newEventStartTime = Date.from(newEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(newEvent.getEventStartTime()), newEvent.getEventDuration());
         List<EventDTO> eventList = getEventToCheckOverlap();
@@ -199,7 +213,16 @@ public class EventService {
         return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
     }
 
-    public ResponseEntity<Event> update(EventPutDTO updateEvent, Integer Id, MultipartFile file) throws OverlappedExceptionHandler, HandleExceptionForbidden, IOException {
+    public ResponseEntity<Event> update(EventPutDTO updateEvent, Integer Id, MultipartFile file) throws OverlappedExceptionHandler, HandleExceptionForbidden, IOException, HandleExceptionBadRequest {
+        Set<ConstraintViolation<EventPutDTO>> violations = validator.validate(updateEvent);
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<EventPutDTO> constraintViolation : violations) {
+                sb.append(constraintViolation.getMessage()).append(" | ");
+            }
+            throw new HandleExceptionBadRequest(sb.toString());
+        }
+
         Date newEventStartTime = Date.from(updateEvent.getEventStartTime());
         Date newEventEndTime = findEndDate(Date.from(updateEvent.getEventStartTime()), updateEvent.getEventDuration());
         List<EventDTO> eventList = getEventToCheckOverlap();

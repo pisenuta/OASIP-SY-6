@@ -202,7 +202,6 @@ const createEvent = async (event, newFile) => {
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
             headers: {
-                'content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: stdEvent

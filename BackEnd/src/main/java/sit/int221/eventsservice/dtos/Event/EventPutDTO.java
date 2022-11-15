@@ -23,10 +23,6 @@ public class EventPutDTO {
     private Instant eventStartTime;
     @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventNotes;
-
     private CategoryDTO eventCategory;
-
     private Integer eventDuration;
-
-    private MultipartFile file;
 }

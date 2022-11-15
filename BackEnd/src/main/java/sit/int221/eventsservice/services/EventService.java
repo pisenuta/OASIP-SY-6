@@ -174,7 +174,7 @@ public class EventService {
                 Event event = modelMapper.map(newEvent, Event.class);
                 eventRepository.saveAndFlush(event);
                 fileStorageService.storeFile(file, event);
-//                sendEmail(newEvent, "Your appointment is confirmed.");
+                sendEmail(newEvent, "Your appointment is confirmed.");
                 return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
 
             } else if (userLogin.getRole().equals(Role.student)) {
@@ -195,7 +195,7 @@ public class EventService {
         Event event = modelMapper.map(newEvent, Event.class);
         eventRepository.saveAndFlush(event);
         fileStorageService.storeFile(file, event);
-//        sendEmail(newEvent, "Your appointment is confirmed.");
+        sendEmail(newEvent, "Your appointment is confirmed.");
         return ResponseEntity.status(HttpStatus.OK).body(event).getBody();
     }
 

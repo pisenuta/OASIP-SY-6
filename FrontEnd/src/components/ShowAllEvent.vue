@@ -5,7 +5,7 @@ import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
 
 const newAccess = ref()
-let token = localStorage.getItem("token")
+const token = localStorage.getItem("token")
 const refreshToken = localStorage.getItem("refreshToken");
 
 const RefreshToken = async () => {

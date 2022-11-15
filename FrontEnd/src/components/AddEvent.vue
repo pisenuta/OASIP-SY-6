@@ -204,7 +204,7 @@ const createEvent = async (event, newFile) => {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            body: stdEvent
+            body: stdformData
         })
 
         if (res.status == 201 || res.status == 200) {

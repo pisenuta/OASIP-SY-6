@@ -22,7 +22,7 @@ const RefreshToken = async () => {
     getAllEvent();
     getEventCategory();
 
-  } else if (res.status === 401){
+  } else if (res.status === 401 || res.status === 403){
     localStorage.clear()
     window.location.href = "/sy6"
     console.log("plz log out");
@@ -124,7 +124,7 @@ const removeEvent = async (removeEventId) => {
 const overlap = ref(false)
 const edited = ref(false)
 const errorPast = ref(false)
-const editEvent = async (editEvent) => {
+const editEvent = async (editEvent, newFile) => {
   if (moment(editEvent.eventStartTime).isAfter(moment(new Date()))) {
     errorPast.value = false
   } else {
@@ -133,23 +133,30 @@ const editEvent = async (editEvent) => {
   if(errorPast.value == true){
         return
   }
+
+  let editformData = new FormData();
+  let editeventwithfile = {
+    bookingEmail: editEvent.bookingEmail,
+    eventStartTime: editEvent.eventStartTime,
+    eventNotes: editEvent.eventNotes.trim(),
+    eventDuration: editEvent.eventDuration,
+    eventCategory: editEvent.eventCategory
+  }
+
+  editformData.append("file", newFile);
+  editformData.append( 'event',  JSON.stringify(editeventwithfile) );
+
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${editEvent.id}`, {
     method: 'PUT',
     headers: {
-      'content-type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
-    body: JSON.stringify({
-      bookingEmail: editEvent.bookingEmail,
-      eventStartTime: editEvent.eventStartTime,
-      eventNotes: editEvent.eventNotes.trim(),
-      eventDuration: editEvent.eventDuration,
-      eventCategory: editEvent.eventCategory
-    })
+    body: editformData
   })
   if (res.status === 200) {
     edited.value = true
     overlap.value = false
+    showFile(editEvent.id)
     console.log('edited successfully');
   } else {
     edited.value = false
@@ -172,9 +179,66 @@ const getAllEvent = async () => {
   }
 }
 
+const fileById = ref('')
+
+const showFile = async (id) => {
+  if(detail.value === false){
+    detail.value = true
+  } else {
+    detail.value = false
+  }
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}files/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (res.status === 200) {
+      fileById.value = await res.json();
+      console.log(fileById[0]);
+    } else if (res.status === 401 && token !== null){
+      fileById.value = null
+      RefreshToken();
+    }
+}
+
+const downloadFile = async (id) => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}files/download-file/${id}/${fileById.value[0]}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (res.status === 200) {
+      window.open(res.url, '_blank');
+      console.log('yes');
+    } else if (res.status === 401 && token !== null){
+      RefreshToken();
+    }
+}
+
+const removeFile = async (id) => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}files/delete-file/${id}/${fileById.value[0]}`, { 
+    method: 'DELETE' ,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
+  if (res.status === 200) {
+    console.log('deleted successfully')
+    // alert('Delete file successfully')
+    showFile(id)
+    showDetail();
+    // location.reload()
+  }
+  else console.log('error, can not delete')
+}
+
 onBeforeMount(async () => {
   await getAllEvent();
   await getEventCategory();
+  await showFile();
+  await downloadFile();
 })
 
 const schedule = () => {
@@ -212,7 +276,7 @@ const reset = () => {
   filterDate.value = ""
 }
 
-const detail = ref(false)
+const detail = ref(true)
 const showDetail = () => {
   if(detail.value === false){
     detail.value = true
@@ -224,6 +288,12 @@ const showDetail = () => {
 const closeEdited = () => {
   edited.value = false
 }
+const editingEvent = ref({})
+const toEditingMode = (editEvent) => {
+  editingEvent.value = editEvent
+    console.log(editingEvent.value)
+}
+
 </script>
  
 <template>
@@ -238,7 +308,9 @@ const closeEdited = () => {
             <div class="card-body overflow-auto" style="height:35.5vw; margin: 1vw;padding-top: 0;">
               <div v-if="events.length !== 0">
                 <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
-                  @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @closeEdited="closeEdited"/>
+                  @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @showFile="showFile" @closeEdited="closeEdited" 
+                  :fileById="fileById" @downloadFile="downloadFile" @removeFile="removeFile"
+                  :currentEvent="editingEvent" @toEditingMode="toEditingMode"/>
               </div>
               <h5 class="mx-auto Noschedule" >
                 {{ schedule() }}

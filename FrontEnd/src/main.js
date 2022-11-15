@@ -12,11 +12,11 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faEye, faEyeSlash, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faEye, faEyeSlash, faFileArrowDown, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 /* add icons to the library */
-library.add(faEye, faEyeSlash, faTrashCan, faGithub)
+library.add(faEye, faEyeSlash, faTrashCan, faGithub, faFileArrowDown)
 
 // createApp(App).mount('#app')
 import router from './router'

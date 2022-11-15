@@ -37,7 +37,4 @@ public class EventDTO {
     private Integer eventDuration;
     @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventNotes;
-
-    private String fileName;
-    private String fileUrl;
 }

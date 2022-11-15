@@ -1,8 +1,19 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
-defineEmits(['delete', 'edit', 'toEditingMode', 'cancelEdit', 'showDetail', 'closeEdited'])
+defineEmits([
+    'delete', 
+    'edit', 
+    'toEditingMode', 
+    'cancelEdit', 
+    'showDetail', 
+    'closeEdited', 
+    'showFile', 
+    'downloadFile',
+    'removeFile',
+    'toEditingMode'
+])
 const props = defineProps({
     eventList: {
         type: Array,
@@ -23,7 +34,15 @@ const props = defineProps({
     detail:{
         type: Boolean,
         default: false
-    }
+    },
+    fileById:{
+        type: String,
+        require: true,
+    },
+    currentEvent: {
+        type: Object,
+        default: {}
+    },
 });
 const role = localStorage.getItem('role');
 
@@ -37,27 +56,78 @@ const showDeleted = () => {
     deleted.value = true
     DetailPopUp.value = false
 }
-const editTime = ref("")
-const editNote = ref("")
+// const editTime = ref("")
+// const editNote = ref("")
 
-const editEvent = (event) => {
-    if(editTime.value === null || editTime.value === ''){
-        event.eventNotes = editNote.value
-    } else {
-        event.eventStartTime = editTime.value
-        event.eventNotes = editNote.value
+// const editEvent = (event) => {
+//     if(editTime.value === null || editTime.value === ''){
+//         event.eventNotes = editNote.value
+//     } else {
+//         event.eventStartTime = editTime.value
+//         event.eventNotes = editNote.value
+//     }
+//     return event
+// }
+
+const newEvent = computed(() => {
+    return {
+        id: props.currentEvent.id,
+        bookingEmail: props.currentEvent.bookingEmail,
+        eventCategory: props.currentEvent.eventCategory,
+        eventDuration: props.currentEvent.eventDuration,
+        eventStartTime: props.currentEvent.eventStartTime,
+        eventNotes: props.currentEvent.eventNotes
     }
-    return event
-}
-const resetEditData = () => {
-    editTime.value = ""
-    editNote.value = ""
-}
+})
+
 function formateTime(date) {
     const options = {hour: "numeric", minute: "numeric"};
     return new Date(date).toLocaleString("th-TH", options);
 }
 
+const editfileupload = ref()
+let dataTransfer = new DataTransfer()
+
+const uploadFile = (e) => {
+	let maxFileSize = 10 * 1024 * 1024 //10MB
+	if (e.target.files[0].size > maxFileSize) {
+		let fileInput = document.getElementById('fileInput')
+		fileInput.setCustomValidity('The file size cannot be larger than 10 MB.')
+		fileInput.reportValidity()
+        console.log('1');
+		if (editfileupload.value === undefined || editfileupload.value === '') {
+			clearInput()
+            console.log('2');
+
+		} else {
+			dataTransfer.items.clear()
+			dataTransfer.items.add(editfileupload.value)
+			fileInput.files = dataTransfer.files
+            console.log(dataTransfer);
+            console.log(editfileupload);
+            console.log('3');
+		}
+	} else {
+		editfileupload.value = e.target.files[0]
+		fileInput.setCustomValidity('')
+        console.log('4');
+	}
+}
+
+const clearInput = () => {
+    let fileInput = document.getElementById('fileInput')
+	fileInput.type = 'text'
+	fileInput.type = 'file'
+	fileupload.value = ''
+	dataTransfer.items.clear()
+}
+
+const deleteFileAlert = ref(false)
+const deletedFile = ref(false)
+const showDeletedFile = () => {
+    deleteFileAlert.value = false
+    deletedFile.value = true
+}
 </script>
 
 <template>
@@ -71,7 +141,7 @@ function formateTime(date) {
                 <p><b>Date :</b> {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }}  {{ formateTime(event.eventStartTime) }}</p>
                 <button class="btn detail-Btn" 
                     v-on:click="showIndex = index , DetailPopUp = true"
-                    @click="$emit('showDetail')"
+                    @click="$emit('showFile', event.id)"
                     style="font-weight: bold;">More ></button>
             </div>
         </div>
@@ -81,19 +151,19 @@ function formateTime(date) {
                 <ul>
                     <li v-for="(event, index) in eventList" :key="index" >
                         <div class="card-body " v-if="DetailPopUp == true">
-                            <div class="card popDetail" style="width: 38rem;" v-if="showIndex === index">
+                            <div class="card popDetail" style="width: 31.5vw;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header"
-                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">EVENT DETAIL
+                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 1vw;">EVENT DETAIL
                                     </div>
                                     <button class="close-detail" @click="$emit('showDetail')" v-on:click="showIndex = null , DetailPopUp = false">
                                         &times;
                                     </button>
                                 </div>
-                                <div class="card-body" v-if="showIndex === index" style="text-align: center;">
-                                    <b>{{ event.bookingName }}</b><br />
-                                    {{ event.bookingEmail }}<br /><br />
-                                    <span style="font-weight: bold; color: #e74694">Clinic</span><br />
+                                <div class="card-body" v-if="showIndex === index" style="text-align: center; font-size: 0.95vw;">
+                                    <b style="font-size: 1vw;">{{ event.bookingName }}</b><br />
+                                    <p>{{ event.bookingEmail }}</p>
+                                    <span style="font-weight: bold; color: #e74694;font-size: 1vw;">Clinic</span><br />
                                     {{ event.eventCategory.eventCategoryName }}<br />
                                     {{ moment(event.eventStartTime).format('ddd, D MMM YYYY')}} at
                                     {{ formateTime(event.eventStartTime) }}<br />
@@ -107,16 +177,42 @@ function formateTime(date) {
                                                 event.eventNotes
                                         }}
                                     </p>
+                            
+                                    <div v-if="fileById !== null && fileById[0] !== undefined" style="margin-bottom: 1vw;">
+                                        <p style="font-weight: bold; color: #e74694;margin-bottom: 0.5vw;margin-top: 1.4vw;">File</p>
+            
+
+                                        <div class="input-group" style="width: 20vw; left: 18%;">
+                                            <!-- <input type="text" class="form-control" v-model="fileById[0]" disabled> -->
+                                            <div type="text" class="form-control" style="cursor:default; background-color: #e9ecef;height: 2vw;">
+                                                {{fileById[0].slice(0, 25)}}
+                                                <a v-if="fileById[0].length > 28">...</a>
+                                            </div>
+                                            <button class="input-group-text btn btn-outline-success" type="button" @click="$emit('downloadFile', event.id)" style="height: 2vw;">
+                                                <font-awesome-icon icon="fa-solid fa-file-arrow-down" />
+                                            </button>
+
+                                            <button 
+                                                class="input-group-text btn btn-outline-danger" 
+                                                type="button" 
+                                                style="height: 2vw;"
+                                                v-on:click="deleteFileAlert = true">
+                                                <font-awesome-icon icon="fa-solid fa-trash-can" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    
                                     <!-- Edit -->
                                     <button v-if="role !== 'lecturer'" class="btn btn-warning edit-event-btn detail-btn-each" style="margin-right: 40px;"
-                                        v-on:click="editingMode = true">Edit Appointment</button>
+                                        v-on:click="editingMode = true" @click="$emit('toEditingMode', event)">Edit Appointment</button>
                                     <div class="containerV2" v-if="editingMode === true">
-                                        <div class="card popEdit" style="width: 38rem;" >
+                                        <div class="card popEdit" style="width: 31.5vw;" >
                                             <div class="card-body">
                                                 <div class="card-title">
                                                     <div class="card-header"
                                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px;">
-                                                        Event #{{ index + 1 }}</div>
+                                                        EDIT EVENT</div>
                                                 </div>
                                                 <div v-if="showIndex === index">
                                                     <b>{{ event.bookingName }}</b><br />
@@ -127,23 +223,41 @@ function formateTime(date) {
                                                     <p v-if="overlap" class="error">Time is overlapping</p>
                                                     <Datepicker 
                                                         :minDate="new Date()" 
-                                                        v-model="editTime"
-                                                        class="datepicker" 
+                                                        v-model="newEvent.eventStartTime"
+                                                        class="datepicker mx-auto" 
                                                         :class="{'border border-danger' : overlap}"
-                                                        style="margin-bottom: 10px;" 
+                                                        style="margin-bottom: 10px; width: 70%;" 
                                                     />
-                                                    <p class="noti">* If you not insert start date, The date will remain the same date</p>
+                                                    <!-- <p class="noti">* If you not insert start date, The date will remain the same date</p> -->
                                                     {{ event.eventDuration }} minutes<br /><br />
-                                                    <p>Note :</p>
-                                                    <textarea class="form-control style-form" rows="3" maxlength="500" v-model="editNote"></textarea>
+                                                    <span style="font-weight: bold; color: #e74694"><p>Note :</p></span>
+                                                    <textarea class="form-control style-form" style="width: 70%;" rows="3" maxlength="500" v-model="newEvent.eventNotes"></textarea>
+                                                    <div v-if="fileById !== null && fileById[0] !== undefined">
+                                                        <span style="font-weight: bold; color: #e74694;"><p style="margin-top:1vw">File :</p></span>
+                                                        <div class="input-group mx-auto" style="width: 70%;">
+                                                            <input 
+                                                                id="fileInput"
+                                                                type="file" 
+                                                                class="form-control style-form" 
+                                                                style="font-size:auto"
+                                                                multiple
+                                                                @change="uploadFile($event)"
+                                                                v-on:change="fileById[0]"
+                                                            >
+                                                            <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
+                                                                <font-awesome-icon icon="fa-solid fa-trash-can" />
+                                                            </button>
+                                                        </div>     
+                                                    </div>     
+                                                    
                                                     <div style="margin-top: 30px;">
                                                         <button type="button" class="btn btn-success confirm-edit-btn"
                                                             style="margin-right: 40px;"
-                                                            @click="$emit('edit', editEvent(event), resetEditData())"
+                                                            @click="$emit('edit', newEvent, editfileupload)"
                                                             >Submit</button>
                                                         <button type="button" class="btn btn-secondary"
                                                             v-on:click="editingMode = false"
-                                                            @click="$emit('cancelEdit',resetEditData())">Cancel</button>
+                                                            @click="$emit('cancelEdit')">Cancel</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -169,6 +283,24 @@ function formateTime(date) {
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Delete File -->
+                                    <div class="containerV2" v-if="deleteFileAlert === true || deletedFile === true">
+                                        <div class="card alert" v-if="deleteFileAlert === true">
+                                            <div class="card-body">
+                                                <img
+                                                    src="https://api.iconify.design/akar-icons/circle-alert.svg?color=%23bb2d3b" style="width: 4.5vw">
+                                                <p class="card-text" style="margin-top: 20px;"><b>Are you sure you want
+                                                        to delete file ?</b></p>
+                                                <button type="button" class="btn btn-danger cancel-event-btn"
+                                                    style="padding: 5px 20px 5px 20px;"
+                                                    @click="$emit('removeFile', event.id)" 
+                                                    v-on:click="showDeletedFile">Sure</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    style="margin-left: 30px;" v-on:click="deleteFileAlert = false">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -186,6 +318,7 @@ function formateTime(date) {
                     </div>
                 </div>
             </div>
+
             <div class="containerV2" v-if="edited === true">
                 <div class="card alertEdit">
                     <div class="card-body" style="margin-top: 10px;">
@@ -198,6 +331,19 @@ function formateTime(date) {
                     </div>
                 </div>
             </div>
+
+            <div class="containerV2" v-if="deletedFile === true">
+                <div class="card alertEdit" id="deleted">
+                    <div class="card-body" style="margin-top: 10px;">
+                        <img
+                            src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
+                        <p class="card-text" style="margin-top: 10px;"><b>Deleted</b> File Successfully</p>
+                        <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
+                            v-on:click="deletedFile = false">OK</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>

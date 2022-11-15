@@ -19,7 +19,7 @@ const RefreshToken = async () => {
     newAccess.value = await res.json()
     refresh()
     getEventCategory()
-  } else if (res.status === 401){
+  } else if (res.status === 401 || res.status === 403){
     localStorage.clear()
     window.location.href = "/sy6"
     console.log("plz log out");
@@ -157,17 +157,25 @@ const cancelPop = () => {
     </div> -->
         <div class="containerClinic" style="margin-top: 2vw;">
             <div class="row mx-auto">
-                <div class="col-4 col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
-                    <div class="card-body clinic-body">
-                        <img v-if="role === 'lecturer' || role === 'admin'" src="https://api.iconify.design/akar-icons/edit.svg?color=white" class="edit-icon"
+                <div class="col col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
+                    <div class="card-body clinic-body ">
+                        <img  src="https://api.iconify.design/akar-icons/edit.svg?color=black" class="edit-icon"
                             v-on:click="showIndex = index, editClinicPop = true" @click="toEditingMode(category)">
+                        <img src="../assets/project.png" class="clinic-pic" v-if="category.id === 1">
+                        <img src="../assets/devops.png" class="clinic-pic" v-if="category.id === 2">
+                        <img src="../assets/database.png" class="clinic-pic" v-if="category.id === 3">
+                        <img src="../assets/front.png" class="clinic-pic" v-if="category.id === 4">
+                        <img src="../assets/back.png" class="clinic-pic" v-if="category.id === 5">
                         <h5 class="clinic-title" style="padding-top:20px;">{{ category.eventCategoryName }}</h5>
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>
                         <div
                             v-if="category.eventCategoryDescription === null || category.eventCategoryDescription === ''">
                             <p style="color: #8a8a8a;font-size: 0.9vw;">No Description.</p>
                         </div>
-                        <p class="card-text clinic-des">{{ category.eventCategoryDescription }}</p>
+                        <div class="overflow-auto" style="height:27vh;">
+                            <p class="card-text clinic-des ">{{ category.eventCategoryDescription }}</p>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -180,7 +188,7 @@ const cancelPop = () => {
                             <div class="card" style="width: 35vw;" v-if="showIndex === index">
                                 <div class="card-title">
                                     <div class="card-header header"
-                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 1.2vw;">
+                                        style="color: #f857a6; font-weight: bold; letter-spacing: 1px; font-size: 1.2vw;">
                                         Edit Clinic
                                     </div>
                                 </div>
@@ -221,7 +229,11 @@ const cancelPop = () => {
 ul {
     list-style-type: none;
 }
-
+.clinic-pic{
+    width: 10vw;  
+    margin-left:25%;
+    margin-top: 10%;
+}
 .clinic-popup {
     position: fixed;
     top: 50%;
@@ -254,7 +266,7 @@ ul {
 }
 
 .close-popclinic:hover {
-    color: #e74694;
+    color: #f857a6;
 }
 
 .edit-icon {
@@ -276,7 +288,7 @@ ul {
 }
 
 .clinic-title {
-    font-size: 1vw;
+    font-size: 1.2vw;
     margin-top: 7px;
     text-align: center;
 }
@@ -288,17 +300,19 @@ ul {
 }
 
 .duration-text {
-    background-color: #e74694;
+    background-color: #f857a6;
     border-radius: 10px;
     font-size: 1vw;
+    color: white;
 }
 
 .clinic-body {
-    background-color: #212529;
+    /* background-color: #212529; */
+    background-color: white;
     border-radius: 10px;
-    height: 11vw;
+    height: 30vw;
     margin-bottom: 30px;
-    width: 30vw;
+    width: 18.5vw;
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
@@ -306,12 +320,11 @@ ul {
 }
 
 .clinic-body h5 {
-    color: #e74694;
+    color: #f857a6;
     font-weight: bold;
 }
 
 .clinic-body p {
-    color: white;
     text-align: center;
 }
 

@@ -20,7 +20,8 @@ const RefreshToken = async () => {
     newAccess.value = await res.json()
     refresh()
     getEventCategory()
-  } else if (res.status === 401){
+    getUser()
+  } else if (res.status === 401 || res.status === 403){
     localStorage.clear()
     window.location.href = "/sy6"
     console.log("plz log out");
@@ -76,8 +77,9 @@ const mailVali = ref(true)
 const mailNotFound = ref(false)
 const errorFuture = ref(false)
 const overlap = ref(false)
+const loading = ref(false)
 
-const createEvent = async (event) => {
+const createEvent = async (event, newFile) => {
     if(userRole === 'guest') {
         if (event.bookingName == null || event.bookingName == '') {
         errorName.value = true
@@ -99,7 +101,7 @@ const createEvent = async (event) => {
         }
     }
     else if(userRole === 'admin') {
-        if (Object.keys(event.user).length === 0){
+        if (event.user.name === undefined){
         errorName.value = true
         } else {
         errorName.value = false
@@ -129,95 +131,128 @@ const createEvent = async (event) => {
         errorFuture.value = true
     }
 
+
     // if (errorName.value == true || errorEmail.value == true || errorClinic.value == true || errorTime.value == true || mailVali.value == false || errorFuture.value == true) {
     //     return
     // }
     if (errorName.value == true || errorClinic.value == true || errorTime.value == true || errorFuture.value == true || mailVali.value == false) {
         return
     }
-
+    // console.log(newFile.files);
+    // console.log(newFile.files[0]);
     if(userRole === 'admin'){
+        let adminformData = new FormData();
+        let adminEvent = {
+            eventCategory: {
+                    id: event.eventCategory.id
+            },
+            userId: event.user.id,
+            bookingName: event.user.name,
+            bookingEmail: event.user.email,
+            eventStartTime: event.eventStartTime,
+            eventDuration: event.eventCategory.eventDuration,
+            eventNotes: event.eventNotes.trim()
+        }
+
+        // if (newFile.files.length != 0) {
+        //     adminformData.append("file", newFile.files[0]);
+        // }
+        adminformData.append("file", newFile);
+        adminformData.append( 'event',  JSON.stringify(adminEvent) );
+        loading.value = true
+
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
             headers: {
-                'content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            body: JSON.stringify({
-                eventCategory: {
-                    id: event.eventCategory.id
-                },
-                user: {
-                    email: event.user.email
-                },
-                bookingName: event.user.name,
-                bookingEmail: event.user.email,
-                eventStartTime: event.eventStartTime,
-                eventDuration: event.eventCategory.eventDuration,
-                eventNotes: event.eventNotes.trim()
-            })
+            body: adminformData
         })
         if (res.status == 201 || res.status == 200) {
+            loading.value = false
             console.log('added successfully');
             addAlert.value = true
-        } else if (res.status == 400) {
-        overlap.value = true
-       console.log('error, can not add');
+        } else if (res.status == 400 || res.status == 415) {
+            loading.value = false
+            overlap.value = true
+            console.log('error, can not add');
         }
         
     } else if(userRole === 'student'){
+        let stdformData = new FormData();
+        let stdEvent = {
+            eventCategory: {
+                id: event.eventCategory.id
+            },
+            userId: event.user.id,
+            bookingName: event.bookingName.trim(),
+            bookingEmail: event.user.email,
+            eventStartTime: event.eventStartTime,
+            eventDuration: event.eventCategory.eventDuration,
+            eventNotes: event.eventNotes.trim()
+        }
+
+        // if (newFile.files.length != 0) {
+        //     adminformData.append("file", newFile.files[0]);
+        // }
+        stdformData.append("file", newFile);
+        stdformData.append( 'event',  JSON.stringify(stdEvent) );
+        loading.value = true
+
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
             method: 'POST',
             headers: {
                 'content-Type': 'application/json',
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            body: JSON.stringify({
-                eventCategory: {
-                    id: event.eventCategory.id
-                },
-                user: {
-                    email: event.user.email
-                },
-                bookingName: event.bookingName.trim(),
-                bookingEmail: event.user.email.trim(),
-                eventStartTime: event.eventStartTime,
-                eventDuration: event.eventCategory.eventDuration,
-                eventNotes: event.eventNotes.trim()
-            })
+            body: stdEvent
         })
+
         if (res.status == 201 || res.status == 200) {
+            loading.value = false
             console.log('added successfully');
             addAlert.value = true
         } else if (res.status == 400) {
-        overlap.value = true
-       console.log('error, can not add');
+            loading.value = false
+            overlap.value = true
+            console.log('error, can not add');
         }
     } else if (userRole === 'guest'){
+        let guestformData = new FormData();
+        let guestEvent = {
+            eventCategory: {
+                id: event.eventCategory.id
+            },
+            userId: null,
+            bookingName: event.bookingName.trim(),
+            bookingEmail: event.bookingEmail.trim(),
+            eventStartTime: event.eventStartTime,
+            eventDuration: event.eventCategory.eventDuration,
+            eventNotes: event.eventNotes.trim()
+        }
+
+        // if (newFile.files.length != 0) {
+        //     adminformData.append("file", newFile.files[0]);
+        // }
+        guestformData.append("file", newFile);
+        guestformData.append( 'event',  JSON.stringify(guestEvent) );
+        loading.value = true
+        
         const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/guest`, {
             method: 'POST',
-            headers: {
-                'content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                eventCategory: {
-                    id: event.eventCategory.id
-                },
-                user: null,
-                bookingName: event.bookingName.trim(),
-                bookingEmail: event.bookingEmail.trim(),
-                eventStartTime: event.eventStartTime,
-                eventDuration: event.eventCategory.eventDuration,
-                eventNotes: event.eventNotes.trim()
-            })
+            body: guestformData
         })
+        loading.value = true
         if (res.status == 201 || res.status == 200) {
             console.log('added successfully');
+            loading.value = false
             addAlert.value = true
         } else if (res.status == 400) {
+            loading.value = false
             overlap.value = true
             console.log('error, can not add');
         } else if (res.status == 500) {
+            loading.value = false
             mailNotFound.value = true
         }
     }
@@ -274,6 +309,13 @@ const loginAlert = ref(true)
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="container" style="background-color: transparent;" v-if="loading === true">
+            <div class="card" id="center-popup" style="background-color: transparent;box-shadow:none;border-color: transparent;">
+                <img src="../assets/loading.gif" style="width: 10vw;">
+            </div>
+            
         </div>
 
         <div class="container" v-if="addAlert === true">

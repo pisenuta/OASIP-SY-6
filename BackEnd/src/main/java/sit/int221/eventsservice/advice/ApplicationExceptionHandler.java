@@ -113,7 +113,7 @@ public class ApplicationExceptionHandler extends Exception {
         Date timestamp = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         errorMap.put("Error:", br.getMessage());
-        return new HandleErrorUnsuccessful(sdf3.format(timestamp), HttpStatus.FORBIDDEN.value(),
+        return new HandleErrorUnsuccessful(sdf3.format(timestamp), HttpStatus.BAD_REQUEST.value(),
                 request.getRequest().getRequestURI(), "Validation Failed", "Bad Request", errorMap);
     }
 

@@ -21,10 +21,10 @@ public class EventPostDTO {
     private Integer id;
     @NotNull(message = "EventCategory shouldn't be null.")
     private CategoryDTO eventCategory;
-//    @NotNull(message = "User shouldn't be null.")
+    //    @NotNull(message = "User shouldn't be null.")
     private Integer userId;
     @NotBlank(message = "Name shouldn't be null or empty.")
-    @Size(max = 100 , message = "Name must less or equal then 100.")
+    @Size(max = 100, message = "Name must less or equal then 100.")
     private String bookingName;
     @Email(message = "Invalid email address.")
     @NotBlank(message = "Email shouldn't be null or empty.")
@@ -37,8 +37,4 @@ public class EventPostDTO {
     private Integer eventDuration;
     @Size(max = 500, message = "Note must less or equal then 500.")
     private String eventNotes;
-
-    private MultipartFile file;
-    private String fileName;
-    private String fileUrl;
 }

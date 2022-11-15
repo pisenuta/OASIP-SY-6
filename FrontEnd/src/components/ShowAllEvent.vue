@@ -198,7 +198,7 @@ const showFile = async (id) => {
       console.log(fileById[0]);
     } else if (res.status === 401 && token !== null){
       fileById.value = null
-      RefreshToken();
+      // RefreshToken();
     }
 }
 

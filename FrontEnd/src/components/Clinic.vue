@@ -159,7 +159,7 @@ const cancelPop = () => {
             <div class="row mx-auto">
                 <div class="col col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
                     <div class="card-body clinic-body ">
-                        <img  src="https://api.iconify.design/akar-icons/edit.svg?color=black" class="edit-icon"
+                        <img v-if="role === 'lecturer'" src="https://api.iconify.design/akar-icons/edit.svg?color=black" class="edit-icon"
                             v-on:click="showIndex = index, editClinicPop = true" @click="toEditingMode(category)">
                         <img src="../assets/project.png" class="clinic-pic" v-if="category.id === 1">
                         <img src="../assets/devops.png" class="clinic-pic" v-if="category.id === 2">

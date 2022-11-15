@@ -5,7 +5,7 @@ import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
 
 const newAccess = ref()
-let token = localStorage.getItem("token")
+const token = localStorage.getItem("token")
 const refreshToken = localStorage.getItem("refreshToken");
 
 const RefreshToken = async () => {
@@ -198,7 +198,7 @@ const showFile = async (id) => {
       console.log(fileById[0]);
     } else if (res.status === 401 && token !== null){
       fileById.value = null
-      RefreshToken();
+      // RefreshToken();
     }
 }
 

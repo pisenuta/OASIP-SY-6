@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import moment from 'moment';
 import Datepicker from '@vuepic/vue-datepicker';
+
 defineEmits([
     'delete', 
     'edit', 
@@ -44,6 +45,8 @@ const props = defineProps({
         default: {}
     },
 });
+
+
 const role = localStorage.getItem('role');
 
 const DetailPopUp = ref(false);
@@ -56,18 +59,6 @@ const showDeleted = () => {
     deleted.value = true
     DetailPopUp.value = false
 }
-// const editTime = ref("")
-// const editNote = ref("")
-
-// const editEvent = (event) => {
-//     if(editTime.value === null || editTime.value === ''){
-//         event.eventNotes = editNote.value
-//     } else {
-//         event.eventStartTime = editTime.value
-//         event.eventNotes = editNote.value
-//     }
-//     return event
-// }
 
 const newEvent = computed(() => {
     return {
@@ -133,12 +124,12 @@ const showDeletedFile = () => {
 <template>
     <div class="body" >
         <div class="card" v-for="(event, index) in eventList" :key="index" style="margin-top: 1vw;">
-            <div class="card-body" style="box-shadow: 0 2px 2px #00000005, 0 4px 4px #0000000a;">
+            <div class="card-body" style="box-shadow: 0 2px 2px #00000005, 0 4px 4px #0000000a; font-size: 0.9vw;">
                 <img src="../assets/calendar.png" class="calendar-img"/>
                 <b style="font-size: 1.1vw;">{{ event.bookingName.slice(0, 40) }} <a v-if="event.bookingName.length > 40">...</a></b>
                 <p style="margin-top: 0.5vw;"><b>Category :</b> {{ event.eventCategory.eventCategoryName }}</p>
                 <p><b>Duration :</b> {{ event.eventDuration }} Minutes</p>
-                <p><b>Date :</b> {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }}  {{ formateTime(event.eventStartTime) }}</p>
+                <p style="margin-bottom: 0.8vw;"><b>Date :</b> {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }}  {{ formateTime(event.eventStartTime) }}</p>
                 <button class="btn detail-Btn" 
                     v-on:click="showIndex = index , DetailPopUp = true"
                     @click="$emit('showFile', event.id)"
@@ -172,7 +163,7 @@ const showDeletedFile = () => {
                                     <p v-if="event.eventNotes == null || event.eventNotes == []" style="color: #a2a5aa">
                                         No Message
                                     </p>
-                                    <p v-else>
+                                    <p style="margin-bottom: 1vw;" v-else>
                                         <span style="font-weight: bold; color: #e74694">Note</span><br />{{
                                                 event.eventNotes
                                         }}
@@ -188,7 +179,11 @@ const showDeletedFile = () => {
                                                 {{fileById[0].slice(0, 25)}}
                                                 <a v-if="fileById[0].length > 28">...</a>
                                             </div>
-                                            <button class="input-group-text btn btn-outline-success" type="button" @click="$emit('downloadFile', event.id)" style="height: 2vw;">
+                                            <button 
+                                                class="input-group-text btn btn-outline-success" 
+                                                type="button" 
+                                                @click="$emit('downloadFile', event.id)" 
+                                                style="height: 2vw;">
                                                 <font-awesome-icon icon="fa-solid fa-file-arrow-down" />
                                             </button>
 
@@ -204,17 +199,17 @@ const showDeletedFile = () => {
                                     
                                     
                                     <!-- Edit -->
-                                    <button v-if="role !== 'lecturer'" class="btn btn-warning edit-event-btn detail-btn-each" style="margin-right: 40px;"
+                                    <button v-if="role !== 'lecturer'" class="btn btn-warning edit-event-btn detail-btn-each" style="margin-right: 2vw;"
                                         v-on:click="editingMode = true" @click="$emit('toEditingMode', event)">Edit Appointment</button>
                                     <div class="containerV2" v-if="editingMode === true">
-                                        <div class="card popEdit" style="width: 31.5vw;" >
+                                        <div class="card popEdit" style="width: 31.5vw; font-size: 0.95vw;" >
                                             <div class="card-body">
                                                 <div class="card-title">
                                                     <div class="card-header"
-                                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;">
+                                                        style="color: #e74694; font-weight: bold; letter-spacing: 1px;font-size: 1vw;">
                                                         EDIT EVENT</div>
                                                 </div>
-                                                <div v-if="showIndex === index">
+                                                <div class="card-body" v-if="showIndex === index">
                                                     <b>{{ event.bookingName }}</b><br />
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />
@@ -256,6 +251,7 @@ const showDeletedFile = () => {
                                                             @click="$emit('edit', newEvent, editfileupload)"
                                                             >Submit</button>
                                                         <button type="button" class="btn btn-secondary"
+                                                            style="font-size: 0.9vw;"
                                                             v-on:click="editingMode = false"
                                                             @click="$emit('cancelEdit')">Cancel</button>
                                                     </div>
@@ -400,7 +396,7 @@ const showDeletedFile = () => {
   transition: 0.5s;
   border-color: transparent;
   background-size: 200% auto;
-  font-size:0.85vw;
+  font-size:0.95vw;
 }
 
 .confirm-edit-btn:hover{
@@ -504,7 +500,8 @@ const showDeletedFile = () => {
     border: none;
     outline: none;
     background: none;
-    font-size: 45px;
+    /* font-size: 45px; */
+    font-size: 2.3vw;
     font-weight: bold;
     margin-top: -2%;
 }
@@ -512,12 +509,14 @@ const showDeletedFile = () => {
     color: #e74694;
 }
 .detail-btn-each {
-    margin-top: 17px;
-    margin-bottom: 10px;
+    margin-top: 1vw;
+    margin-bottom: 0.8vw;
+    font-size: 0.85vw;
 }
 
 .detail-Btn {
     text-align: center;
+    font-size: 0.85vw;
     color: white; 
     cursor: pointer;
     transition: 0.5s;

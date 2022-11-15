@@ -159,20 +159,20 @@ const cancelPop = () => {
             <div class="row mx-auto">
                 <div class="col col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
                     <div class="card-body clinic-body ">
-                        <img v-if="role === 'lecturer'" src="https://api.iconify.design/akar-icons/edit.svg?color=black" class="edit-icon"
+                        <img v-if="role === 'lecturer' || role === 'admin'" src="https://api.iconify.design/akar-icons/edit.svg?color=black" class="edit-icon"
                             v-on:click="showIndex = index, editClinicPop = true" @click="toEditingMode(category)">
                         <img src="../assets/project.png" class="clinic-pic" v-if="category.id === 1">
                         <img src="../assets/devops.png" class="clinic-pic" v-if="category.id === 2">
                         <img src="../assets/database.png" class="clinic-pic" v-if="category.id === 3">
                         <img src="../assets/front.png" class="clinic-pic" v-if="category.id === 4">
                         <img src="../assets/back.png" class="clinic-pic" v-if="category.id === 5">
-                        <h5 class="clinic-title" style="padding-top:20px;">{{ category.eventCategoryName }}</h5>
+                        <h5 class="clinic-title" style="padding-top:2vh;">{{ category.eventCategoryName }}</h5>
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>
                         <div
                             v-if="category.eventCategoryDescription === null || category.eventCategoryDescription === ''">
                             <p style="color: #8a8a8a;font-size: 0.9vw;">No Description.</p>
                         </div>
-                        <div class="overflow-auto" style="height:27vh;">
+                        <div class="overflow-auto" style="height:25vh;">
                             <p class="card-text clinic-des ">{{ category.eventCategoryDescription }}</p>
                         </div>
                         
@@ -272,7 +272,7 @@ ul {
 .edit-icon {
     cursor: pointer;
     float: right;
-    height: 1.1vw;
+    height: 2.2vh;
     margin-right: 10px;
     margin-top: 10px;
     transition: all 0.2s ease-in-out;
@@ -289,7 +289,7 @@ ul {
 
 .clinic-title {
     font-size: 1.2vw;
-    margin-top: 7px;
+    margin-top: 0.5vw;
     text-align: center;
 }
 
@@ -301,9 +301,10 @@ ul {
 
 .duration-text {
     background-color: #f857a6;
-    border-radius: 10px;
+    border-radius: 1vw;
     font-size: 1vw;
     color: white;
+    margin-bottom: 1vw;
 }
 
 .clinic-body {
@@ -330,6 +331,8 @@ ul {
 
 .col-clinic {
     transition: all .2s ease-in-out;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .col-clinic:hover {

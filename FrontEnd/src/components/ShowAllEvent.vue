@@ -236,6 +236,7 @@ const removeFile = async (id) => {
     // alert('Delete file successfully')
     showFile(id)
     showDetail();
+    fileById.value = ''
     // location.reload()
   }
   else console.log('error, can not delete')

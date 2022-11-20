@@ -123,7 +123,7 @@ const showDeletedFile = () => {
 
 <template>
     <div class="body" >
-        <div class="card" v-for="(event, index) in eventList" :key="index" style="margin-top: 1vw;">
+        <div class="card" v-for="event in eventList" :key="event.id" style="margin-top: 1vw;">
             <div class="card-body" style="box-shadow: 0 2px 2px #00000005, 0 4px 4px #0000000a; font-size: 0.9vw;">
                 <img src="../assets/calendar.png" class="calendar-img"/>
                 <b style="font-size: 1.1vw;">{{ event.bookingName.slice(0, 40) }} <a v-if="event.bookingName.length > 40">...</a></b>
@@ -131,7 +131,7 @@ const showDeletedFile = () => {
                 <p><b>Duration :</b> {{ event.eventDuration }} Minutes</p>
                 <p style="margin-bottom: 0.8vw;"><b>Date :</b> {{ moment(event.eventStartTime).format('ddd, D MMM YYYY') }}  {{ formateTime(event.eventStartTime) }}</p>
                 <button class="btn detail-Btn" 
-                    v-on:click="showIndex = index , DetailPopUp = true"
+                    v-on:click="showIndex = event.id , DetailPopUp = true"
                     @click="$emit('showFile', event.id)"
                     style="font-weight: bold;">More ></button>
             </div>
@@ -140,9 +140,9 @@ const showDeletedFile = () => {
         <div>
             <div class="container" v-if="DetailPopUp == true">
                 <ul>
-                    <li v-for="(event, index) in eventList" :key="index" >
+                    <li v-for="event in eventList" :key="event.id" >
                         <div class="card-body " v-if="DetailPopUp == true">
-                            <div class="card popDetail" style="width: 31.5vw;" v-if="showIndex === index">
+                            <div class="card popDetail" style="width: 31.5vw;" v-if="showIndex === event.id">
                                 <div class="card-title">
                                     <div class="card-header"
                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px; font-size: 1vw;">EVENT DETAIL
@@ -151,7 +151,7 @@ const showDeletedFile = () => {
                                         &times;
                                     </button>
                                 </div>
-                                <div class="card-body" v-if="showIndex === index" style="text-align: center; font-size: 0.95vw;">
+                                <div class="card-body" v-if="showIndex === event.id" style="text-align: center; font-size: 0.95vw;">
                                     <b style="font-size: 1vw;">{{ event.bookingName }}</b><br />
                                     <p>{{ event.bookingEmail }}</p>
                                     <span style="font-weight: bold; color: #e74694;font-size: 1vw;">Clinic</span><br />
@@ -209,7 +209,7 @@ const showDeletedFile = () => {
                                                         style="color: #e74694; font-weight: bold; letter-spacing: 1px;font-size: 1vw;">
                                                         EDIT EVENT</div>
                                                 </div>
-                                                <div class="card-body" v-if="showIndex === index">
+                                                <div class="card-body" v-if="showIndex === event.id">
                                                     <b>{{ event.bookingName }}</b><br />
                                                     {{ event.bookingEmail }}<br /><br />
                                                     <span style="font-weight: bold; color: #e74694">Clinic</span><br />

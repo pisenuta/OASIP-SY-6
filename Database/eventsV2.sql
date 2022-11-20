@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `events`.`eventcategory` (
   `eventCategoryName` VARCHAR(100) NOT NULL,
   `eventCategoryDescription` TEXT(500) NULL DEFAULT NULL,
   `eventDuration` INT NOT NULL,
-  PRIMARY KEY (`eventCategoryIdeventcategory`),
+  PRIMARY KEY (`eventCategoryId`),
   UNIQUE INDEX `eventCategoryName_UNIQUE` (`eventCategoryName` ASC) VISIBLE,
   UNIQUE INDEX `eventCategoryId_UNIQUE` (`eventCategoryId` ASC) VISIBLE)
 ENGINE = InnoDB

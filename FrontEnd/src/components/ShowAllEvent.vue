@@ -142,7 +142,10 @@ const editEvent = async (editEvent, newFile) => {
     eventDuration: editEvent.eventDuration,
     eventCategory: editEvent.eventCategory
   }
-  if(newFile !== undefined){
+
+  if(newFile === undefined){
+    editformData.append("file", fileById[0]);
+  } else if(newFile !== undefined){
     editformData.append("file", newFile);
   }
   

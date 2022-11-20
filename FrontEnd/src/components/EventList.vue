@@ -168,11 +168,9 @@ const showDeletedFile = () => {
                                                 event.eventNotes
                                         }}
                                     </p>
-                            
-                                    <div v-if="fileById !== null && fileById[0] !== undefined" style="margin-bottom: 1vw;">
-                                        <p style="font-weight: bold; color: #e74694;margin-bottom: 0.5vw;margin-top: 1.4vw;">File</p>
-            
 
+                                    <p style="font-weight: bold; color: #e74694;margin-bottom: 0.5vw;margin-top: 1.4vw;">File</p>
+                                    <div v-if="fileById !== null && fileById[0] !== undefined" style="margin-bottom: 1vw;">
                                         <div class="input-group" style="width: 20vw; left: 18%;">
                                             <!-- <input type="text" class="form-control" v-model="fileById[0]" disabled> -->
                                             <div type="text" class="form-control" style="cursor:default; background-color: #e9ecef;height: 2vw;">
@@ -196,6 +194,8 @@ const showDeletedFile = () => {
                                             </button>
                                         </div>
                                     </div>
+
+                                    <div v-else style="color:#a2a5aa;font-size: 0.8vw;margin-bottom: 0.5vw;">None</div>
                                     
                                     
                                     <!-- Edit -->
@@ -227,20 +227,49 @@ const showDeletedFile = () => {
                                                     {{ event.eventDuration }} minutes<br /><br />
                                                     <span style="font-weight: bold; color: #e74694"><p>Note :</p></span>
                                                     <textarea class="form-control style-form" style="width: 70%;" rows="3" maxlength="500" v-model="newEvent.eventNotes"></textarea>
-                                                    <div v-if="fileById !== null && fileById[0] !== undefined">
+                                                    
+                                                    <div>
                                                         <span style="font-weight: bold; color: #e74694;"><p style="margin-top:1vw">File :</p></span>
+                                                        <div v-if="fileById !== null && fileById[0] !== undefined" style="margin-bottom: 1vw;">
+                                                            <div class="input-group mx-auto" style="width: 70%;">
+                                                                <!-- <input type="text" class="form-control" v-model="fileById[0]" disabled> -->
+                                                                <div type="text" class="form-control" style="cursor:default; background-color: #e9ecef;height: 2vw;">
+                                                                    {{fileById[0].slice(0, 25)}}
+                                                                    <a v-if="fileById[0].length > 28">...</a>
+                                                                </div>
+                                                                <button 
+                                                                    class="input-group-text btn btn-outline-success" 
+                                                                    type="button" 
+                                                                    @click="$emit('downloadFile', event.id)" 
+                                                                    style="height: 2vw;">
+                                                                    <font-awesome-icon icon="fa-solid fa-file-arrow-down" />
+                                                                </button>
+
+                                                                <button 
+                                                                    class="input-group-text btn btn-outline-danger" 
+                                                                    type="button" 
+                                                                    style="height: 2vw;"
+                                                                    v-on:click="deleteFileAlert = true">
+                                                                    <font-awesome-icon icon="fa-solid fa-trash-can" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="input-group mx-auto" style="width: 70%;">
                                                             <input 
                                                                 id="fileInput"
                                                                 type="file" 
                                                                 class="form-control style-form" 
-                                                                style="font-size:auto"
-                                                                multiple
+                                                                style="font-size:auto"                         
                                                                 @change="uploadFile($event)"
                                                                 v-on:change="fileById[0]"
                                                             >
                                                             <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
-                                                                <font-awesome-icon icon="fa-solid fa-trash-can" />
+                                                                <!-- <font-awesome-icon icon="fa-solid fa-x" /> -->
+                                                                <img class="clear-file-btn"
+                                                                    src="https://api.iconify.design/mdi/close-thick.svg?color=%236c757d"
+                                                                    style="width: 1vw"
+                                                                />
                                                             </button>
                                                         </div>     
                                                     </div>     

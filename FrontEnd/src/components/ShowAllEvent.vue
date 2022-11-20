@@ -143,7 +143,12 @@ const editEvent = async (editEvent, newFile) => {
     eventCategory: editEvent.eventCategory
   }
 
-  editformData.append("file", newFile);
+  if(newFile === undefined){
+    editformData.append("file", fileById[0]);
+  } else if(newFile !== undefined){
+    editformData.append("file", newFile);
+  }
+  
   editformData.append( 'event',  JSON.stringify(editeventwithfile) );
 
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${editEvent.id}`, {
@@ -155,8 +160,10 @@ const editEvent = async (editEvent, newFile) => {
   })
   if (res.status === 200) {
     edited.value = true
+    detail.value = false
     overlap.value = false
     showFile(editEvent.id)
+    getAllEvent()
     console.log('edited successfully');
   } else {
     edited.value = false
@@ -300,7 +307,7 @@ const toEditingMode = (editEvent) => {
   <div class="body">
     <h3 class="mx-auto" style="font-size: 2.1vw;margin-top: 2.5vw;margin-bottom: 1.5vw; font-weight: bolder;">Appointment</h3>
     <!-- <div v-if="events.length > 8" class="scroll-down"></div> -->
-
+    
     <div class="container-event">
       <div class="row" style="justify-content: center;">
         <div class="col-md-6 col-xl-7" style="flex-basis: auto !important; width: 50vw !important; height:35vw">
@@ -318,11 +325,12 @@ const toEditingMode = (editEvent) => {
             </div>
           </div>
         </div>
+        
         <div class="col-md-6 col-xl-3" style="flex-basis: auto !important; width: 30vw !important;">
           <div class="card" 
             style="box-shadow: 0 2px 2px #00000005, 0 4px 4px #0000000a; position: static;">
             <div class="card-body">
-              <h2 class="card-title" style="text-align: center; font-weight: bold;">Filter</h2>
+              <h2 class="card-title" style="text-align: center; font-weight: bold; font-size: 1.7vw;">Filter</h2>
               <div style="margin: 1vw;">
 
               <p class="filter-head">Category </p>
@@ -341,8 +349,9 @@ const toEditingMode = (editEvent) => {
               </select>
 
               <p class="filter-head">Date</p>
-              <div :style="detail ? { visibility: 'hidden'} : {visibility: 'visible'}">
-                <Datepicker :enableTimePicker="false" v-model="filterDate" class="datepicker filter-form"
+              <div>
+                <Datepicker :style="detail ? { visibility: 'hidden'} : {visibility: 'visible'}" 
+                  :enableTimePicker="false" v-model="filterDate" class="datepicker filter-form"
                   style="width: 25vw;margin-left:0; z-index:-1;" 
                   :disabled="filterStatus || filterEvent ? '' : disabled "
                   ></Datepicker>
@@ -393,6 +402,7 @@ const toEditingMode = (editEvent) => {
 }
          
 .search-btn {
+  font-size: 0.9vw;
   background-image: linear-gradient(to right, #f857a6 0%, #ff5858  51%, #f857a6  100%);
   padding: 0.7vw 10vw;
   text-align: center;
@@ -416,6 +426,7 @@ const toEditingMode = (editEvent) => {
          
 .filter-head{
   font-weight: bold;
+  font-size: 0.89vw;
   margin-top: 0.5vw;
 }
 

@@ -257,11 +257,14 @@ const uploadFile = (e) => {
                         type="file" 
                         class="form-control style-form" 
                         style="font-size:auto"
-                        multiple
                         @change="uploadFile($event)"
                     >
                     <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
-                        <font-awesome-icon icon="fa-solid fa-trash-can" />
+                        <!-- <font-awesome-icon icon="fa-solid fa-trash-can" /> -->
+                        <img class="clear-file-btn"
+                            src="https://api.iconify.design/mdi/close-thick.svg?color=%236c757d"
+                            style="width: 1vw"
+                        />
                     </button>
                 </div>
             </div>

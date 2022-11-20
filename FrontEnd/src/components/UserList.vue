@@ -755,7 +755,7 @@ const userRole = localStorage.getItem("role")
   position: absolute;
   left: 0;
   right: 0;
-  top: 10%;
+  top: 5%;
   margin-bottom: 10px;
 }
 
@@ -945,7 +945,7 @@ const userRole = localStorage.getItem("role")
   background-color: #ffffff;
   border-radius: 1vw;
   margin-bottom: 1.8vw;
-  margin-left: auto;
+  margin-left: auto; 
   margin-right: auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   text-align: center;

@@ -37,8 +37,7 @@ const props = defineProps({
         default: false
     },
     fileById:{
-        type: String,
-        require: true,
+        require: true
     },
     currentEvent: {
         type: Object,
@@ -99,7 +98,7 @@ const uploadFile = (e) => {
             console.log('3');
 		}
 	} else {
-		editfileupload.value = e.target.files[0]
+        editfileupload.value = e.target.files[0]
 		fileInput.setCustomValidity('')
         console.log('4');
 	}
@@ -350,8 +349,8 @@ const showDeletedFile = () => {
                         <img
                             src="https://api.iconify.design/healthicons/yes-outline.svg?color=%23198754&width=90&height=90">
                         <p class="card-text" style="margin-top: 10px;"><b>Edited</b> Event Successfully</p>
-                        <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"
-                            v-on:click="edited = false, editingMode = false"
+                        <button type="button" class="btn btn-light" style="width: 100px; margin-top: 5px;"          
+                            v-on:click="edited = false, editingMode = false, editfileupload = null"
                             @click="$emit('closeEdited')">OK</button>
                     </div>
                 </div>

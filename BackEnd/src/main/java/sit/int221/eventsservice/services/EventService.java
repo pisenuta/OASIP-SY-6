@@ -176,10 +176,6 @@ public class EventService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User userLogin = userRepository.findByEmail(auth.getPrincipal().toString());
 
-//        String eventDir = newEvent.getId().toString();
-//        Path path = Paths.get(fileStorageProperties.getUploadDir() + "/" + eventDir);
-//        System.out.println(path.toString());
-
         if (userLogin != null) {
             if (userLogin.getRole().equals(Role.admin)) {
                 checkOverlapCreate(newEvent, newEventStartTime, newEventEndTime, eventList);
@@ -268,7 +264,8 @@ public class EventService {
         } else {
             if (Files.exists(path)) {
                 if (!Files.list(path).collect(Collectors.toList()).isEmpty()) {
-                    fileStorageService.deleteFile(path + "/" + getFile(path).get("fileName"));
+//                    fileStorageService.deleteFile(path + "/" + getFile(path).get("fileName"));
+                    System.out.println("File is not updated");
                 }
             }
         }

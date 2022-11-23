@@ -243,6 +243,7 @@ const removeFile = async (id) => {
   if (res.status === 200) {
     console.log('deleted successfully')
     // alert('Delete file successfully')
+    detail.value = true
     showFile(id)
     // showDetail();
     fileById.value = ''
@@ -359,11 +360,13 @@ const toEditingMode = (editEvent) => {
 
               <p class="filter-head">Date</p>
               <div>
-                <Datepicker :style="detail ? { visibility: 'hidden'} : {visibility: 'visible'}" 
+                <input type="date" class="form-control" v-model="filterDate" style="width: 25vw;margin-left:0; z-index:-1;" :disabled="filterStatus || filterEvent ? '' : disabled ">
+                <!-- <Datepicker :style="detail ? { visibility: 'hidden'} : {visibility: 'visible'}"  -->
+                <!-- <Datepicker
                   :enableTimePicker="false" v-model="filterDate" class="datepicker filter-form"
                   style="width: 25vw;margin-left:0; z-index:-1;" 
                   :disabled="filterStatus || filterEvent ? '' : disabled "
-                  ></Datepicker>
+                  ></Datepicker> -->
               </div>
 
               <button type="button" class="btn btn-danger all-btn" @click="getAllEvent(), reset()">Reset</button>

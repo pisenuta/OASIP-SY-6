@@ -265,10 +265,11 @@ const showDeletedFile = () => {
                                                             >
                                                             <button class="btn btn-outline-secondary" style="height: 2vw;" @click="clearInput">
                                                                 <!-- <font-awesome-icon icon="fa-solid fa-x" /> -->
-                                                                <img class="clear-file-btn"
+                                                                <!-- <img class="clear-file-btn"
                                                                     src="https://api.iconify.design/mdi/close-thick.svg?color=%236c757d"
                                                                     style="width: 1vw"
-                                                                />
+                                                                /> -->
+                                                                <b>x</b>
                                                             </button>
                                                         </div>     
                                                     </div>     

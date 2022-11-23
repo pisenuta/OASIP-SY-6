@@ -142,13 +142,25 @@ const editEvent = async (editEvent, newFile) => {
     eventDuration: editEvent.eventDuration,
     eventCategory: editEvent.eventCategory
   }
-
+  
+  // if(fileById.value.length = 0){
+  //   if(newFile === undefined){
+  //   editformData.append("file", null);
+  //   console.log('1');
+  //   } else if(newFile !== undefined){
+  //   editformData.append("file", newFile);
+  //   console.log('2');
+  //   }
+  // } 
+  
   if(newFile === undefined){
     editformData.append("file", fileById[0]);
+    console.log('3');
   } else if(newFile !== undefined){
     editformData.append("file", newFile);
+    console.log('4');
   }
-  
+
   editformData.append( 'event',  JSON.stringify(editeventwithfile) );
 
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/${editEvent.id}`, {
@@ -189,11 +201,8 @@ const getAllEvent = async () => {
 const fileById = ref('')
 
 const showFile = async (id) => {
-  if(detail.value === false){
-    detail.value = true
-  } else {
-    detail.value = false
-  }
+  showDetail();
+
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}files/${id}`, {
       method: "GET",
       headers: {
@@ -202,7 +211,7 @@ const showFile = async (id) => {
     });
     if (res.status === 200) {
       fileById.value = await res.json();
-      console.log(fileById[0]);
+      console.log(fileById);
     } else if (res.status === 401 && token !== null){
       fileById.value = null
       // RefreshToken();
@@ -235,7 +244,7 @@ const removeFile = async (id) => {
     console.log('deleted successfully')
     // alert('Delete file successfully')
     showFile(id)
-    showDetail();
+    // showDetail();
     fileById.value = ''
     // location.reload()
   }
@@ -290,6 +299,7 @@ const showDetail = () => {
     detail.value = true
   } else {
     detail.value = false
+    fileById.value = ''
   }
 }
 
@@ -299,7 +309,6 @@ const closeEdited = () => {
 const editingEvent = ref({})
 const toEditingMode = (editEvent) => {
   editingEvent.value = editEvent
-    console.log(editingEvent.value)
 }
 
 </script>
@@ -308,7 +317,6 @@ const toEditingMode = (editEvent) => {
   <div class="body">
     <h3 class="mx-auto" style="font-size: 2.1vw;margin-top: 2.5vw;margin-bottom: 1.5vw; font-weight: bolder;">Appointment</h3>
     <!-- <div v-if="events.length > 8" class="scroll-down"></div> -->
-    
     <div class="container-event">
       <div class="row" style="justify-content: center;">
         <div class="col-md-6 col-xl-7" style="flex-basis: auto !important; width: 50vw !important; height:35vw">

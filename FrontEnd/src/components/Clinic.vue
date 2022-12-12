@@ -297,6 +297,7 @@ ul {
     font-size: 0.9vw;
     margin-left: 0.5vw;
     margin-right: 0.5vw;
+    word-wrap: break-word;
 }
 
 .duration-text {

@@ -82,6 +82,7 @@ const saveLocal = () => {
   localStorage.setItem("refreshToken", `${token.value.refresh_token}`);
   localStorage.setItem("email", `${token.value.email}`);
   localStorage.setItem("role", `${token.value.role}`);
+  localStorage.setItem("name", `${token.value.name}`);
 };
 
 let showPassword = ref(false);

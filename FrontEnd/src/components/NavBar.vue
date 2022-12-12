@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onBeforeMount } from "vue";
 const token = localStorage.getItem("token");
 
 const signout = () => {
@@ -7,6 +8,23 @@ const signout = () => {
 }
 
 const role = localStorage.getItem('role');
+const username = localStorage.getItem('name');
+
+
+const countDate = ref('');
+const countTime = ref ('')
+function setTime() {
+var today = new Date()
+var min = today.getMinutes()<10?'0':''
+var date = (today.getDate() + '/' + (today.getMonth()+1) + '/' + (today.getFullYear() ));
+var time = (today.getHours() + ":" + min + today.getMinutes()).toString("th-TH")
+countDate.value = date
+countTime.value = time
+}
+
+onBeforeMount(async () => {
+    setInterval(setTime, 1);
+})
 </script>
 
 <template>
@@ -19,6 +37,11 @@ const role = localStorage.getItem('role');
                         <p style="margin-bottom:0px;font-size: 0.7vw;">TEAM</p>
                     </div>
                 </router-link>
+
+                <span style="margin-left: 0.5vw; font-size: 0.8vw; color: #f857a6;" v-if="username != null">
+                    <span style="color: white;">Welcome,</span> {{username}} !
+                    <br><span style="text-transform: capitalize;">{{role}}</span>
+                </span>
             </a>
             <div class="collapse navbar-collapse" id="navcol-3">
                 <ul class="navbar-nav mx-auto">
@@ -49,10 +72,11 @@ const role = localStorage.getItem('role');
                         </a>
                     </li>
                 </ul>
+                <span style="margin-right: 0.5vw;">{{countDate}} <br>{{countTime}}</span>
                 <div v-if="token === null">
                     <router-link to="/login" class="nav-link nav-btn"><button class="btn signin-btn">Sign In</button></router-link>
                 </div>
-                <div v-else-if="token !== null">
+                <div v-else-if="token !== null || token !== undefined">
                     <a @click="signout" class="signout">
                         <img src="https://api.iconify.design/bx/log-out.svg?color=white" style="width:1.2vw;margin-bottom:0.2vw;margin-right:0.2vw;"/>Sign Out
                     </a>
@@ -75,7 +99,9 @@ nav {
     height: 5vw;
     font-family: 'Radio Canada';
     color: #f857a6;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 20px #616161;
+    /* box-shadow:  -20px 20px 60px #474747,
+             20px -20px 60px #616161; */
 }
 
 .signout {

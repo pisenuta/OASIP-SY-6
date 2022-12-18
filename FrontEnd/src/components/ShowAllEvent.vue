@@ -21,6 +21,8 @@ const RefreshToken = async () => {
     refresh()
     getAllEvent();
     getEventCategory();
+    countPastApp();
+    countUpApp();
 
   } else if (res.status === 401 || res.status === 403){
     localStorage.clear()
@@ -183,6 +185,7 @@ const editEvent = async (editEvent, newFile) => {
   }
 }
 
+const countEvent = ref()
 const getAllEvent = async () => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events`, {
     method: "GET",
@@ -193,8 +196,47 @@ const getAllEvent = async () => {
   if (res.status === 200) {
     events.value = await res.json();
     events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
+    countEvent.value = events.value.length
   } else if (res.status === 401 && token !== null){
     RefreshToken();
+  }
+}
+
+const countPastEvent = ref()
+const countUpcoming = ref()
+const UpcomingEvent = ref()
+const PastEvent = ref()
+const countPastApp = async () => {
+  const day = moment().format().slice(0, 19) + 'Z'
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/schedule-past?DateTime=${day}`, { 
+      method: "GET", 
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+  })
+  if (res.status === 200) {
+    PastEvent.value = await res.json();
+    countPastEvent.value = PastEvent.value.length
+    console.log(PastEvent.value.length);
+  } else {
+    console.log('can not');
+  }
+}
+
+const countUpApp = async () => {
+  const day = moment().format().slice(0, 19) + 'Z'
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/schedule-comingup?DateTime=${day}`, { 
+      method: "GET", 
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+  })
+  if (res.status === 200) {
+    UpcomingEvent.value = await res.json();
+    countUpcoming.value = UpcomingEvent.value.length
+    console.log(UpcomingEvent.value.length);
+  } else {
+    console.log('can not');
   }
 }
 
@@ -257,6 +299,8 @@ onBeforeMount(async () => {
   await getEventCategory();
   await showFile();
   await downloadFile();
+  await countPastApp();
+  await countUpApp();
 })
 
 const schedule = () => {
@@ -322,7 +366,12 @@ const toEditingMode = (editEvent) => {
       <div class="row" style="justify-content: center;">
         <div class="col-md-6 col-xl-7" style="flex-basis: auto !important; width: 50vw !important; height:35vw">
           <div class="card" style="border-color: transparent; margin-top:-1vw;">
-            <div class="card-body overflow-auto" style="height:35.5vw; margin: 1vw;padding-top: 0;">
+            <p style="font-size: 0.8vw; color: #646464;">
+              <span class="count-hover" @click="getAllEvent(), reset()" style="cursor: pointer;">  All Appointment : {{countEvent}} </span> |
+              <span class="count-hover" v-on:click="filterStatus = 'Past'" @click="SortByStatus(filterStatus)" style="cursor: pointer;"> Past Appointment : {{countPastEvent}} </span> |
+              <span class="count-hover" v-on:click="filterStatus = 'Upcoming'" @click="SortByStatus(filterStatus)" style="cursor: pointer;"> Upcoming Appointment : {{countUpcoming}}</span>
+            </p>
+            <div class="card-body overflow-auto" style="height:35.5vw; margin: 1vw; margin-top: 0;margin-bottom: 0; padding-top: 0;">
               <div v-if="events.length !== 0">
                 <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
                   @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @showFile="showFile" @closeEdited="closeEdited" 
@@ -412,7 +461,10 @@ const toEditingMode = (editEvent) => {
 .body {
   font-family: 'Radio Canada', 'Noto Sans Thai';
 }
-         
+.count-hover:hover{
+  color: #F857A2;
+  font-weight: bold;
+}         
 .search-btn {
   font-size: 0.9vw;
   background-image: linear-gradient(to right, #f857a6 0%, #ff5858  51%, #f857a6  100%);

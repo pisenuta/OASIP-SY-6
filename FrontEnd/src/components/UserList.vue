@@ -5,6 +5,7 @@ import editUser from "../components/EditUser.vue";
 import addUser from "../components/AddUser.vue";
 
 const users = ref([]);
+// const count = users.filter(item => item.role > 30).length;
 
 const newAccess = ref()
 let token = localStorage.getItem("token")
@@ -52,12 +53,20 @@ const getUser = async () => {
     cantReach.value = false
     users.value = await res.json();
     users.value.sort();
+    countUser.value = users.value.length
+    countAdmin.value = users.value.filter(item => item.role == 'admin').length
+    countStd.value = users.value.filter(item => item.role == 'student').length
+    countLec.value = users.value.filter(item => item.role == 'lecturer').length
   } else if (res.status === 401 && token !== null){
     RefreshToken();
   } else if (res.status === 403){
     cantReach.value = true
   }
 };
+
+const countAdmin = ref()
+const countStd = ref()
+const countLec = ref()
 
 const removeUser = async (removeUserId) => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}users/${removeUserId}`,{ 
@@ -346,6 +355,7 @@ const createUser = async (user) => {
 };
 
 const userRole = localStorage.getItem("role")
+const countUser = ref()
 </script>
 
 <template>
@@ -372,7 +382,11 @@ const userRole = localStorage.getItem("role")
         {{ noUser() }}
       </h5>
     </div>
-
+    <p style="margin: 0; margin-left: 5%; font-size: 0.8vw; color: #646464;">
+      All User : {{ countUser }} | 
+      Admin : {{ countAdmin }} | 
+      Lecturer : {{ countLec }} | 
+      Student : {{ countStd }} </p>
     <!-- add -->
     <div>
       <div class="container" v-if="addUserPop == true">
@@ -444,8 +458,8 @@ const userRole = localStorage.getItem("role")
     <div class="mt-5">
       <div
         class="row mx-auto row-cols-4 overflow-auto"
-        style="padding-left: 4vw; padding-right: 4vw; height: 67vh; padding-top: 1vw;
-              margin-top: 0; "
+        style="padding-left: 4vw; padding-right: 4vw; height: 63vh; padding-top: 1vw;
+              margin-top: 0;"
       >
         <div
           class="col-user"

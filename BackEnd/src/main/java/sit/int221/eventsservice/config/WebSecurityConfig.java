@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(POST, "/api/events/").hasAnyAuthority("student", "admin")
                 .antMatchers(PUT, "/api/events/").hasAnyAuthority("student", "admin")
                 .antMatchers(DELETE, "/api/events/").hasAnyAuthority("student", "admin")
-                .antMatchers(POST, "/api/users/register/**", "/api/login/**", "/api/events/guest").permitAll()
+                .antMatchers(POST, "/api/users/register/**", "/api/login/**").permitAll()
                 .antMatchers(GET,"/api/refresh-token/**", "/api/categories/**").permitAll()
                 .antMatchers(GET,"/api/files/download-file/**").permitAll()
                 .anyRequest().authenticated().and()

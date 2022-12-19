@@ -15,9 +15,12 @@ const countDate = ref('');
 const countTime = ref ('')
 function setTime() {
 var today = new Date()
+var day = today.getDate()<10?'0':''
+var month = today.getMonth()<10?'0':''
+var hours = today.getHours()<10?'0':''
 var min = today.getMinutes()<10?'0':''
-var date = (today.getDate() + '/' + (today.getMonth()+1) + '/' + (today.getFullYear() ));
-var time = (today.getHours() + ":" + min + today.getMinutes()).toString("th-TH")
+var date = (day + today.getDate() + '/' + month + (today.getMonth()+1) + '/' + (today.getFullYear() ));
+var time = (hours + today.getHours() + ":" + min + today.getMinutes()).toString("th-TH")
 countDate.value = date
 countTime.value = time
 }

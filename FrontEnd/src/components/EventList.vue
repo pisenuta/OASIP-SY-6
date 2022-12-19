@@ -124,7 +124,12 @@ const showDeletedFile = () => {
     <div class="body" >
         <div class="card" v-for="event in eventList" :key="event.id" style="margin-top: 1vw;">
             <div class="card-body" style="box-shadow: 0 2px 2px #00000005, 0 4px 4px #0000000a; font-size: 0.9vw;">
-                <img src="../assets/calendar.png" class="calendar-img"/>
+                <!-- <img src="../assets/calendar.png" class="calendar-img"/> -->
+                <img src="../assets/project.png" class="calendar-img" v-if="event.eventCategory.id === 1"/>
+                <img src="../assets/devops.png" class="calendar-img" v-if="event.eventCategory.id === 2"/>
+                <img src="../assets/database.png" class="calendar-img" v-if="event.eventCategory.id === 3"/>
+                <img src="../assets/front.png" class="calendar-img" v-if="event.eventCategory.id === 4"/>
+                <img src="../assets/back.png" class="calendar-img" v-if="event.eventCategory.id === 5"/>
                 <b style="font-size: 1.1vw;">{{ event.bookingName.slice(0, 40) }} <a v-if="event.bookingName.length > 40">...</a></b>
                 <p style="margin-top: 0.5vw;"><b>Category :</b> {{ event.eventCategory.eventCategoryName }}</p>
                 <p><b>Duration :</b> {{ event.eventDuration }} Minutes</p>
@@ -394,6 +399,7 @@ const showDeletedFile = () => {
 .calendar-img{
     float: left;    
     width: 10vw;
+    margin-right: 1vw;
 }
 .error{
     color: red;

@@ -239,7 +239,8 @@ const toggleShowConfirm = () => {
                       <tr>
                         <!-- <th class="label-signup">Role :</th> -->
                         <th class="maxSignup">
-                          Select Role
+                          <span v-if="newUser.role === null || newUser.role === ''">Select Role</span>
+                          <span v-if="newUser.role !== null">{{newUser.role}}</span>
                         </th>
                       </tr>
                     </table>

@@ -15,9 +15,12 @@ const countDate = ref('');
 const countTime = ref ('')
 function setTime() {
 var today = new Date()
+var day = today.getDate()<10?'0':''
+var month = today.getMonth()<10?'0':''
+var hours = today.getHours()<10?'0':''
 var min = today.getMinutes()<10?'0':''
-var date = (today.getDate() + '/' + (today.getMonth()+1) + '/' + (today.getFullYear() ));
-var time = (today.getHours() + ":" + min + today.getMinutes()).toString("th-TH")
+var date = (day + today.getDate() + '/' + month + (today.getMonth()+1) + '/' + (today.getFullYear() ));
+var time = (hours + today.getHours() + ":" + min + today.getMinutes()).toString("th-TH")
 countDate.value = date
 countTime.value = time
 }
@@ -38,7 +41,7 @@ onBeforeMount(async () => {
                     </div>
                 </router-link>
 
-                <span style="margin-left: 0.5vw; font-size: 0.8vw; color: #f857a6;" v-if="username != null">
+                <span style="margin-left: 1vw; font-size: 0.8vw; color: #f857a6;" v-if="username != null">
                     <span style="color: white;">Welcome,</span> {{username}} !
                     <br><span style="text-transform: capitalize;">{{role}}</span>
                 </span>
@@ -72,7 +75,7 @@ onBeforeMount(async () => {
                         </a>
                     </li>
                 </ul>
-                <span style="margin-right: 0.5vw;">{{countDate}} <br>{{countTime}}</span>
+                <span style="margin-right: 1vw;">{{countDate}} <br>{{countTime}}</span>
                 <div v-if="token === null">
                     <router-link to="/login" class="nav-link nav-btn"><button class="btn signin-btn">Sign In</button></router-link>
                 </div>

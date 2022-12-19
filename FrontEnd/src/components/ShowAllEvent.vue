@@ -51,7 +51,7 @@ const SortByCategory = async (id) => {
     events.value = await res.json();
     events.value.sort(function (a, b) { return new Date(b.eventStartTime) - new Date(a.eventStartTime); });
   } else {
-    console.log('can not');
+    getAllEvent();
   }
 }
 
@@ -297,8 +297,6 @@ const removeFile = async (id) => {
 onBeforeMount(async () => {
   await getAllEvent();
   await getEventCategory();
-  await showFile();
-  await downloadFile();
   await countPastApp();
   await countUpApp();
 })

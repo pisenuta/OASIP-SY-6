@@ -271,7 +271,7 @@ const uploadFile = (e) => {
             </div>
         </div>
         <div style="text-align: center;">
-            <button type="button" class="btn btn-dark mx-auto addEventBtn" @click="$emit('create', newEvent,fileupload)">
+            <button type="button" class="btn btn-dark addEventBtn" @click="$emit('create', newEvent,fileupload)">
                 Booking
             </button>
         </div>

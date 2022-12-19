@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue'
+import moment from "moment";
 import editClinic from '../components/EditClinic.vue'
 
 const newAccess = ref()
@@ -46,6 +47,7 @@ const getEventCategory = async () => {
 }
 onBeforeMount(async () => {
     await getEventCategory()
+    await viewBlindEvent()
 })
 
 const showIndex = ref(null);
@@ -126,35 +128,41 @@ const cancelPop = () => {
     wrongDuration.value = false
     notUnique.value = false
 }
+const blindEvent = ref([])
+const viewBlindEvent = async() =>{
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/blind-events`, {
+    method: "GET",
+    // headers: {
+    //   Authorization: `Bearer ${localStorage.getItem("token")}`,
+    // },
+  })
+  if (res.status === 200) {
+    blindEvent.value = await res.json()
+  } else if (res.status === 401 && token !== null){
+    RefreshToken();
+  }
+}
+
+function formateTime(date) {
+  const options = { hour: "numeric", minute: "numeric" };
+  return new Date(date).toLocaleString("th-TH", options);
+}
+
+const showBlind = ref(false)
+const toggleShow = () => {
+  if(showBlind.value === true){
+    showBlind.value = false
+  } else {
+    showBlind.value = true
+  }
+}
 
 </script>
  
 <template>
     <div class="body">
         <h3 style="font-size: 2.1vw;font-weight: bold;margin-top: 2.5vw;">Clinic</h3>
-        <!-- plz login -->
-    <!-- <div class="Plzlogin"
-      v-if="token === null || token === undefined"
-        >
-      <div class="card alertPlzlogin">
-        <div class="card-body" style="margin-top: 10px">
-          <img
-            src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
-            style="width: 5.5vw"
-          />
-          <p class="card-text" style="margin-top: 0.5vw;margin-bottom: 1vw;">
-            Please login to see clinic
-          </p>
-          <router-link to="/login"><button
-            type="button"
-            class="btn btn-warning btn-plzlogin mx-auto"
-            style="margin-bottom: 1vw"
-          >
-            OK
-          </button></router-link>
-        </div>
-      </div>
-    </div> -->
+
         <div class="containerClinic" style="margin-top: 2vw;">
             <div class="row mx-auto">
                 <div class="col col-clinic" v-for="(category, index) in categories" :key="index" :value="category">
@@ -168,17 +176,32 @@ const cancelPop = () => {
                         <img src="../assets/back.png" class="clinic-pic" v-if="category.id === 5">
                         <h5 class="clinic-title" style="padding-top:2vh;">{{ category.eventCategoryName }}</h5>
                         <p class="duration-text"> {{ category.eventDuration }} Minutes</p>
-                        <div
-                            v-if="category.eventCategoryDescription === null || category.eventCategoryDescription === ''">
-                            <p style="color: #8a8a8a;font-size: 0.9vw;">No Description.</p>
-                        </div>
                         <div class="overflow-auto" style="height:25vh;">
-                            <p class="card-text clinic-des ">{{ category.eventCategoryDescription }}</p>
+                            <p v-if="category.eventCategoryDescription === null || category.eventCategoryDescription === ''" style="color: #8a8a8a;font-size: 0.9vw;">No Description.</p>
+                            <p v-else class="card-text clinic-des ">{{ category.eventCategoryDescription }}</p>
+                        </div>
+                        
+                        <div style="padding-bottom: 0.5vw;text-align: center;margin-top: 0.3vw;" v-if="showBlind == true">
+                            <p style="color: #f857a6; font-weight: bold;margin-bottom: 0;">BLIND EVENTS</p>
+                            <div class="overflow-auto" style="height:13.8vh;">
+                                <t v-for="(blind, index) in blindEvent" :key="index">
+                                    <span v-if="blind.categoryId.id == category.id">
+                                        {{ moment(blind.eventStartTime).format('ddd, D MMM YYYY') }} - {{ formateTime(blind.eventStartTime) }}<br>
+                                    </span>
+                                </t>
+                            </div>                       
                         </div>
                         
                     </div>
                 </div>
             </div>
+            <div style="text-align: center; margin-bottom: 1vw;">
+                <button class="showBlind-btn mx-auto" @click="toggleShow()">
+                    <span v-if="showBlind == false">SHOW BLIND EVENTS</span>
+                    <span v-if="showBlind == true">HIDE BLIND EVENTS</span>
+                </button>
+            </div>
+            
         </div>
         <div>
             <div class="container" v-if="editClinicPop == true">
@@ -229,6 +252,26 @@ const cancelPop = () => {
 ul {
     list-style-type: none;
 }
+
+.showBlind-btn {
+    background-image: linear-gradient(to right, #f857a6 0%, #ff5858 51%, #f857a6 100%);
+    text-align: center;
+    padding: 0.3vw 0.5vw;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    font-size: 0.9vw;
+    border-color: transparent;
+    border-radius: 10px;
+}
+
+.showBlind-btn:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+    border-color: transparent;
+}
+
 .clinic-pic{
     width: 10vw;  
     margin-left:25%;
@@ -305,14 +348,13 @@ ul {
     border-radius: 1vw;
     font-size: 1vw;
     color: white;
-    margin-bottom: 1vw;
 }
 
 .clinic-body {
     /* background-color: #212529; */
     background-color: white;
     border-radius: 10px;
-    height: 30vw;
+    /* height: 30vw; */
     margin-bottom: 30px;
     width: 18.5vw;
     margin-left: auto;

@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import sit.int221.eventsservice.advice.HandleExceptionBadRequest;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
+import sit.int221.eventsservice.dtos.Event.BlindEventDTO;
 import sit.int221.eventsservice.dtos.Event.EventPostDTO;
 import sit.int221.eventsservice.dtos.Event.EventPutDTO;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
@@ -98,5 +99,10 @@ public class EventController {
     @GetMapping({"/schedule-comingup"})
     public List <EventDTO> getUpcomingEvent(@RequestParam Instant DateTime) {
         return this.eventService.getUpcomingEvent(DateTime);
+    }
+
+    @GetMapping({"/blind-events"})
+    public List <BlindEventDTO> getBlindEvent() {
+        return this.eventService.getBlindEvent();
     }
 }

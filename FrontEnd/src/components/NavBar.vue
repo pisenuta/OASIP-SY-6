@@ -41,7 +41,7 @@ onBeforeMount(async () => {
                     </div>
                 </router-link>
 
-                <span style="margin-left: 0.5vw; font-size: 0.8vw; color: #f857a6;" v-if="username != null">
+                <span style="margin-left: 1vw; font-size: 0.8vw; color: #f857a6;" v-if="username != null">
                     <span style="color: white;">Welcome,</span> {{username}} !
                     <br><span style="text-transform: capitalize;">{{role}}</span>
                 </span>
@@ -50,7 +50,7 @@ onBeforeMount(async () => {
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link hover-underline-animation text-wh">
-                            <router-link to="/clinic">Clinic</router-link>
+                            <router-link to="/clinic">Clinic And Blind Events</router-link>
                             <br>
                         </a>
                     </li>
@@ -75,7 +75,7 @@ onBeforeMount(async () => {
                         </a>
                     </li>
                 </ul>
-                <span style="margin-right: 0.5vw;">{{countDate}} <br>{{countTime}}</span>
+                <span style="margin-right: 1vw;">{{countDate}} <br>{{countTime}}</span>
                 <div v-if="token === null">
                     <router-link to="/login" class="nav-link nav-btn"><button class="btn signin-btn">Sign In</button></router-link>
                 </div>

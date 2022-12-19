@@ -29,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import sit.int221.eventsservice.advice.HandleExceptionBadRequest;
 import sit.int221.eventsservice.advice.HandleExceptionForbidden;
 import sit.int221.eventsservice.advice.OverlappedExceptionHandler;
+import sit.int221.eventsservice.dtos.Event.BlindEventDTO;
 import sit.int221.eventsservice.dtos.Event.EventDTO;
 import sit.int221.eventsservice.dtos.Event.EventPostDTO;
 import sit.int221.eventsservice.dtos.Event.EventPutDTO;
@@ -433,6 +434,12 @@ public class EventService {
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, userLogin.getEmail() + "is not owner of this event");
         }
+    }
+
+    public List<BlindEventDTO> getBlindEvent() {
+        List<Event> eventList;
+        eventList = eventRepository.findAllByOrderByEventStartTimeDesc();
+        return listMapper.mapList(eventList, BlindEventDTO.class, modelMapper);
     }
 }
 

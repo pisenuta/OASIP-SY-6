@@ -38,4 +38,6 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findAllByEventCategory_IdInAndEventStartTimeBeforeOrderByEventStartTimeDesc(Collection<Integer> ids, Instant instantTime);
 
     List<Event> findAllByEventCategory_IdInAndEventStartTimeAfterOrderByEventStartTimeAsc(Collection<Integer> ids, Instant instantTime);
+
+    public List<Event> findAllByOrderByEventStartTimeDesc();
 }

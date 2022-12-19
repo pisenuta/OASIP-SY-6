@@ -50,7 +50,7 @@ onBeforeMount(async () => {
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link hover-underline-animation text-wh">
-                            <router-link to="/clinic">Clinic</router-link>
+                            <router-link to="/clinic">Clinic And Blind Events</router-link>
                             <br>
                         </a>
                     </li>

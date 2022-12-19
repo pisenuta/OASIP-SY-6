@@ -76,8 +76,13 @@ public class CategoryOwnerService {
                 }
             }
         });
-        user.getEventCategories().add(category);
-        this.userRepository.saveAndFlush(user);
+        if(user.getRole() == Role.lecturer){
+            user.getEventCategories().add(category);
+            this.userRepository.saveAndFlush(user);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is not a lecturer");
+        }
+
         LecturerDTO lecturerDTO = modelMapper.map(user, LecturerDTO.class);
         return ResponseEntity.status(200).body(lecturerDTO);
     }

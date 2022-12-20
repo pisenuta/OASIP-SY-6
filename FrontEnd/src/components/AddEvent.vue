@@ -276,7 +276,7 @@ const loginAlert = ref(true)
             :errorTime="errorTime" :mailVali="mailVali" :errorFuture="errorFuture" :overlap="overlap" :mailNotFound="mailNotFound"
             @create="createEvent" />
         <!-- plz login -->
-        <!-- <div class="Plzlogin" v-if="token === null || token === undefined">
+        <div class="Plzlogin" v-if="token === null || token === undefined">
             <div class="card alertPlzlogin">
                 <div class="card-body" style="margin-top: 10px">
                     <img src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
@@ -290,9 +290,9 @@ const loginAlert = ref(true)
                         </button></router-link>
                 </div>
             </div>
-        </div> -->
+        </div>
 
-        <div class="Plzlogin" v-if="(token === null || token === undefined || role === 'guest') && loginAlert == true">
+        <!-- <div class="Plzlogin" v-if="(token === null || token === undefined || role === 'guest') && loginAlert == true">
             <div class="card alertPlzlogin">
                 <div class="card-body" style="margin-top: 10px">
                     <img src="https://api.iconify.design/clarity/warning-line.svg?color=%23efbc3c"
@@ -308,7 +308,7 @@ const loginAlert = ref(true)
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="container" style="background-color: transparent;" v-if="loading === true">
             <div class="card" id="center-popup" style="background-color: transparent;box-shadow:none;border-color: transparent;">

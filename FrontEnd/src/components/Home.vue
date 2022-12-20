@@ -4,8 +4,8 @@
 
 <template>
   <div class="homepage">
-    <div class="container-home">
-      <div class="row">
+    <div class="container-home" >
+      <div class="row" >
         <div class="col-md-6 align-self-center" style="text-align: center; margin-left: -2vw;margin-right: -2vw;">
           <div class="inside"> 
             <h1 class="home-text"><b style="color: #f857a6;">OASIP-SY-6</b><br/>Online Appointment <br/>Scheduling</h1>

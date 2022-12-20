@@ -36,9 +36,9 @@ const refresh = () => {
 }
 
 const events = ref([])
-const filterEvent = ref()
-const filterStatus = ref()
-const filterDate = ref()
+const filterEvent = ref('')
+const filterStatus = ref('')
+const filterDate = ref('')
 
 const SortByCategory = async (id) => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}events/clinic?eventCategoryId=${id}`, { 
@@ -369,7 +369,7 @@ const toEditingMode = (editEvent) => {
               <span class="count-hover" v-on:click="filterStatus = 'Past'" @click="SortByStatus(filterStatus)" style="cursor: pointer;"> Past Appointment : {{countPastEvent}} </span> |
               <span class="count-hover" v-on:click="filterStatus = 'Upcoming'" @click="SortByStatus(filterStatus)" style="cursor: pointer;"> Upcoming Appointment : {{countUpcoming}}</span>
             </p>
-            <div class="card-body overflow-auto" style="height:35.5vw; margin: 1vw; margin-top: 0;margin-bottom: 0; padding-top: 0;">
+            <div class="card-body overflow-auto" style="height:33vw; margin: 1vw; margin-top: 0;margin-bottom: 0; padding-top: 0;">
               <div v-if="events.length !== 0">
                 <EventList :eventList="events" :overlap="overlap" :edited="edited" :errorPast="errorPast" @delete="removeEvent" @edit="editEvent"
                   @cancelEdit="cancelEdit" :detail="detail" @showDetail="showDetail" @showFile="showFile" @closeEdited="closeEdited" 
@@ -418,8 +418,12 @@ const toEditingMode = (editEvent) => {
 
               <button type="button" class="btn btn-danger all-btn" @click="getAllEvent(), reset()">Reset</button>
               
-              <button class="search-btn" 
+              <button class="search-btn" v-if="filterDate == '' && filterEvent == '' && filterStatus == ''"
                 @click="filterNothing(),SortByDate(filterDate),SortByCategory(filterEvent),SortByStatus(filterStatus)">search</button>
+              
+              <button v-if="filterDate != ''" class="search-btn" @click="SortByDate(filterDate)">search</button>
+              <button v-if="filterEvent != ''" class="search-btn" @click="SortByCategory(filterEvent)">search</button>
+              <button v-if="filterStatus != ''" class="search-btn" @click="SortByStatus(filterStatus)">search</button>
               </div>
               </div>
           </div>

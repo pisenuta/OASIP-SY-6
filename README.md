@@ -6,7 +6,7 @@ Version: Integrated Project II
 ### Team: <PP/>
 | No. | Name              | Student ID   | Role |
 |:---:|-------------------|--------------|------|
-|  1  | ธราเทพ ศิริพิศ  | 63130500055| Back-End Developer , Devop
+|  1  | ธราเทพ ศิริพิศ  | 63130500055| Back-End Developer , DevOps
 |  2  | ธัญกร แถลงดี    | 63130500056| Front-End Developer , Database
 
 ###
